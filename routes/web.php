@@ -24,3 +24,4 @@ Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginFor
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/clients', [App\Http\Controllers\ClientsController::class, 'index']);
