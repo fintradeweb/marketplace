@@ -34,7 +34,7 @@ class ClientSeeder extends Seeder
           'name' => 'Nsa 3',
           'email' => 'correo3@gmail.com',            
           'token' => Str::random(10),
-          'active' => '1',
+          'active' => '0',
       ]);
 
       DB::table('clients')->insert([
