@@ -12,8 +12,10 @@
     </div>
 @endif
    
-<form action="{{ route('clients.store') }}" method="POST">
+<form action="{{ route('clients.update',$codigo) }}" method="POST">
+
     @csrf
+    @method('PUT')
   
      <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">

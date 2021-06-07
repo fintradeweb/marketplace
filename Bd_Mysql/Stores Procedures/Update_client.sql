@@ -1,12 +1,13 @@
 /*
  
- call Insert_client('MIguel Flores','mFj1.desarrollo@gmail.com',@_msg5,@_error5)
+ call Update_client(1,'MIguel Flores','mFj1.desarrollo@gmail.com',@_msg5,@_error5)
  
  select @_msg5,@_error5
  */
-DROP PROCEDURE IF EXISTS Insert_client;
+DROP PROCEDURE IF EXISTS Update_client;
 DELIMITER //
-create  PROCEDURE Insert_client(
+create  PROCEDURE Update_client(
+								IN _id bigint,
                                 IN _name varchar(255),
                                 IN _email varchar(255),
                                 OUT _msg varchar(255),
@@ -25,7 +26,7 @@ sp: BEGIN
 		   select '1' into _error;
 		   
 		   Get STACKED  diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
-		   select CONCAT('Inserts failed Client, error = ',code,', message = ',MSG) into _msg;
+		   select CONCAT('Update failed Client, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
    		  
        end;
@@ -74,16 +75,18 @@ sp: BEGIN
 	  
 	  select  substring3 into token2 ;
 	   
-      insert into clients(name,email,created_at,token,active) values(_name,_email,now(),token2,1);
+     
+      update clients 
+         set email= _email,
+             name = _name,
+             updated_at = now(),
+             token = token2
+         where id = _id;
 	 
-	  select '0' into  _error;
+	  select '0','ok' into  _error,_msg;
+	 select _error,_msg;
 	
-	  select 'ok' into _msg;
-	  select _error,_msg;
-	    
-	
- 	
-
+	  
 END;
 //
 DELIMITER ;

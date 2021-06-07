@@ -27,7 +27,12 @@ class ClientsController extends Controller
     {
         return view('clients.create');
     }
-    public function insert(Request $request)
+    public function edit($id)
+    {
+        $codigo = $id;
+        return View('clients.edit')->with('codigo', $codigo);
+    }
+    public function store(Request $request)
     {
         $error="0";
         $msg= "";
@@ -38,9 +43,24 @@ class ClientsController extends Controller
                         $error,
                         $msg
                      ]);
+        var_dump($result);
         
+       
+    }
+    public function update(Request $request, $codigo)
+    {
+        $error="0";
+        $msg= "";
+        $result = DB::select('call Update_client(?,?,?,?,?)',
+                     [
+                        $codigo,
+                        $request->input('name'),
+                        $request->input('email'),
+                        $error,
+                        $msg
+                     ]);
+        var_dump($result);
         
-        index();
-        
+       
     }
 }

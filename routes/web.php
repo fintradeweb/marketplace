@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,9 +26,12 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/clients', [App\Http\Controllers\ClientsController::class, 'index']);
-Route::get('/clients/create', [App\Http\Controllers\ClientsController::class, 'create']);
-Route::get('/clients/show/{id}', [App\Http\Controllers\ClientsController::class, 'show']);
+/*Route::get('/clients/create', [App\Http\Controllers\ClientsController::class, 'create']);*/
+Route::get('/clients/search/{id}', [App\Http\Controllers\ClientsController::class, 'show']);
 
-Route::POST('/clients.insert', [App\Http\Controllers\ClientsController::class, 'insert']);
+Route::get('/clients/create', [App\Http\Controllers\ClientsController::class, 'create']);
+/*Route::get('/clients/edit/{id}', [App\Http\Controllers\ClientsController::class, 'edit']);*/
+Route::resource('clients', App\Http\Controllers\ClientsController::class);
+
 
 
