@@ -10,6 +10,7 @@ create  PROCEDURE Update_client(
 								IN _id bigint,
                                 IN _name varchar(255),
                                 IN _email varchar(255),
+                                IN _active tinyint(1),
                                 OUT _msg varchar(255),
                                 OUT _error char(1) 
                                 )
@@ -36,7 +37,9 @@ sp: BEGIN
 	   select upper(email2) into email2;
 	   
  	   select count(*) into existe
-	       from clients where  upper(email) collate utf8mb4_unicode_ci = email2;
+	       from clients 
+	     where  upper(email) collate utf8mb4_unicode_ci = email2 AND 
+	            id <> _id;
 	      
 	   
        if existe > 0 THEN 
@@ -80,6 +83,7 @@ sp: BEGIN
          set email= _email,
              name = _name,
              updated_at = now(),
+             active  = _active,
              token = token2
          where id = _id;
 	 
