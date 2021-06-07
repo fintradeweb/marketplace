@@ -25,3 +25,9 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/clients', [App\Http\Controllers\ClientsController::class, 'index']);
+Route::get('/clients/create', [App\Http\Controllers\ClientsController::class, 'create']);
+Route::get('/clients/show/{id}', [App\Http\Controllers\ClientsController::class, 'show']);
+
+Route::POST('/clients.insert', [App\Http\Controllers\ClientsController::class, 'insert']);
+
+
