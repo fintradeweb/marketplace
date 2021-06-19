@@ -15,8 +15,8 @@ BEGIN
 END 
 //
 DELIMITER
-
-
+update clients set active='1' where id=1;
+select * from clients
 /*
  call Get_client_item(1)
  * 
