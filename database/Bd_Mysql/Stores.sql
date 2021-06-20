@@ -322,3 +322,25 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS Get_existe_user;
+DELIMITER //
+create  PROCEDURE Get_existe_user(IN s_mail varchar(200))
+BEGIN
+	if 
+	  exists(
+			select 1
+		    from users c
+		    WHERE c.emmail = s_mail
+		   )
+    then
+    	select 1 as existe, 0 as bussinesinformation;
+    else
+    	select 0 as existe, 0 as bussinesinformation;
+    end if;
+		   
+
+END;
+//
+DELIMITER ;
