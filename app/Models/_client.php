@@ -19,6 +19,11 @@ class _client extends Model
     return $clients[0];
   }
 
+  public static function valida_token($s_token) {
+    $client = DB::select("call Get_client_token(?)",[$s_token]);
+    return $client[0];
+  }
+
   public static function registrar($request) {
     $error="0";
     $msg= "";

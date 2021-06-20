@@ -15,8 +15,7 @@ BEGIN
 END 
 //
 DELIMITER
-update clients set active='1' where id=1;
-select * from clients
+
 /*
  call Get_client_item(1)
  * 
@@ -303,6 +302,23 @@ END;
 //
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS Get_client_token;
+DELIMITER //
+create  PROCEDURE Get_client_token(IN s_token varchar(200))
+BEGIN
+	if 
+	  exists(
+			select 1
+		    from clients c
+		    WHERE c.token = s_token
+		   )
+    then
+    	select 0 as error,'' as msg ;
+    else
+    	select 1 error,'Error, Token de cliente no está asignado.' as msg;
+    end if;
+		   
 
-
-
+END;
+//
+DELIMITER ;

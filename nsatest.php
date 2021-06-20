@@ -1,8 +1,8 @@
 <html>
 	<head><title>NSA TEST</title></head>
 	<body>
-		<form action="http://protomarket.fintrade-acf.com/" method="post">
-		  <input type="hidden" id="token" name="token" value="1">
+		<form action="http://127.0.0.1:8000/information" method="post">
+		  <input type="hidden" id="token" name="token" value="145454">
 		  <table width="50%" cellpadding="10" cellspacing="10" border="0" align="center">
 				<tr>
 					<td>Name:</td>

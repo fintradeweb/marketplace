@@ -15,7 +15,12 @@ class InformationController extends Controller
   {
     try{
       if (empty($request->input('token'))){
-        throw new \Exception("Error, token is empty");
+        throw new \Exception("Error, token is empty.");
+        
+      }
+      $client = \App\Models\_client::valida_token($request->input('token'));
+      if($client->error == 1){
+        throw new \Exception($client->msg);
       }
       //$user_data = $request->input("nombre");
       $error = ""; 
