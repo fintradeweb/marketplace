@@ -25,7 +25,7 @@ class InformationController extends Controller
         throw new \Exception("Error, token is empty.");
         
       }
-      $client = \App\Models\_client::valida_token($request->input('token'));
+      $client = \App\Models\Client::valida_token($request->input('token'));
       if($client->error == 1){
         $call = new c_user();
         $call->email = "correo_prueba@market.com";
@@ -34,7 +34,7 @@ class InformationController extends Controller
         Mail::to("mfj_correo@yahoo.com")->send(new \App\Mail\MarketReceived($call));
         throw new \Exception($client->msg);
       }
-      $usuario = \App\Models\_client::existe_usuario($request->input('txt_email'));
+      $usuario = \App\Models\Client::existe_usuario($request->input('txt_email'));
       $band = 0;
       if($usuario->bussinesinformation>0){
           $band = 1;

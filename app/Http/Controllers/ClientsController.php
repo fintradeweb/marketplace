@@ -12,13 +12,16 @@ class ClientsController extends Controller
 {
     public function index()
     {
-        $clients = \App\Models\_client::todos();
-        var_dump($clients);
+        $clients = \App\Models\Client::todos();
+        return view('clients.index', [
+            'clients' => $clients
+        ]);
+        //var_dump($clients);
     
     }
     public function show($id)
     {
-        $client = \App\Models\_client::individual($id);
+        $client = \App\Models\Client::individual($id);
         var_dump($client);
     }
     public function create()
@@ -27,7 +30,7 @@ class ClientsController extends Controller
     }
     public function edit($id)
     {
-        $client = \App\Models\_client::individual($id);
+        $client = \App\Models\Client::individual($id);
              
         return View('clients.edit')
            ->with('client', $client);
@@ -36,7 +39,7 @@ class ClientsController extends Controller
     public function store(Request $request)
     {
        
-        $result = \App\Models\_client::registrar($request);
+        $result = \App\Models\Client::registrar($request);
         var_dump($result);
         
        
@@ -44,7 +47,7 @@ class ClientsController extends Controller
     public function update(Request $request, $codigo)
     {
        
-        $result = \App\Models\_client::actualizar($request, $codigo);
+        $result = \App\Models\Client::actualizar($request, $codigo);
         var_dump($result);
         
     }

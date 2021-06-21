@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 
 
-class _client extends Model 
+class Client extends Model 
 {
   protected $table = null;
   
