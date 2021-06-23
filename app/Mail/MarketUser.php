@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Http\Request;
 
 
-class MarketReceived extends Mailable
+class MarketUser extends Mailable
 {
     use Queueable, SerializesModels;
     public $usuarioCall;
