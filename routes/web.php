@@ -25,4 +25,12 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('clients', App\Http\Controllers\ClientsController::class);
+Route::group(['middleware' => ['role:SuperAdmin']], function () {
+  //rutas accesibles solo para clientes
+  Route::resource('clients', App\Http\Controllers\ClientsController::class);
+});
+
+Route::group(['middleware' => ['role:Admin']], function () {
+  //rutas accesibles solo para clientes
+  Route::resource('clients', App\Http\Controllers\ClientsController::class);
+});

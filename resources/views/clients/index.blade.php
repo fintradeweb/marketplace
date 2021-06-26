@@ -2,5 +2,11 @@
 
 @section('content')
   {{print_r($clients)}}
-  <clients-index-component></client-index-component> 
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <clients-index-component></client-index-component> 
+      </div>
+    </div>
+  </div>  
 @endsection
