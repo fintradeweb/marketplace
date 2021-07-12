@@ -19,7 +19,6 @@ class CreateBusinessinformationsTable extends Migration
             $table->string('company_name');
             $table->date('date_company');
             $table->string('type_business');
-            $table->string('description');
             $table->string('contact_name');
             $table->string('zip');
             $table->string('phone');

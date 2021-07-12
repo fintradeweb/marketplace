@@ -24,7 +24,7 @@ class Client extends Model
     return $client[0];
   }
   public static function existe_usuario($s_email) {
-    $usuario = DB::select("call Get_existe_user(?)",[$s_token]);
+    $usuario = DB::select("call Get_existe_user(?)",[$s_email]);
     return $usuario[0];
   }
 

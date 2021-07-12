@@ -53,7 +53,7 @@ create  PROCEDURE Insert_client(
 sp: BEGIN
 	   DECLARE token2 varchar(255);
 	   DECLARE substring3 varchar(200);
-	   Declare code varchar(5);
+	   Declare code varchar(10);
 	   Declare MSG text; 
 	   declare existe int;
 	   declare email2 varchar(255);
@@ -62,7 +62,7 @@ sp: BEGIN
 	   begin
 		   select '1' into _error;
 		   
-		   Get STACKED  diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get diagnostics condition 1 code=MYSQL_ERRNO, MSG=MESSAGE_TEXT; 
 		   select CONCAT('Inserts failed Client, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
    		  
@@ -154,7 +154,7 @@ sp: BEGIN
 	   begin
 		   select '1' into _error;
 		   
-		   Get STACKED  diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
 		   select CONCAT('Update failed Client, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
    		  
@@ -253,7 +253,7 @@ BEGIN
 	  exists(
 			select 1
 		    from users c
-		    WHERE c.emmail = s_mail
+		    WHERE c.email = s_mail
 		   )
     then
     	select 1 as existe, 0 as bussinesinformation;
@@ -261,6 +261,179 @@ BEGIN
     	select 0 as existe, 0 as bussinesinformation;
     end if;
 		   
+
+END;
+//
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS Insert_businessinformation;
+DELIMITER //
+create  PROCEDURE Insert_businessinformation(
+                                IN _name varchar(255),
+                                IN _email varchar(255),
+                                IN _clave varchar(255),
+                                IN _taxid varchar(255),
+                                IN _datecompany varchar(255),
+                                IN _contactname varchar(255),
+                                IN _zipcode varchar(255),
+                                IN _typebussiness varchar(255),
+                                IN _phone varchar(255),
+                                IN _president varchar(255),
+                                IN _country varchar(255),
+                                IN _state varchar(255),
+                                IN _city varchar(255),
+                                IN _address varchar(255),
+                                IN _website varchar(255),
+                                IN _secretaryname varchar(255),
+                                IN _dba varchar(255),
+                                IN _cellphone varchar(255),
+                                IN _token varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint 
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	   declare b_client_id bigint;
+	   declare b_usuario_id bigint;
+	   declare b_country_id bigint;
+	   declare b_state_id bigint;
+	   declare b_city_id bigint;
+	   declare d_datecompany date;
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   sp1:begin
+		   select 1 into _error;
+		   
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Inserts failed Business Information, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	      if STR_TO_DATE(_datecompany, '%d/%m/%Y') is  NULL then
+	      		select 1 into _error;
+		        select 'Error, el formato de la fecha no es válido. El formato es dd/MM/yyyy Ejm: 12/08/2021.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      select STR_TO_DATE(_datecompany,'%d/%m/%Y') into d_datecompany;
+	       
+	      
+		   
+		   if not exists(select 1 from clients c  WHERE c.token = _token) then
+		        select 1 into _error;
+		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+		   end if;
+		   
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  WHERE c.tabla='PAISES' AND c2.id = _country) then
+		   		select 1 into _error;
+		        select 'Error, Country no existe.' into _msg;
+		        select _error,_msg; 
+		        LEAVE sp2;
+		   end if;
+		   
+		   
+		  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  WHERE c.tabla='STATES' AND  c2.id = _state) then
+		        select 1 into _error;
+		        select 'Error, State no existe.' into _msg;
+		        select _error,_msg;   
+		        LEAVE sp2;
+		   end if;
+		  
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  WHERE c.tabla='CIUDADES' and c2.id = _city) then
+		        select 1 into _error;
+		        select 'Error, City no existe.' into _msg;
+		        select _error,_msg; 
+		        LEAVE sp2;
+		   end if;
+		   
+		   
+		   if exists(select 1 from users u  WHERE u.email = _email) then
+		     select id into b_usuario_id from users u2 where u2.email = _email;
+	         update users  set updated_at =now(),password =_clave, name = _name where id = b_usuario_id;
+	       else
+	          insert into users(name,email,password,created_at) values(_name,_email,_clave,now());
+		      select  LAST_INSERT_ID() into b_usuario_id;
+		   end if; 
+		  
+		  if b_usuario_id = 0 then
+		  		select 1 into _error;
+		        select 'Error, Código de Usuario no existe.' into _msg;
+		        select _error,_msg;   
+		        LEAVE sp2;
+		  end if;
+		 
+		  select c.id into b_client_id from clients c where c.token = _token;
+		   
+		  
+		   if exists(select 1 from businessinformations b 
+		             WHERE b.user_id = b_usuario_id AND
+		                   b.client_id = b_client_id) then
+		      	select 1 into _error;
+		        select 'Error, ya tenemos registrado con esta cuenta en la Sección Business Information.' into _msg;
+		        select _error,_msg; 
+		        LEAVE sp2;
+		   end if;
+		  
+		   insert into businessinformations
+		                (
+		                 created_at,
+		                 company_name,
+		                 date_company,
+		                 type_business,
+		                 contact_name,
+		                 zip,
+		                 phone,
+		                 president_name,
+		                 address,
+		                 ruc_tax,
+		                 website,
+		                 secretary_name,
+		                 dba,
+		                 cell_phone,
+		                 user_id,
+		                 client_id,
+		                 country_id,
+		                 state_id,
+		                 city_id)
+		       values(
+		               now(),
+		               _name,
+		               d_datecompany,
+		               _typebussiness,
+		               _contactname,
+		               _zipcode,
+		               _phone,
+		               _president,
+		               _address,
+		               _taxid,
+		               IFNULL(_website,''),
+		               IFNULL(_secretaryname,''),
+		               IFNULL(_dba,''),
+		               _cellphone,
+		               b_usuario_id,
+		               b_client_id,
+		               _country,
+		               _state,
+		               _city
+		            );
+		       
+		  
+		   select 0 into  _error;
+		
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+	    
+	
+ 	
 
 END;
 //
