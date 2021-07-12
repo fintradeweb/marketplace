@@ -36,85 +36,6 @@ END;
 //
 DELIMITER ;
 
-
-/*
- * 
- call sp_pruebas_conexion()
- 
- set profiling=1;
-EXPLAIN ANALYZE call sp_pruebas_conexion();
-
-explain  select * from login_log where id_login=203;
-explain  select * from login_log where id_usuario=203;
-show profiles;
- */
-
-DROP PROCEDURE IF EXISTS sp_pruebas_conexion;
-DELIMITER //
-create  PROCEDURE sp_pruebas_conexion()
-BEGIN
-	declare i1 integer;
-    set i1 = 0;
-   
-   
-    
-    
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select count(*) into i1  from dpcabtra;
-    select count(*) into i1  from dpmovimi LIMIT 10000;
-    select count(*) into i1  from potencial_client_history;
-   select count(*) into i1  from usuarios;
-   
-    select * from login_log;
-
-END;
-//
-DELIMITER ;
-
 /*
  
  call Insert_client('MIguel Flores','mFj1.desarrollo@gmail.com',@_msg5,@_error5)
@@ -315,7 +236,7 @@ BEGIN
     then
     	select 0 as error,'' as msg ;
     else
-    	select 1 error,'Error, Token de cliente no está asignado.' as msg;
+    	select 1 error,'Error, Token de cliente no estï¿½ asignado.' as msg;
     end if;
 		   
 

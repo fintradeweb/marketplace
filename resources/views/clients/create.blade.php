@@ -12,27 +12,17 @@
     </div>
 @endif
    
-<form action="{{ route('clients.store') }}" method="POST">
-    @csrf
-  
-     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="form-group">
-                <strong>Name:</strong>
-                <input type="text" name="name" class="form-control" placeholder="Name">
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="form-group">
-                <strong>Name:</strong>
-                <input type="text" name="email" class="form-control" placeholder="Email">
-            </div>
-        </div>
-        
-        <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
+<div class="container">
+  <div class="row justify-content-center">  
+    <div class="row col-md-10 p-4">
+      <div class="col-md-6"><h5>New Client</h5></div>
+      <div class="col-md-6" align="right">
+        <a href="/clients" class="btn btn-link">Return</a>
+      </div>
+    </div> 
+    <div class="col-md-10">
+      <clients-create-component></client-create-component> 
     </div>
-   
-</form>
+  </div>
+</div>  
 @endsection

@@ -11,24 +11,23 @@ class ClientsController extends Controller
     $this->middleware('auth');
   }
 
-    public function index()
-    {
-        $clients = \App\Models\Client::todos();
-        return view('clients.index', [
-            'clients' => $clients
-        ]);
-        //var_dump($clients);
-    
-    }
+  public function index(){
+    $clients = \App\Models\Client::todos();
+    return view('clients.index', [
+        'clients' => $clients
+    ]);
+  }
+
     public function show($id)
     {
         $client = \App\Models\Client::individual($id);
         var_dump($client);
     }
-    public function create()
-    {
-        return view('clients.create');
-    }
+
+  public function create(){
+    return view('clients.create');
+  }
+
     public function edit($id)
     {
         $client = \App\Models\Client::individual($id);
@@ -37,14 +36,13 @@ class ClientsController extends Controller
            ->with('client', $client);
        
     }
-    public function store(Request $request)
-    {
-       
-        $result = \App\Models\Client::registrar($request);
-        var_dump($result);
-        
-       
-    }
+
+  public function store(Request $request){
+    var_dump($request);
+    //$result = \App\Models\Client::registrar($request);
+    //var_dump($result);     
+  }
+
     public function update(Request $request, $codigo)
     {
        
