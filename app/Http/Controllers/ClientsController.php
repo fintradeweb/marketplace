@@ -40,7 +40,12 @@ class ClientsController extends Controller
       'name' => 'required|unique:clients|max:255',
       'email' => 'required|unique:clients|email',
     ]);
-    $result = \App\Models\Client::registrar($request);    
+    $result = \App\Models\Client::registrar($request);   
+    if ($result->_error == 0 && $result->_msg == "ok"){
+       return redirect('/clients')->with('status', 'The client was created succesfully!');
+    }else{
+      return redirect('/clients/create')->withErrors('There was an error creating the client!');  
+    }
   }
 
   public function update(Request $request, $codigo){       
@@ -48,6 +53,12 @@ class ClientsController extends Controller
       'name' => 'required|unique:clients,name,'.$codigo.'|max:255',
       'email' => 'required|unique:clients,email,'.$codigo.'|email',
     ]);    
-    $result = \App\Models\Client::actualizar($request, $codigo);    
+    $result = \App\Models\Client::actualizar($request, $codigo); 
+    if ($result->_error == 0 && $result->_msg == "ok"){
+      return redirect('/clients')->with('status', 'The client was edited succesfully!');
+    }
+    else{
+      return redirect('/clients/'.$codigo.'/edit')->withErrors('There was an error editing the client!');          
+    }  
   }
 }

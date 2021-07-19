@@ -1,6 +1,16 @@
 @extends('layouts.app')
-
 @section('content')
+
+@if (session('status'))
+ <div class="row justify-content-center">
+   <div class="col-md-8 col-lg-8 col-sm-12">
+     <div class="alert alert-success">
+      {{ session('status') }}
+     </div>
+   </div>
+ </div>    
+@endif
+
   <div class="container">
     <div class="row justify-content-center">
       <div class="row col-md-12 p-4">
