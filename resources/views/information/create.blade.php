@@ -18,11 +18,11 @@
 <div class="container"> 
   <div class="row justify-content-center">  
     <div class="row col-md-12 p-4 text-center">
-      <div class="col-md-12"><h5>User information</h5></div>
+      <div class="col-md-12"><h5>Business Information</h5></div>
       <div class="col-md-12">Please confirm your information, then click in Save button to continue</div>        
     </div>
     <div class="col-md-12 p-4 text-justify">
-      <form action="/business" method="POST" id="frm_createbusiness">
+      <form action="{{ route('information.create') }}" method="POST" id="frm_createinformation">
         @csrf  
         <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
@@ -35,6 +35,7 @@
             <div class="form-group">
               <strong>Email: <span class="text-danger">(*)</span></strong>
               <input type="text" name="email" id="email" class="form-control" value="{{ $txt_email }}" placeholder="">
+              <span class="font-italic text-info">Ex: example@marketplace.com</span>
             </div>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
@@ -60,7 +61,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>President Name: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="president" id="president" class="form-control" value="{{ $txt_president }}" placeholder="">
+              <input type="text" name="presidentname" id="presidentname" class="form-control" value="{{ $txt_presidentname }}" placeholder="">
             </div>
           </div>
         </div>        
@@ -68,7 +69,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Type Of Bussiness: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="typebussiness" id="typebussiness" class="form-control" value="{{ $txt_typebussiness }}" placeholder="">
+              <input type="text" name="typeofbusiness" id="typeofbusiness" class="form-control" value="{{ $txt_typeofbusiness }}" placeholder="">
             </div>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
@@ -113,14 +114,15 @@
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
-              <strong>Phone: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="phone" id="phone" class="form-control" value="{{ $txt_phone }}" placeholder="">
+              <strong>Cellphone:</strong>
+              <input type="text" name="cellphone" id="cellphone" class="form-control" value="{{ $txt_cellphone }}" placeholder="">
             </div>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Website:</strong>
               <input type="text" name="website" id="website" class="form-control" value="{{ $txt_website }}" placeholder="">
+              <span class="font-italic text-info">Ex: http://www.marketplace.com</span>
             </div>
           </div>
         </div>                        
@@ -130,17 +132,11 @@
               <strong>Dba:</strong>
               <input type="text" name="dba" id="dba" class="form-control" value="{{ $txt_dba }}" placeholder="">
             </div>
-          </div>
-          <div class="col-xs-12 col-sm-4 col-md-4">
-            <div class="form-group">
-              <strong>Cellphone:</strong>
-              <input type="text" name="cellphone" id="cellphone" class="form-control" value="{{ $txt_cellphone }}" placeholder="">
-            </div>
-          </div>
+          </div>         
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Secretary Name:</strong>
-              <input type="text" name="secretary" id="secretary" class="form-control" value="{{ $txt_secretary }}" placeholder="">
+              <input type="text" name="secretaryname" id="secretaryname" class="form-control" value="{{ $txt_secretaryname }}" placeholder="">
             </div>
           </div> 
         </div>

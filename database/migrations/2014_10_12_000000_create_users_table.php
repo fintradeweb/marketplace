@@ -21,6 +21,22 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->string("taxid")->unique()->nullable();
+            $table->string("datecompany")->nullable();
+            $table->string("contactname")->nullable();
+            $table->string("presidentname")->nullable();
+            $table->string("typeofbusiness")->nullable();
+            $table->string("phone")->nullable();
+            $table->string("country")->nullable();
+            $table->string("city")->nullable();
+            $table->string("state")->nullable();
+            $table->string("zipcode")->nullable();
+            $table->string("address")->nullable();
+            $table->string("cellphone")->nullable();
+            $table->string("website")->nullable();
+            $table->string("dba")->nullable();
+            $table->string("secretaryname")->nullable();
+            $table->integer("status")->default(1);
         });
     }
 
