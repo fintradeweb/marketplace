@@ -21,7 +21,8 @@ class AdminUserSeeder extends Seeder
             'email' => 'ffueltala@fintradeweb.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
-            'remember_token' => Str::random(10)
+            'remember_token' => Str::random(10),
+            'status' => 1            
         ]);
 
         $user2 = User::create([
@@ -29,7 +30,8 @@ class AdminUserSeeder extends Seeder
             'email' => 'mflores@fintradeweb.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
-            'remember_token' => Str::random(10)
+            'remember_token' => Str::random(10),
+            'status' => 1
         ]);
     
         $role = Role::create(['name' => 'Admin']);

@@ -21,7 +21,8 @@ class SuperAdminUserSeeder extends Seeder
             'email' => 'fintradeweb@gmail.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
-            'remember_token' => Str::random(10)
+            'remember_token' => Str::random(10),
+            'status' => 1
         ]);
     
         $role = Role::create(['name' => 'SuperAdmin']);
