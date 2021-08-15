@@ -11,10 +11,15 @@ window.addEventListener('load', function() {
     if ($("#percentage").val() == ""){
       msg = "The percentage is required"; 
     }
+    if ($("#percentage").val() < 25){
+      msg = "The percentage must be greater than 25%"; 
+    }
+    if ($("#percentage").val() > 100){
+      msg = "The percentage must be less than 100%"; 
+    }
     if ($("#position").val() == ""){
       msg = "The position is required"; 
     }
-
     if (msg != ""){
       Swal.fire({
         icon: 'error',
