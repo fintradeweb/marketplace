@@ -27,21 +27,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'taxid',
-        'datecompany',
-        'contactname',
-        'presidentname',
-        'typeofbusiness',
-        'phone',
-        'country',
-        'city',
-        'state',
-        'zipcode',
-        'address',
-        'cellphone',
-        'website',
-        'dba',
-        'secretaryname',
         'status'
     ];
 

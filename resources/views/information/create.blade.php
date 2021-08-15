@@ -29,6 +29,7 @@
             <div class="form-group">
               <strong>Name: <span class="text-danger">(*)</span></strong>
               <input type="text" name="name" id="name" class="form-control" value="{{ $nombre }}" placeholder="">
+              <input type="hidden" name="client_id" id="client_id" value="{{ $client->id }}">
             </div>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
@@ -41,7 +42,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Tax Id: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="taxid" id="taxid" class="form-control" value="{{ $txt_taxid }}" placeholder="">
+              <input type="text" name="ruc_tax" id="ruc_tax" class="form-control" value="{{ $txt_taxid }}" placeholder="">
             </div>
           </div>
         </div>

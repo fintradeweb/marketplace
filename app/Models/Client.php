@@ -7,7 +7,7 @@ use DB;
 
 class Client extends Model 
 {
-  protected $table = null;
+  protected $table = 'clients';
   
   public static function todos() {
      $clients = DB::select("call get_clients_all();");
@@ -23,6 +23,7 @@ class Client extends Model
     $client = DB::select("call Get_client_token(?)",[$s_token]);
     return $client[0];
   }
+  
   public static function existe_usuario($s_email) {
     $usuario = DB::select("call Get_existe_user(?)",[$s_email]);
     return $usuario[0];
