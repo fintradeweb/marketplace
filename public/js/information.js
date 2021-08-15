@@ -139,4 +139,5 @@ window.addEventListener('load', function() {
       $("#frm_editinformation").submit();
     }    
   });
+
 })   
