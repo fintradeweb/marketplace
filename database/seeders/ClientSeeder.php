@@ -20,42 +20,48 @@ class ClientSeeder extends Seeder
             'name' => 'Nsa 1',
             'email' => 'correo1@gmail.com',            
             'token' => Str::random(10),
-            'active' => '0',
+            'created_at' => date("Y-m-d H:i:s"),
+            'active' => '1',
         ]);
 
         DB::table('clients')->insert([
           'name' => 'Nsa 2',
           'email' => 'correo2@gmail.com',            
           'token' => Str::random(10),
+          'created_at' => date("Y-m-d H:i:s"),
           'active' => '0',
-      ]);
+        ]);
 
         DB::table('clients')->insert([
           'name' => 'Nsa 3',
           'email' => 'correo3@gmail.com',            
           'token' => Str::random(10),
+          'created_at' => date("Y-m-d H:i:s"),
           'active' => '0',
-      ]);
+        ]);
 
-      DB::table('clients')->insert([
-        'name' => 'Nsa 4',
-        'email' => 'correo4@gmail.com',            
-        'token' => Str::random(10),
-        'active' => '0',
-    ]);
+        DB::table('clients')->insert([
+          'name' => 'Nsa 4',
+          'email' => 'correo4@gmail.com',            
+          'token' => Str::random(10),
+          'created_at' => date("Y-m-d H:i:s"),
+          'active' => '0',
+        ]);
 
-      DB::table('clients')->insert([
-        'name' => 'Nsa 5',
-        'email' => 'correo5@gmail.com',            
-        'token' => Str::random(10),
-        'active' => '0',
-    ]);
+        DB::table('clients')->insert([
+          'name' => 'Nsa 5',
+          'email' => 'correo5@gmail.com',            
+          'token' => Str::random(10),
+          'created_at' => date("Y-m-d H:i:s"),
+          'active' => '0',
+        ]);
 
-      DB::table('clients')->insert([
-        'name' => 'Nsa 5',
-        'email' => 'correo6@gmail.com',            
-        'token' => Str::random(10),
-        'active' => '0',
-      ]);
+        DB::table('clients')->insert([
+          'name' => 'Nsa 6',
+          'email' => 'correo6@gmail.com',            
+          'token' => Str::random(10),
+          'created_at' => date("Y-m-d H:i:s"),
+          'active' => '0',
+        ]);
     }
 }

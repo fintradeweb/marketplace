@@ -20,7 +20,7 @@ window.addEventListener('load', function() {
     if($("#email").val().indexOf('@', 0) == -1 || $("#email").val().indexOf('.', 0) == -1) {
       msg = "The email address entered is not correct";      
     }
-    if ($("#taxid").val() == ""){
+    if ($("#ruc_tax").val() == ""){
       msg = "The tax id is required"; 
     }
     if ($("#datecompany").val() == ""){

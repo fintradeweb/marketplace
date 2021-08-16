@@ -24,11 +24,11 @@ class CreateBusinessinformationsTable extends Migration
             $table->string('phone');
             $table->string('president_name');
             $table->string('address');
-            $table->string('ruc_tax');
-            $table->string('website');
-            $table->string('secretary_name');
-            $table->string('dba');
-            $table->string('cell_phone');
+            $table->string('ruc_tax')->unique();
+            $table->string('website')->nullable();
+            $table->string('secretary_name')->nullable();
+            $table->string('dba')->nullable();
+            $table->string('cell_phone')->nullable();
 
             
             $table->unsignedBigInteger('user_id');

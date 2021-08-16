@@ -55,7 +55,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>% Ownership: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="percentage" id="percentage" class="form-control" value="" placeholder="Percentage">
+                <input type="text" name="percentage" id="percentage" class="form-control" value="" placeholder="%">
               </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -67,7 +67,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>Birthdate: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="birthdate" id="birthdate" class="form-control" value="" placeholder="Birthdate">
+                <input type="text" name="birthdate" id="birthdate" class="form-control" value="" placeholder="YYYY-MM-DD">
               </div>
             </div>          
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">

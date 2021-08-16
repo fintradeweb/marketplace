@@ -1,17 +1,13 @@
 <?php
-
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use DB;
 
+class Businessinformation extends Model {
 
-class Businessinformation extends Model 
-{
-  protected $table = null;
-  
-  
+  protected $table = 'businessinformations';
   
   public static function registrar($request) {
     $error=0;
@@ -66,6 +62,7 @@ class Businessinformation extends Model
                 ]);
       return $result[0];
   }
+
   public static function actualizar($request,$codigo){
       $error="0";
       $msg= "";
@@ -84,6 +81,6 @@ class Businessinformation extends Model
                       $msg
                   ]);
       return $result[0];
-    }
+  }
 
 }
