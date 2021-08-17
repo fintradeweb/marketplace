@@ -290,7 +290,8 @@ create  PROCEDURE Insert_businessinformation(
                                 IN _cellphone varchar(255),
                                 IN _token varchar(255),
                                 OUT _msg varchar(255),
-                                OUT _error tinyint 
+                                OUT _error tinyint ,
+                                OUT _id bigint
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
@@ -302,58 +303,101 @@ sp:BEGIN
 	   declare b_city_id bigint;
 	   declare d_datecompany date;
 	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   select 0 into _id;
 	   sp1:begin
 		   select 1 into _error;
 		   
 		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
 		   select CONCAT('Inserts failed Business Information, error = ',code,', message = ',MSG) into _msg;
-		   select _error,_msg;
+		   select _error,_msg,_id;
 		   LEAVE sp1;
    		  
        end;
       
       sp2:begin 
-	      if STR_TO_DATE(_datecompany, '%d/%m/%Y') is  NULL then
+	      if STR_TO_DATE(_datecompany, '%Y/%m/%d') is  NULL then
 	      		select 1 into _error;
-		        select 'Error, el formato de la fecha no es válido. El formato es dd/MM/yyyy Ejm: 12/08/2021.' into _msg;
-		        select _error,_msg;
+		        select 'Error, el formato de la fecha no es válido. El formato es yyyy/MM/dd Ejm: 2021/08/21.' into _msg;
+		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
 	     
-	      select STR_TO_DATE(_datecompany,'%d/%m/%Y') into d_datecompany;
+	      select STR_TO_DATE(_datecompany,'%Y/%m/%d') into d_datecompany;
 	       
 	      
 		   
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
 		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
-		        select _error,_msg;
+		        select _error,_msg,_id;
 		        LEAVE sp2;
 		   end if;
-		   
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  WHERE c.tabla='PAISES' AND c2.id = _country) then
+		   /*Paises*/
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
+		 
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado) 
+		          values((select id from catalogocab where tabla='PAISES'), _country,_country,1);
+		      
+		   end if;
+		  
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
 		   		select 1 into _error;
 		        select 'Error, Country no existe.' into _msg;
-		        select _error,_msg; 
+		        select _error,_msg,_id; 
 		        LEAVE sp2;
-		   end if;
-		   
-		   
+		  end if;
 		  
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  WHERE c.tabla='STATES' AND  c2.id = _state) then
-		        select 1 into _error;
+		   select c2.id into b_country_id
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='PAISES' AND c2.valorstring = _country;
+		            
+		   
+		   /*States*/
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = _country) then
+		 
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+		          values((select id from catalogocab where tabla='STATES'), _state,_state,1,_country);
+		      
+		   end if;
+		  
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
+		   		select 1 into _error;
 		        select 'Error, State no existe.' into _msg;
-		        select _error,_msg;   
+		        select _error,_msg,_id; 
 		        LEAVE sp2;
+		  end if;
+		  
+		  select c2.id into b_state_id
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id;
+		  
+		  /*Ciudades*/
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = _state) then
+		 
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+		          values((select id from catalogocab where tabla='CIUDADES'), _city,_city,1,b_state_id);
+		      
 		   end if;
 		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  WHERE c.tabla='CIUDADES' and c2.id = _city) then
-		        select 1 into _error;
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
+		   		select 1 into _error;
 		        select 'Error, City no existe.' into _msg;
-		        select _error,_msg; 
+		        select _error,_msg,_id;
 		        LEAVE sp2;
-		   end if;
+		  end if;
+		  
+		  select c2.id into b_city_id
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id;
 		   
+		   
+		
 		   
 		   if exists(select 1 from users u  WHERE u.email = _email) then
 		     select id into b_usuario_id from users u2 where u2.email = _email;
@@ -366,7 +410,7 @@ sp:BEGIN
 		  if b_usuario_id = 0 then
 		  		select 1 into _error;
 		        select 'Error, Código de Usuario no existe.' into _msg;
-		        select _error,_msg;   
+		        select _error,_msg,_id;   
 		        LEAVE sp2;
 		  end if;
 		 
@@ -378,7 +422,7 @@ sp:BEGIN
 		                   b.client_id = b_client_id) then
 		      	select 1 into _error;
 		        select 'Error, ya tenemos registrado con esta cuenta en la Sección Business Information.' into _msg;
-		        select _error,_msg; 
+		        select _error,_msg,_id; 
 		        LEAVE sp2;
 		   end if;
 		  
@@ -420,16 +464,19 @@ sp:BEGIN
 		               _cellphone,
 		               b_usuario_id,
 		               b_client_id,
-		               _country,
-		               _state,
-		               _city
+		               b_country_id,
+		               b_state_id,
+		               b_city_id
 		            );
+		   
+		   select  LAST_INSERT_ID() into _id;
 		       
 		  
 		   select 0 into  _error;
+		   
 		
 		   select 'ok' into _msg;
-		   select _error,_msg;
+		   select _error,_msg, _id;
 		end;
 	    
 	

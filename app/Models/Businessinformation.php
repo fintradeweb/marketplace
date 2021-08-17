@@ -8,35 +8,14 @@ use DB;
 class Businessinformation extends Model {
 
   protected $table = 'businessinformations';
-  
+
   public static function registrar($request) {
     $error=0;
     $msg= "";
+    $id = 0;
     $clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
-    /*
-                                IN _name varchar(255),
-                                IN _email varchar(255),
-                                IN _clave varchar(255),
-                                IN _taxid varchar(255),
-                                IN _datecompany varchar(255),
-                                IN _contactname varchar(255),
-                                IN _zipcode varchar(255),
-                                IN _typebussiness varchar(255),
-                                IN _phone varchar(255),
-                                IN _president varchar(255),
-                                IN _country varchar(255),
-                                IN _state varchar(255),
-                                IN _city varchar(255),
-                                IN _address varchar(255),
-                                IN _website varchar(255),
-                                IN _secretaryname varchar(255),
-                                IN _dba varchar(255),
-                                IN _cellphone varchar(255),
-                                IN _token varchar(255),
-                                OUT _msg varchar(255),
-                                OUT _error tinyint 
-    */
-    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+
+    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('name'),
                     $request->input('txt_email'),
@@ -58,7 +37,8 @@ class Businessinformation extends Model {
                     $request->input('txt_cellphone'),
                     $request->input('token'),
                     $error,
-                    $msg
+                    $msg,
+                    $id
                 ]);
       return $result[0];
   }
@@ -70,7 +50,7 @@ class Businessinformation extends Model {
       if(!empty($request->input('active'))){
           $active = 1;
       }
-      
+
       $result = DB::select('call Update_businessinformation(?,?,?,?,?,?)',
                   [
                       $codigo,
