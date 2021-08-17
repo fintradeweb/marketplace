@@ -266,6 +266,34 @@ END;
 //
 DELIMITER ;
 
+/*
+
+SET @name = 'a';
+SET @email = 'a@aaa.com';
+SET @clave = '$2y$10$YSjPChBAf6yLym4aKhveQeYTxsbCuPuNS9nHu5aGYKcsSrkDHM3sy';
+SET @taxid = 'a';
+SET @datecompany = '1982-06-28';
+SET @contactname = 'a';
+SET @zipcode = 'a';
+SET @typebusiness = 'a';
+SET @phone = 'a';
+SET @president = 'a';
+SET @country = 'a';
+SET @state = 'a';
+SET @city = 'a';
+SET @address = 'a';
+SET @website = 'http://www.aa.com';
+SET @secretary = 'a';
+SET @dba = 'a';
+SET @cellphone = 'a';
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @msg = '';
+SET @error = '';
+SET @id = 0;
+CALL Insert_businessinformation(@name,@email,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@msg,@error,@id);
+SELECT @msg,@error,@id;
+  
+ */
 
 DROP PROCEDURE IF EXISTS Insert_businessinformation;
 DELIMITER //
@@ -303,10 +331,10 @@ sp:BEGIN
 	   declare b_city_id bigint;
 	   declare d_datecompany date;
 	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   select 0 into _id;
+	   
 	   sp1:begin
 		   select 1 into _error;
-		   
+		   select 0 into _id;
 		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
 		   select CONCAT('Inserts failed Business Information, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
@@ -315,14 +343,15 @@ sp:BEGIN
        end;
       
       sp2:begin 
-	      if STR_TO_DATE(_datecompany, '%Y/%m/%d') is  NULL then
+	      select 0 into _id;
+	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
-		        select 'Error, el formato de la fecha no es válido. El formato es yyyy/MM/dd Ejm: 2021/08/21.' into _msg;
+		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
 	     
-	      select STR_TO_DATE(_datecompany,'%Y/%m/%d') into d_datecompany;
+	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
 	       
 	      
 		   
@@ -333,6 +362,27 @@ sp:BEGIN
 		        LEAVE sp2;
 		   end if;
 		   /*Paises*/
+		   if trim(ifnull(_country,''))='' then
+		        select 1 into _error;
+		        select 'Error, el Country es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		  if trim(ifnull(_state,''))='' then
+		        select 1 into _error;
+		        select 'Error, el State es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		  if trim(ifnull(_city,''))='' then
+		        select 1 into _error;
+		        select 'Error, el City es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		   select trim(upper(_country)) into _country;
+		   select trim(upper(_state)) into _state;
+		   select trim(upper(_city)) into _city;
 		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
 		 
@@ -359,7 +409,7 @@ sp:BEGIN
 		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = _country) then
 		 
 		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
-		          values((select id from catalogocab where tabla='STATES'), _state,_state,1,_country);
+		          values((select id from catalogocab where tabla='STATES'), _state,_state,1,b_country_id);
 		      
 		   end if;
 		  
@@ -477,6 +527,237 @@ sp:BEGIN
 		
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
+		end;
+	    
+	
+ 	
+
+END;
+//
+DELIMITER ;
+
+/*
+set @id = 1;
+SET @name = 'a11';
+SET @email = 'a11@aaa.com';
+SET @taxid = 'a';
+SET @datecompany = '1982-06-28';
+SET @contactname = 'a';
+SET @zipcode = 'a';
+SET @typebusiness = 'a';
+SET @phone = 'a';
+SET @president = 'a';
+SET @country = 'a';
+SET @state = 'a';
+SET @city = 'a';
+SET @address = 'a';
+SET @website = 'http://www.aa.com';
+SET @secretary = 'a';
+SET @dba = 'a';
+SET @cellphone = 'a';
+SET @msg = '';
+SET @error = '';
+CALL Update_businessinformation(@id,@name,@email,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@msg,@error);
+SELECT @msg,@error;
+
+*/
+
+DROP PROCEDURE IF EXISTS Update_businessinformation;
+DELIMITER //
+create  PROCEDURE Update_businessinformation(
+								IN _id_bi bigint,
+                                IN _name varchar(255),
+                                IN _email varchar(255),
+                                IN _taxid varchar(255),
+                                IN _datecompany varchar(255),
+                                IN _contactname varchar(255),
+                                IN _zipcode varchar(255),
+                                IN _typebussiness varchar(255),
+                                IN _phone varchar(255),
+                                IN _president varchar(255),
+                                IN _country varchar(255),
+                                IN _state varchar(255),
+                                IN _city varchar(255),
+                                IN _address varchar(255),
+                                IN _website varchar(255),
+                                IN _secretaryname varchar(255),
+                                IN _dba varchar(255),
+                                IN _cellphone varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	 
+	   declare b_usuario_id bigint;
+	   declare b_country_id bigint;
+	   declare b_state_id bigint;
+	   declare b_city_id bigint;
+	   declare d_datecompany date;
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Updates failed Business Information, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	      if not exists(select 1 from businessinformations c WHERE c.id = _id_bi) then
+		   		select 1 into _error;
+		        select 'Error, businessinformations no existe.' into _msg;
+		        select _error,_msg; 
+		        LEAVE sp2;
+		  end if;
+		 if trim(ifnull(_email,''))='' then
+		        select 1 into _error;
+		        select 'Error, el Country es obligatorio, error en Token.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+		  end if;
+		 select trim(upper(_email)) into _email;
+		  select c.user_id into b_usuario_id from  businessinformations c where c.id = _id_bi;
+		  if b_usuario_id = 0 then
+		  		select 1 into _error;
+		        select 'Error, Código de Usuario no existe.' into _msg;
+		        select _error,_msg;   
+		        LEAVE sp2;
+		  else
+			   update users set updated_at =now(),email = _email, name = _name where id = b_usuario_id;
+		  end if;
+	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
+	      		select 1 into _error;
+		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
+	       
+	      
+		   
+		  
+		   /*Paises*/
+		  if trim(ifnull(_country,''))='' then
+		        select 1 into _error;
+		        select 'Error, el Country es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+		   end if;
+		  if trim(ifnull(_state,''))='' then
+		        select 1 into _error;
+		        select 'Error, el State es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+		   end if;
+		  if trim(ifnull(_city,''))='' then
+		        select 1 into _error;
+		        select 'Error, el City es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+		  end if;
+		  select trim(upper(_country)) into _country;
+		  select trim(upper(_state)) into _state;
+		  select trim(upper(_city)) into _city;
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
+		 
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado) 
+		          values((select id from catalogocab where tabla='PAISES'), _country,_country,1);
+		      
+		   end if;
+		  
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
+		   		select 1 into _error;
+		        select 'Error, Country no existe.' into _msg;
+		        select _error,_msg; 
+		        LEAVE sp2;
+		  end if;
+		  
+		   select c2.id into b_country_id
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='PAISES' AND c2.valorstring = _country;
+		            
+		   
+		   /*States*/
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
+		 
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+		          values((select id from catalogocab where tabla='STATES'), _state,_state,1,b_country_id);
+		      
+		   end if;
+		  
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
+		   		select 1 into _error;
+		        select 'Error, State no existe.' into _msg;
+		        select _error,_msg; 
+		        LEAVE sp2;
+		  end if;
+		  
+		  select c2.id into b_state_id
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id;
+		  
+		  /*Ciudades*/
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
+		 
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+		          values((select id from catalogocab where tabla='CIUDADES'), _city,_city,1,b_state_id);
+		      
+		   end if;
+		  
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
+		   		select 1 into _error;
+		        select 'Error, City no existe.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+		  end if;
+		  
+		  select c2.id into b_city_id
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id;
+		   
+		
+		  
+		   update businessinformations
+		              set 
+		                 updated_at  = now(),
+		                 company_name  = _name,
+		                 date_company  = d_datecompany,
+		                 type_business = _typebussiness,
+		                 contact_name  = _contactname,
+		                 zip           = _zipcode,
+		                 phone         = _phone,
+		                 president_name = _president,
+		                 address = _address,
+		                 ruc_tax = _taxid,
+		                 website = IFNULL(_website,''),
+		                 secretary_name = IFNULL(_secretaryname,''),
+		                 dba = IFNULL(_dba,''),
+		                 cell_phone = _cellphone,
+		                 country_id = b_country_id,
+		                 state_id = b_state_id,
+		                 city_id = b_city_id
+		  where id = _id_bi;
+		   
+		  
+		       
+		  
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg;
 		end;
 	    
 	
