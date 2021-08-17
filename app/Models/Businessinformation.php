@@ -49,7 +49,7 @@ class Businessinformation extends Model {
 
      // $clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
 
-      $result = DB::select('call Update_businessinformation(?,?,?,?,?,?)',
+      $result = DB::select('call Update_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,
                         $request->input('name'),
