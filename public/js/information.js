@@ -9,7 +9,7 @@ window.addEventListener('load', function() {
     }
   }
 
-  $("#btn_save").click(function(){ 
+  /*$("#btn_save").click(function(){ 
     var msg = "";
     if ($("#name").val() == ""){
       msg = "The name is required"; 
@@ -138,6 +138,6 @@ window.addEventListener('load', function() {
     else{
       $("#frm_editinformation").submit();
     }    
-  });
+  });*/
 
 })   

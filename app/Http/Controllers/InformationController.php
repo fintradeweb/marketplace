@@ -76,19 +76,19 @@ class InformationController extends Controller{
         'email' => 'required|unique:users|email',
         'ruc_tax' => 'required|alpha_num|unique:businessinformations|max:255',
         'date_company' => 'required|date_format:Y-m-d',
-        'contact_name' => 'required|alpha|max:255',
-        'president_name' => 'required|alpha|max:255',
-        'type_business' => 'required|alpha_num|max:255',
-        'phone' => 'required|alpha_num|max:255',
-        'country_id' => 'required|alpha|max:255',
-        'city_id' => 'required|alpha|max:255',
-        'state_id' => 'required|alpha|max:255',
-        'zip' => 'required|alpha_num|max:255',
+        'contact_name' => 'required|max:255',
+        'president_name' => 'required|max:255',
+        'type_business' => 'required|max:255',
+        'phone' => 'required|max:255',
+        'country_id' => 'required|max:255',
+        'city_id' => 'required|max:255',
+        'state_id' => 'required|max:255',
+        'zip' => 'required|max:255',
         'address' => 'required|max:255',
-        'cell_phone' => 'nullable|alpha_num|max:255',
-        'website' => 'nullable|alpha_dash|max:255',
-        'dba' => 'nullable|alpha_num|max:255',        
-        'secretary_name' => 'nullable|alpha|max:255',
+        'cell_phone' => 'nullable|max:255',
+        'website' => 'nullable|max:255',
+        'dba' => 'nullable|max:255',        
+        'secretary_name' => 'nullable|max:255',
       ]);
             
       if ($validator->fails()) {
@@ -206,28 +206,30 @@ class InformationController extends Controller{
         'email' => 'required|unique:users,email,'.$request->input('user_id').'|email',
         'ruc_tax' => 'required|alpha_num|unique:businessinformations,ruc_tax,'.$request->input('business_id').'|max:255',
         'date_company' => 'required|date_format:Y-m-d',
-        'contact_name' => 'required|alpha|max:255',
-        'president_name' => 'required|alpha|max:255',
-        'type_business' => 'required|alpha_num|max:255',
-        'phone' => 'required|alpha_num|max:255',
+        'contact_name' => 'required||max:255',
+        'president_name' => 'required|max:255',
+        'type_business' => 'required|max:255',
+        'phone' => 'required|max:255',
         'country_id' => 'required|alpha|max:255',
         'city_id' => 'required|alpha|max:255',
         'state_id' => 'required|alpha|max:255',
-        'zip' => 'required|alpha_num|max:255',
+        'zip' => 'required|max:255',
         'address' => 'required|max:255',
-        'cell_phone' => 'nullable|alpha_num|max:255',
-        'website' => 'nullable|alpha_dash|max:255',
-        'dba' => 'nullable|alpha_num|max:255',        
-        'secretary_name' => 'nullable|alpha|max:255',
+        'cell_phone' => 'nullable|max:255',
+        'website' => 'nullable|max:255',
+        'dba' => 'nullable|max:255',        
+        'secretary_name' => 'nullable|max:255'
       ]);
       
       if ($validator->fails()) {        
+        var_dump($validator);  
         return view('information.edit')->with('user',$user)
                                        ->with('business',$business)      
                                        ->with('token',$request->input('token'))
                                        ->withErrors($validator);
       }
-      else{      
+      else{    
+        var_dump("paso 0");  
         $result = \App\Models\Businessinformation::actualizar($request,$request->input('business_id'));
         if ($result->_error == 0 && $result->_msg == "ok"){                                          
           return view('ownership.index');  
