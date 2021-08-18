@@ -1957,3 +1957,73 @@ END;
 DELIMITER ;
 
 
+
+/*
+ call Get_countries;
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_countries;
+DELIMITER //
+create  PROCEDURE Get_countries()
+BEGIN
+   
+   select 
+   c3.id,
+   c3.descripcion description
+	
+    from catalogocab c 
+    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+    WHERE c.tabla ='PAISES'
+   order by 2;
+
+END;
+//
+DELIMITER ;
+
+/*
+ SET @country_id = 2;
+ call Get_states(@country_id);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_states;
+DELIMITER //
+create  PROCEDURE Get_states(IN _country_id bigint)
+BEGIN
+   
+   select 
+   c3.id,
+   c3.descripcion description
+	
+    from catalogocab c 
+    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+    WHERE c.tabla ='STATES' AND  
+          c3.valor_bigint  = _country_id
+   order by 2;
+
+END;
+//
+DELIMITER ;
+
+/*
+ SET @state_id = 5;
+ call Get_cities(@state_id);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_cities;
+DELIMITER //
+create  PROCEDURE Get_cities(IN _state_id bigint)
+BEGIN
+   
+   select 
+   c3.id,
+   c3.descripcion description
+	
+    from catalogocab c 
+    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+    WHERE c.tabla ='CIUDADES' AND  
+          c3.valor_bigint  = _state_id
+   order by 2;
+
+END;
+//
+DELIMITER ;
