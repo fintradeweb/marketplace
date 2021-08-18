@@ -13,6 +13,11 @@ class Financial extends Model {
     $managments = DB::select("call Get_financial(?)",[$id]);
     return $managments;
   }
+  public static function consulta_todos($email,$token) {
+    $result = DB::select("call Get_financial_client_user(?,?)",[$email,$token]);
+    return $result;
+  }
+
 
   public static function registrar($request) {
     $error=0;

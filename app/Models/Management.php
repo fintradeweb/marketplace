@@ -13,6 +13,10 @@ class Management extends Model {
     $managments = DB::select("call Get_managments(?)",[$id]);
     return $managments;
   }
+  public static function consulta_todos($email,$token) {
+    $result = DB::select("call Get_managments_client_user(?,?)",[$email,$token]);
+    return $result;
+  }
 
   public static function registrar($request) {
     $error=0;

@@ -267,6 +267,108 @@ END;
 DELIMITER ;
 
 /*
+ set @item = 1;
+ call Get_businessinformation(@item);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_businessinformation;
+DELIMITER //
+create  PROCEDURE Get_businessinformation(IN item bigint)
+BEGIN
+	select m.id,
+	       m.company_name,
+	       DATE_FORMAT(m.date_company , '%Y-%m-%d %T.%f') as date_company,
+	       m.type_business,
+	       m.contact_name,
+	       m.zip,
+	       m.president_name,
+	       m.address,
+	       m.ruc_tax,
+	       m.website,
+	       m.secretary_name,
+	       m.dba,
+           m.cell_phone,
+           m.country_id,
+           c.descripcion country,
+           m.city_id,
+           ci.descripcion city,
+           m.state_id,
+           s.descripcion state,
+           m.user_id,
+           m.client_id,
+           u.email,
+           c2.token,	       
+	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       case u.status when 1 then 'true' else 'false' end  status_user,
+           case c2.active when 1 then 'true' else 'false' end status_client
+	
+    from businessinformations m 
+    inner join users u on u.id =m.user_id 
+    inner JOIN clients c2 on c2.id  = m.client_id 
+    left outer join catalogodet c on c.id = m.country_id 
+    left outer join catalogodet s on s.id = m.state_id 
+    left outer join catalogodet ci on ci.id = m.city_id 
+    WHERE m.id = item;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+SET @email = 'A11@AAA.COM';
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+          
+call Get_businessinformation_client_user(@email ,@token);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_businessinformation_client_user;
+DELIMITER //
+create  PROCEDURE Get_businessinformation_client_user(IN _mail varchar(255), in _token varchar(255))
+BEGIN
+	select m.id,
+	       m.company_name,
+	       DATE_FORMAT(m.date_company , '%Y-%m-%d %T.%f') as date_company,
+	       m.type_business,
+	       m.contact_name,
+	       m.zip,
+	       m.president_name,
+	       m.address,
+	       m.ruc_tax,
+	       m.website,
+	       m.secretary_name,
+	       m.dba,
+           m.cell_phone,
+           m.country_id,
+           c.descripcion country,
+           m.city_id,
+           ci.descripcion city,
+           m.state_id,
+           s.descripcion state,
+           case u.status when 1 then 'true' else 'false' end  status_user,
+           case c2.active when 1 then 'true' else 'false' end status_client,
+           DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from businessinformations m 
+    inner join users u on u.id  = m.user_id 
+    inner join clients c2 on c2.id  = m.client_id 
+    left outer join catalogodet c on c.id = m.country_id 
+    left outer join catalogodet s on s.id = m.state_id 
+    left outer join catalogodet ci on ci.id = m.city_id 
+    WHERE 
+          u.email = _mail AND 
+          c2.token = _token 
+          ;
+
+END;
+//
+DELIMITER ;
+
+/*
+
+/*
 
 SET @name = 'a';
 SET @email = 'a4578@aaa.com';
@@ -789,6 +891,30 @@ DELIMITER ;
 
 
 /*
+SET @email = 'a4578@aaa.com';
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+ call Get_managments_client_user(@email,@token);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_managments_client_user;
+DELIMITER //
+create  PROCEDURE Get_managments_client_user(IN _mail varchar(255), in _token varchar(255))
+BEGIN
+	select m.id,m.name, m.idno,m.percentage,m.position,DATE_FORMAT(m.birthdate, '%Y-%m-%d') as birthdate,
+	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from managements m 
+    inner join users u on u.id  = m.user_id 
+    inner join clients c2 on c2.id  = m.client_id 
+    WHERE u.email = _mail AND 
+          c2.token = _token ;
+
+END;
+//
+DELIMITER ;
+
+/*
 
 SET @name = 'a';
 SET @email = 'a4578@aaa.com';
@@ -1024,6 +1150,46 @@ BEGIN
 	
     from financialrequests f 
     WHERE f.id = item;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+SET @email = 'a4578@aaa.com';
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+ call Get_financial_client_user(@email,@token);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_financial_client_user;
+DELIMITER //
+create  PROCEDURE Get_financial_client_user(IN _mail varchar(255), in _token varchar(255))
+BEGIN
+   
+   select f.id,
+          f.avg_montky_sales,
+          f.ams_how_clients,
+          case f.has_applicant when 0 then 'false' else 'true' end has_applicant,
+          case f.po_finance when 0 then 'false' else 'true' end po_finance,
+          case f.in_finance when 0 then 'false' else 'true' end in_finance,
+          case f.lawsuits_pending when 0 then 'false' else 'true' end lawsuits_pending,
+          case f.receivable_finance when 0 then 'false' else 'true' end receivable_finance,
+          case f.credit_insurance_policy when 0 then 'false' else 'true' end credit_insurance_policy,
+          case f.declared_bank_ruptcy when 0 then 'false' else 'true' end declared_bank_ruptcy,
+          f.estimated_montly_financing,
+          f.emf_number_clients,
+          f.rf_when_with_whom,
+          f.cip_when_with_whom,
+           
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from financialrequests f 
+    inner join users u on u.id  = f.user_id 
+    inner join clients c2 on c2.id  = f.client_id 
+    WHERE u.email = _mail AND 
+          c2.token = _token ;
 
 END;
 //
@@ -1312,6 +1478,40 @@ END;
 DELIMITER ;
 
 /*
+SET @email = 'a4578@aaa.com';
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+ call Get_bankinformation_client_user(@email,@token);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_bankinformation_client_user;
+DELIMITER //
+create  PROCEDURE Get_bankinformation_client_user(IN _mail varchar(255), in _token varchar(255))
+BEGIN
+   
+   select f.id,
+          f.bank_name,
+          f.account_same_swift,
+          f.account_number,
+          f.aba_routing,
+          f.bank_adress,
+          f.telephone,
+          f.account_officer,
+                     
+           
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from bankinformations f 
+    inner join users u on u.id  = f.user_id 
+    inner join clients c2 on c2.id  = f.client_id 
+    WHERE u.email = _mail AND 
+          c2.token = _token ;
+
+END;
+//
+DELIMITER ;
+
+/*
 
 SET @email = 'a4578@aaa.com';
 set @_bank_name ="bank 15.9";
@@ -1517,4 +1717,243 @@ sp:BEGIN
 END;
 //
 DELIMITER ;
+
+
+
+/*
+ set @item = 1;
+ call Get_certification(@item);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_certification;
+DELIMITER //
+create  PROCEDURE Get_certification(IN item bigint)
+BEGIN
+   
+   select f.id,
+          case f.approved_agreed when 1 then 'true' else 'false' end approved_agreed,
+          f.name,
+          f.title,
+           
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from certificationauthorizations f 
+    WHERE f.id = item;
+
+END;
+//
+DELIMITER ;
+
+
+
+/*
+SET @email = 'a4578@aaa.com';
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+ call Get_certification_client_user(@email,@token);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_certification_client_user;
+DELIMITER //
+create  PROCEDURE Get_certification_client_user(IN _mail varchar(255), in _token varchar(255))
+BEGIN
+   
+   select f.id,
+          case f.approved_agreed when 1 then 'true' else 'false' end approved_agreed,
+          f.name,
+          f.title,
+           
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from certificationauthorizations f 
+    inner join users u on u.id  = f.user_id 
+    inner join clients c2 on c2.id  = f.client_id 
+    WHERE u.email = _mail AND 
+          c2.token = _token ;
+
+END;
+//
+DELIMITER ;
+
+
+
+/*
+
+SET @email = 'a4578@aaa.com';
+set @_approved_agreed =1;
+set @_name =" name acconut2 ";
+set @_title ="title 154564564654";
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @msg = '';
+SET @error = '';
+SET @id = 0;
+CALL Insert_certification(@email,@_approved_agreed, @_name,@_title,@token,@msg,@error,@id);
+SELECT @msg,@error,@id;
+  
+ */
+
+DROP PROCEDURE IF EXISTS Insert_certification;
+DELIMITER //
+create  PROCEDURE Insert_certification(
+                                IN _email varchar(255),
+                                IN _approved_agreed tinyint,
+                                IN _name varchar(255),
+                                IN _title varchar(255),
+                                IN _token varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint ,
+                                OUT _id bigint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	   declare b_client_id bigint;
+	   declare b_usuario_id bigint;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   select 0 into _id;
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Inserts failed Certifications, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg,_id;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	      select 0 into _id;
+	      
+	      
+		   
+		   if not exists(select 1 from clients c  WHERE c.token = _token) then
+		        select 1 into _error;
+		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		   
+		   
+		   if not exists(select 1 from users u  WHERE u.email = _email) then
+		     select 1 into _error;
+		        select 'Error, Email no existe con ese mail.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+		  
+		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
+		  select c.id into b_client_id from clients c where c.token = _token;
+		 
+		  if exists(select 1 from certificationauthorizations u  WHERE u.client_id =b_client_id and u.user_id  = b_usuario_id ) then
+		     select 1 into _error;
+		        select 'Error, Ya se encuentra registrado en Certifications.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+		  
+		  
+		   insert into certificationauthorizations 
+		                (
+		                created_at,
+		                name ,
+		                title ,
+		                approved_agreed ,
+		                user_id ,
+		                client_id)
+		       values(
+		               now(),
+		                _name ,
+		                _title,
+		                _approved_agreed,
+		                b_usuario_id,
+		                b_client_id
+		            );
+		   
+		   select  LAST_INSERT_ID() into _id;
+		       
+		  
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg, _id;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+
+
+/*
+SET @id = 1;
+set @_approved_agreed =1;
+set @_name =" updatr name acconut2 ";
+set @_title =" upd title 154564564654";
+SET @msg = '';
+SET @error = '';
+
+CALL Update_certification(@id,@_approved_agreed, @_name,@_title,@msg,@error);
+SELECT @msg,@error;
+  
+ */
+
+DROP PROCEDURE IF EXISTS Update_certification;
+DELIMITER //
+create  PROCEDURE Update_certification(
+                                IN _id bigint,
+								IN _approved_agreed tinyint,
+                                IN _name varchar(255),
+                                IN _title varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint 
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	  
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Update failed Certification, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	     
+	      if not exists(select 1 from bankinformations f  where f.id = _id) then
+	      		select 1 into _error;
+		        select 'Error, no existe el registro en la tabla Certification.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	      
+		  
+		   update  certificationauthorizations 
+		             set 
+		                updated_at = now(),
+		                title  = _title,
+		                approved_agreed = _approved_agreed,
+		                name = _name
+		    where id = _id;
+		   
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
 

@@ -9,6 +9,14 @@ class Businessinformation extends Model {
 
   protected $table = 'businessinformations';
 
+  public static function consulta($id) {
+    $result = DB::select("call Get_businessinformation(?)",[$id]);
+    return $result;
+  }
+  public static function consulta_todos($email,$token) {
+    $result = DB::select("call Get_businessinformation_client_user(?,?)",[$email,$token]);
+    return $result;
+  }
   public static function registrar($request) {
     $error=0;
     $msg= "";
