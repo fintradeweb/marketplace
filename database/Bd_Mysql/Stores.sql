@@ -869,6 +869,8 @@ sp:BEGIN
 		  
 		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
 		  select c.id into b_client_id from clients c where c.token = _token;
+		 
+		 
 		  select _percentage into d_percentage;
 		  
 		   insert into managements 
@@ -986,6 +988,191 @@ sp:BEGIN
 		
 		   select 'ok' into _msg;
 		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+/*
+ set @item = 1;
+ call Get_financial(@item);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_financial;
+DELIMITER //
+create  PROCEDURE Get_financial(IN item bigint)
+BEGIN
+   
+   select f.id,
+          f.avg_montky_sales,
+          f.ams_how_clients,
+          case f.has_applicant when 0 then 'false' else 'true' end has_applicant,
+          case f.po_finance when 0 then 'false' else 'true' end po_finance,
+          case f.in_finance when 0 then 'false' else 'true' end in_finance,
+          case f.lawsuits_pending when 0 then 'false' else 'true' end lawsuits_pending,
+          case f.receivable_finance when 0 then 'false' else 'true' end receivable_finance,
+          case f.credit_insurance_policy when 0 then 'false' else 'true' end credit_insurance_policy,
+          case f.declared_bank_ruptcy when 0 then 'false' else 'true' end declared_bank_ruptcy,
+          f.estimated_montly_financing,
+          f.emf_number_clients,
+          f.rf_when_with_whom,
+          f.cip_when_with_whom,
+           
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from financialrequests f 
+    WHERE f.id = item;
+
+END;
+//
+DELIMITER ;
+
+/*
+
+SET @email = 'a4578@aaa.com';
+set @avg_montky_sales =15.9;
+set @ams_how_clients =2;
+set @has_applicant =1;
+set @po_finance =0;
+set @in_finance =1;
+set @lawsuits_pending =0;
+set @receivable_finance =0;
+set @credit_insurance_policy =1;
+set @declared_bank_ruptcy =0;
+set @estimated_montly_financing =250;
+set @emf_number_clients =3;
+set @rf_when_with_whom =12;
+set @cip_when_with_whom =2;
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @msg = '';
+SET @error = '';
+SET @id = 0;
+CALL Insert_financial(@avg_montky_sales,@ams_how_clients,@has_applicant,@po_finance,@in_finance,
+       @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing, 
+       @emf_number_clients, @rf_when_with_whom, @cip_when_with_whom,  @email,@token,@msg,@error,@id);
+SELECT @msg,@error,@id;
+  
+ */
+
+DROP PROCEDURE IF EXISTS Insert_financial;
+DELIMITER //
+create  PROCEDURE Insert_financial(
+                                IN _avg_montky_sales double,
+                                IN _ams_how_clients int,
+                                IN _has_applicant tinyint,
+                                IN _po_finance tinyint,
+                                IN _in_finance tinyint,
+                                IN _lawsuits_pending tinyint,
+                                IN _receivable_finance tinyint,
+                                IN _credit_insurance_policy tinyint,
+                                IN _declared_bank_ruptcy tinyint,
+                                IN _estimated_montly_financing double,
+                                IN _emf_number_clients int,
+                                IN _rf_when_with_whom double,
+                                IN _cip_when_with_whom int,
+                                                                
+                                IN _email varchar(255),
+                                IN _token varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint ,
+                                OUT _id bigint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	   declare b_client_id bigint;
+	   declare b_usuario_id bigint;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   select 0 into _id;
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Inserts failed Managment, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg,_id;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	      select 0 into _id;
+	      
+	      
+		   
+		   if not exists(select 1 from clients c  WHERE c.token = _token) then
+		        select 1 into _error;
+		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		   
+		   
+		   if not exists(select 1 from users u  WHERE u.email = _email) then
+		     select 1 into _error;
+		        select 'Error, Email no existe con ese mail.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+		  
+		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
+		  select c.id into b_client_id from clients c where c.token = _token;
+		 
+		  if exists(select 1 from financialrequests u  WHERE u.client_id =b_client_id and u.user_id  = b_usuario_id ) then
+		     select 1 into _error;
+		        select 'Error, Ya se encuentra registrado un Financial.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+		  
+		  
+		   insert into financialrequests 
+		                (
+		                created_at,
+		                avg_montky_sales ,
+                        ams_how_clients ,
+                        has_applicant ,
+                        po_finance ,
+                        in_finance ,
+                        lawsuits_pending ,
+                        receivable_finance ,
+                        credit_insurance_policy ,
+                        declared_bank_ruptcy ,
+                        estimated_montly_financing ,
+                        emf_number_clients ,
+                        rf_when_with_whom ,
+                        cip_when_with_whom ,
+		                user_id ,
+		                client_id)
+		       values(
+		               now(),
+		                _avg_montky_sales ,
+                        _ams_how_clients ,
+                        _has_applicant ,
+                        _po_finance ,
+                        _in_finance ,
+                        _lawsuits_pending ,
+                        _receivable_finance ,
+                        _credit_insurance_policy ,
+                        _declared_bank_ruptcy ,
+                        _estimated_montly_financing ,
+                        _emf_number_clients ,
+                        _rf_when_with_whom ,
+                        _cip_when_with_whom,
+		                b_usuario_id,
+		                b_client_id
+		            );
+		   
+		   select  LAST_INSERT_ID() into _id;
+		       
+		  
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg, _id;
 		end;
 
 END;
