@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use DB;
 
-class Management extends Model {
+class Certification extends Model {
 
-  protected $table = 'managments';
+  protected $table = 'certificationauthorizations';
 
   public static function consulta($id) {
-    $managments = DB::select("call Get_managments(?)",[$id]);
+    $managments = DB::select("call Get_certification(?)",[$id]);
     return $managments;
   }
 
@@ -18,15 +18,16 @@ class Management extends Model {
     $error=0;
     $msg= "";
     $id = 0;
+    if(!empty($request->input('chk_approved_agreed'))){
+        $approved_agreed = 1;
+    }
 
-    $result = DB::select('call Insert_managment(?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_certification(?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('txt_email'),
+                    $approved_agreed,
                     $request->input('txt_name'),
-                    $request->input('txt_idno'),
-                    $request->input('txt_percentage'),
-                    $request->input('txt_position'),
-                    $request->input('txt_birthday'),
+                    $request->input('txt_title'),
                     $request->input('token'),
                     $msg,
                     $error,
@@ -38,20 +39,18 @@ class Management extends Model {
   public static function actualizar($request,$codigo){
       $error="0";
       $msg= "";
+      if(!empty($request->input('chk_approved_agreed'))){
+        $approved_agreed = 1;
+      }
 
-      $result = DB::select('call Update_managment(?,?,?,?,?,?)',
+      $result = DB::select('call Update_certification(?,?,?,?,?,?)',
                   [
                         $codigo,
-                        $request->input('txt_email'),
+                        $approved_agreed,
                         $request->input('txt_name'),
-                        $request->input('txt_idno'),
-                        $request->input('txt_percentage'),
-                        $request->input('txt_datecompany'),
-                        $request->input('txt_position'),
-                        $request->input('txt_birthday'),
+                        $request->input('txt_title'),
                         $msg,
                         $error
-
                   ]);
       return $result[0];
   }

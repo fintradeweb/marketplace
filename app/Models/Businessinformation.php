@@ -36,8 +36,8 @@ class Businessinformation extends Model {
                     $request->input('txt_dba'),
                     $request->input('txt_cellphone'),
                     $request->input('token'),
-                    $error,
                     $msg,
+                    $error,
                     $id
                 ]);
       return $result[0];
@@ -69,8 +69,9 @@ class Businessinformation extends Model {
                         $request->input('txt_secretaryname'),
                         $request->input('txt_dba'),
                         $request->input('txt_cellphone'),
-                        $error,
-                        $msg
+                        $msg,
+                        $error
+
                   ]);
       return $result[0];
   }
