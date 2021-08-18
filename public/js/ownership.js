@@ -1,5 +1,15 @@
 window.addEventListener('load', function() {
 
+  document.getElementById("percentage").addEventListener("keypress", validNumber);
+
+  function validNumber(event){
+    var key = event.which || event.keyCode,
+        value = event.target.value,
+        n = value+String.fromCharCode(key);
+    if ( isNaN(n) || n<1 || n>100)
+      event.preventDefault();    
+  }
+
   $("#btn_save").click(function(){
     var msg = "";
     if ($("#name").val() == ""){
