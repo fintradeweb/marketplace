@@ -48,7 +48,7 @@ class Financial extends Model {
     }
 
 
-    $result = DB::select('call Insert_financial(?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_financial(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('avg_montky_sales'),
                     $request->input('ams_how_clients'),
@@ -104,7 +104,7 @@ class Financial extends Model {
             $declared_bank_ruptcy = 1;
         }
 
-         $result = DB::select('call Update_financial(?,?,?,?,?,?)',
+         $result = DB::select('call Update_financial(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,
                         $request->input('avg_montky_sales'),

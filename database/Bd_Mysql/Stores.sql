@@ -1091,7 +1091,7 @@ sp:BEGIN
 		   select 1 into _error;
 		   select 0 into _id;
 		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
-		   select CONCAT('Inserts failed Managment, error = ',code,', message = ',MSG) into _msg;
+		   select CONCAT('Inserts failed Financial, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
 		   LEAVE sp1;
    		  
@@ -1173,6 +1173,107 @@ sp:BEGIN
 		
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+SET @id = 1;
+set @avg_montky_sales =15.9;
+set @ams_how_clients =2;
+set @has_applicant =1;
+set @po_finance =0;
+set @in_finance =1;
+set @lawsuits_pending =0;
+set @receivable_finance =0;
+set @credit_insurance_policy =1;
+set @declared_bank_ruptcy =0;
+set @estimated_montly_financing =250;
+set @emf_number_clients =3;
+set @rf_when_with_whom =12;
+set @cip_when_with_whom =2;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_financial(@id,@avg_montky_sales,@ams_how_clients,@has_applicant,@po_finance,@in_finance,
+       @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing, 
+       @emf_number_clients, @rf_when_with_whom, @cip_when_with_whom,@msg,@error);
+SELECT @msg,@error;
+  
+ */
+
+DROP PROCEDURE IF EXISTS Update_financial;
+DELIMITER //
+create  PROCEDURE Update_financial(
+                                IN _id bigint,
+								IN _avg_montky_sales double,
+                                IN _ams_how_clients int,
+                                IN _has_applicant tinyint,
+                                IN _po_finance tinyint,
+                                IN _in_finance tinyint,
+                                IN _lawsuits_pending tinyint,
+                                IN _receivable_finance tinyint,
+                                IN _credit_insurance_policy tinyint,
+                                IN _declared_bank_ruptcy tinyint,
+                                IN _estimated_montly_financing double,
+                                IN _emf_number_clients int,
+                                IN _rf_when_with_whom double,
+                                IN _cip_when_with_whom int,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint 
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	  
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Update failed Financial, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	     
+	      if not exists(select 1 from financialrequests f  where f.id = _id) then
+	      		select 1 into _error;
+		        select 'Error, no existe el registro en la tabla financial.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	      
+		  
+		   update  financialrequests 
+		             set 
+		                updated_at = now(),
+		                avg_montky_sales  = _avg_montky_sales,
+                        ams_how_clients  = _ams_how_clients,
+                        has_applicant = _has_applicant ,
+                        po_finance = _po_finance ,
+                        in_finance  = _in_finance,
+                        lawsuits_pending  = _lawsuits_pending,
+                        receivable_finance = _receivable_finance ,
+                        credit_insurance_policy = _credit_insurance_policy ,
+                        declared_bank_ruptcy  = _declared_bank_ruptcy,
+                        estimated_montly_financing  = _estimated_montly_financing,
+                        emf_number_clients  = _emf_number_clients,
+                        rf_when_with_whom = _rf_when_with_whom ,
+                        cip_when_with_whom  = _cip_when_with_whom
+		    where id = _id;
+		   
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg;
 		end;
 
 END;
