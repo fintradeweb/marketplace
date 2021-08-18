@@ -1279,3 +1279,242 @@ sp:BEGIN
 END;
 //
 DELIMITER ;
+
+
+/*
+ set @item = 1;
+ call Get_bankinformation(@item);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_bankinformation;
+DELIMITER //
+create  PROCEDURE Get_bankinformation(IN item bigint)
+BEGIN
+   
+   select f.id,
+          f.bank_name,
+          f.account_same_swift,
+          f.account_number,
+          f.aba_routing,
+          f.bank_adress,
+          f.telephone,
+          f.account_officer,
+                     
+           
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	
+    from bankinformations f 
+    WHERE f.id = item;
+
+END;
+//
+DELIMITER ;
+
+/*
+
+SET @email = 'a4578@aaa.com';
+set @_bank_name ="bank 15.9";
+set @account_same_swift =" name acconut2 ";
+set @account_number ="154564564654";
+set @aba_routing ="sddsdsd0";
+set @bank_adress ="adress bank1";
+set @telephone ="54654654650";
+set @account_officer ="officer test0";
+SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @msg = '';
+SET @error = '';
+SET @id = 0;
+CALL Insert_bankinformation(@email,@_bank_name, @account_same_swift,
+      @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,
+      @token,@msg,@error,@id);
+SELECT @msg,@error,@id;
+  
+ */
+
+DROP PROCEDURE IF EXISTS Insert_bankinformation;
+DELIMITER //
+create  PROCEDURE Insert_bankinformation(
+                                IN _email varchar(255),
+                                IN _bank_name varchar(255),
+                                IN _account_same_swift varchar(255),
+                                IN _account_number varchar(255),
+                                IN _aba_routing varchar(255),
+                                IN _bank_adress varchar(255),
+                                IN _telephone varchar(255),
+                                IN _account_officer varchar(255),
+                                IN _token varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint ,
+                                OUT _id bigint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	   declare b_client_id bigint;
+	   declare b_usuario_id bigint;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   select 0 into _id;
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Inserts failed Bank Information, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg,_id;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	      select 0 into _id;
+	      
+	      
+		   
+		   if not exists(select 1 from clients c  WHERE c.token = _token) then
+		        select 1 into _error;
+		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		   
+		   
+		   if not exists(select 1 from users u  WHERE u.email = _email) then
+		     select 1 into _error;
+		        select 'Error, Email no existe con ese mail.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+		  
+		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
+		  select c.id into b_client_id from clients c where c.token = _token;
+		 
+		  if exists(select 1 from bankinformations u  WHERE u.client_id =b_client_id and u.user_id  = b_usuario_id ) then
+		     select 1 into _error;
+		        select 'Error, Ya se encuentra registrado un bank Information.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+		  
+		  
+		   insert into bankinformations 
+		                (
+		                created_at,
+		                bank_name ,
+		                account_same_swift,
+		                account_number,
+		                aba_routing,
+		                bank_adress,
+		                telephone,
+		                account_officer,
+		                user_id ,
+		                client_id)
+		       values(
+		               now(),
+		                _bank_name ,
+		                _account_same_swift,
+		                _account_number,
+		                _aba_routing,
+		                _bank_adress,
+		                _telephone,
+		                _account_officer,
+		                b_usuario_id,
+		                b_client_id
+		            );
+		   
+		   select  LAST_INSERT_ID() into _id;
+		       
+		  
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg, _id;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+SET @id = 1;
+set @_bank_name ="cambiado bank 15.9";
+set @account_same_swift =" name acconut2 ";
+set @account_number ="154564564654";
+set @aba_routing ="sddsdsd0";
+set @bank_adress ="adress bank1";
+set @telephone ="54654654650";
+set @account_officer ="officer test0";
+SET @msg = '';
+SET @error = '';
+
+CALL Update_bankinformation(@id,@_bank_name, @account_same_swift,
+      @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,@msg,@error);
+SELECT @msg,@error;
+  
+ */
+
+DROP PROCEDURE IF EXISTS Update_bankinformation;
+DELIMITER //
+create  PROCEDURE Update_bankinformation(
+                                IN _id bigint,
+								IN _bank_name varchar(255),
+                                IN _account_same_swift varchar(255),
+                                IN _account_number varchar(255),
+                                IN _aba_routing varchar(255),
+                                IN _bank_adress varchar(255),
+                                IN _telephone varchar(255),
+                                IN _account_officer varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint 
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text; 
+	  
+	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   
+	   sp1:begin
+		   select 1 into _error;
+		   
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   select CONCAT('Update failed Bank information, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+   		  
+       end;
+      
+      sp2:begin 
+	     
+	      if not exists(select 1 from bankinformations f  where f.id = _id) then
+	      		select 1 into _error;
+		        select 'Error, no existe el registro en la tabla bank Information.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	      
+		  
+		   update  bankinformations 
+		             set 
+		                updated_at = now(),
+		                bank_name  = _bank_name,
+		                account_same_swift = _account_same_swift,
+		                account_number = _account_number,
+		                aba_routing = _aba_routing,
+		                bank_adress = _bank_adress,
+		                telephone = _telephone,
+		                account_officer = _account_officer
+		    where id = _id;
+		   
+		   select 0 into  _error;
+		   
+		
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
