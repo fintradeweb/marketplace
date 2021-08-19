@@ -72,9 +72,9 @@ class InformationController extends Controller{
     
     try{               
       $validator = Validator::make($request->all(), [
-        'name' => 'required|alpha|max:255',
+        'name' => 'required|max:255',
         'email' => 'required|unique:users|email',
-        'ruc_tax' => 'required|alpha_num|unique:businessinformations|max:255',
+        'ruc_tax' => 'required|unique:businessinformations|max:255',
         'date_company' => 'required|date_format:Y-m-d',
         'contact_name' => 'required|max:255',
         'president_name' => 'required|max:255',
@@ -202,34 +202,32 @@ class InformationController extends Controller{
       $business->secretary_name = $request->input('secretary_name');
 
       $validator = Validator::make($request->all(), [
-        'name' => 'required|alpha|max:255',
+        'name' => 'required|max:255',
         'email' => 'required|unique:users,email,'.$request->input('user_id').'|email',
-        'ruc_tax' => 'required|alpha_num|unique:businessinformations,ruc_tax,'.$request->input('business_id').'|max:255',
+        'ruc_tax' => 'required|unique:businessinformations,ruc_tax,'.$request->input('business_id').'|max:255',
         'date_company' => 'required|date_format:Y-m-d',
-        'contact_name' => 'required||max:255',
+        'contact_name' => 'required|max:255',
         'president_name' => 'required|max:255',
         'type_business' => 'required|max:255',
         'phone' => 'required|max:255',
-        'country_id' => 'required|alpha|max:255',
-        'city_id' => 'required|alpha|max:255',
-        'state_id' => 'required|alpha|max:255',
+        'country_id' => 'required|max:255',
+        'city_id' => 'required|max:255',
+        'state_id' => 'required|max:255',
         'zip' => 'required|max:255',
         'address' => 'required|max:255',
         'cell_phone' => 'nullable|max:255',
         'website' => 'nullable|max:255',
         'dba' => 'nullable|max:255',        
-        'secretary_name' => 'nullable|max:255'
+        'secretary_name' => 'nullable|max:255',
       ]);
       
       if ($validator->fails()) {        
-        var_dump($validator);  
         return view('information.edit')->with('user',$user)
                                        ->with('business',$business)      
                                        ->with('token',$request->input('token'))
                                        ->withErrors($validator);
       }
-      else{    
-        var_dump("paso 0");  
+      else{      
         $result = \App\Models\Businessinformation::actualizar($request,$request->input('business_id'));
         if ($result->_error == 0 && $result->_msg == "ok"){                                          
           return view('ownership.index');  

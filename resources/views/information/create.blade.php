@@ -2,7 +2,7 @@
 @section('content')
 
 @if ($errors->any())
-  <!--<div class="row justify-content-center">
+  <div class="row justify-content-center">
     <div class="col-md-8 col-lg-8 col-sm-12">
       <div class="alert alert-danger" role="alert">        
         <ul>
@@ -12,7 +12,7 @@
         </ul>
       </div>
     </div>
-  </div>-->  
+  </div>  
 @endif
    
 <div class="container"> 
