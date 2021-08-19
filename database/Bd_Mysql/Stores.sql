@@ -37,10 +37,10 @@ END;
 DELIMITER ;
 
 /*
- 
- call Insert_client('MIguel Flores','mFj1.desarrollo@gmail.com',@_msg5,@_error5)
- 
- select @_msg5,@_error5
+ SET @msg5 = '';
+ SET @error5 = '';
+ CALL Insert_client('MIguel Flores','mFj1.desarrollo@gmail.com',@msg5,@error5);
+ select @msg5, @error5;
  */
 DROP PROCEDURE IF EXISTS Insert_client;
 DELIMITER //
@@ -370,10 +370,10 @@ DELIMITER ;
 
 /*
 
-SET @name = 'a';
-SET @email = 'a4578@aaa.com';
+SET @name = '11user nuevo';
+SET @email = '11nuevoa457812@aaa.com';
 SET @clave = '$2y$10$YSjPChBAf6yLym4aKhveQeYTxsbCuPuNS9nHu5aGYKcsSrkDHM3sy';
-SET @taxid = 'a';
+SET @taxid = '11a12311';
 SET @datecompany = '1982-06-28';
 SET @contactname = 'a';
 SET @zipcode = 'a';
@@ -388,7 +388,7 @@ SET @website = 'http://www.aa.com';
 SET @secretary = 'a';
 SET @dba = 'a';
 SET @cellphone = 'a';
-SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @token = 'QQUGvNKrwR';
 SET @msg = '';
 SET @error = '';
 SET @id = 0;
@@ -430,6 +430,8 @@ sp:BEGIN
 	   declare b_usuario_id bigint;
 	   declare b_country_id bigint;
 	   declare b_state_id bigint;
+	   declare b_rol_id bigint;
+	   declare s_modelo varchar(255);
 	   declare b_city_id bigint;
 	   declare d_datecompany date;
 	   DECLARE exit HANDLER FOR SQLEXCEPTION 
@@ -446,6 +448,8 @@ sp:BEGIN
       
       sp2:begin 
 	      select 0 into _id;
+	      select 0 into b_rol_id;
+	      select '' into s_modelo;
 	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
 		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
@@ -557,7 +561,24 @@ sp:BEGIN
 	       else
 	          insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
 		      select  LAST_INSERT_ID() into b_usuario_id;
+		      
+		      
 		   end if; 
+		  if not exists(select 1 from model_has_roles where model_id= b_usuario_id) then
+		       select 0 into b_rol_id;
+	           select '' into s_modelo; 
+	           select valor_bigint into b_rol_id
+		          from catalogodet c2 
+		          inner join catalogocab c1 on c1.id = c2.catalogocab_id
+		          where c1.tabla='ROL-USER-CLIENT' and
+		                c2.valorstring='ROL_ID';
+	           select valorstring2 into s_modelo
+		          from catalogodet c2 
+		          inner join catalogocab c1 on c1.id = c2.catalogocab_id
+		          where c1.tabla='ROL-USER-CLIENT' and
+		                c2.valorstring='MODELO'; 
+		  	   insert into model_has_roles(role_id,model_type,model_id) values(b_rol_id,s_modelo,b_usuario_id);
+		  end if;
 		  
 		  if b_usuario_id = 0 then
 		  		select 1 into _error;
@@ -722,7 +743,7 @@ sp:BEGIN
 		        select _error,_msg;
 		        LEAVE sp2;
 		  end if;
-		 select trim(upper(_email)) into _email;
+		 select trim(_email) into _email;
 		  select c.user_id into b_usuario_id from  businessinformations c where c.id = _id_bi;
 		  if b_usuario_id = 0 then
 		  		select 1 into _error;
@@ -1957,3 +1978,73 @@ END;
 DELIMITER ;
 
 
+
+/*
+ call Get_countries;
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_countries;
+DELIMITER //
+create  PROCEDURE Get_countries()
+BEGIN
+   
+   select 
+   c3.id,
+   c3.descripcion description
+	
+    from catalogocab c 
+    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+    WHERE c.tabla ='PAISES'
+   order by 2;
+
+END;
+//
+DELIMITER ;
+
+/*
+ SET @country_id = 2;
+ call Get_states(@country_id);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_states;
+DELIMITER //
+create  PROCEDURE Get_states(IN _country_id bigint)
+BEGIN
+   
+   select 
+   c3.id,
+   c3.descripcion description
+	
+    from catalogocab c 
+    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+    WHERE c.tabla ='STATES' AND  
+          c3.valor_bigint  = _country_id
+   order by 2;
+
+END;
+//
+DELIMITER ;
+
+/*
+ SET @state_id = 5;
+ call Get_cities(@state_id);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_cities;
+DELIMITER //
+create  PROCEDURE Get_cities(IN _state_id bigint)
+BEGIN
+   
+   select 
+   c3.id,
+   c3.descripcion description
+	
+    from catalogocab c 
+    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+    WHERE c.tabla ='CIUDADES' AND  
+          c3.valor_bigint  = _state_id
+   order by 2;
+
+END;
+//
+DELIMITER ;
