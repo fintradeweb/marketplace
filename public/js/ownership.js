@@ -79,13 +79,9 @@ window.addEventListener('load', function() {
     return false; //No es fecha válida
   }
 
-  function agregarFila(values){
-    document.getElementById("tblowner").insertRow(-1).innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td><td><i class="fa fa-trash-o"></i></td>';
-  }
-  
-  function eliminarFila(){
+  function eliminarFila(rowCount){
     var table = document.getElementById("tblowner");
-    var rowCount = table.rows.length;
+    //var rowCount = table.rows.length;
     //console.log(rowCount);
     
     if(rowCount <= 1)
@@ -95,7 +91,18 @@ window.addEventListener('load', function() {
       table.deleteRow(rowCount -1);
   }
 
-  $("#btn_save").click(function(){
+  /*$(".linkdelete").click(function(){
+    var linkid = $(this).attr("id");
+    console.log("aaaa"+linkid);
+  });*/
+
+  function agregarFila(values){
+    var nro = $("#nro").val();
+    document.getElementById("tblowner").insertRow(-1).innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td><td align="center"><a class="linkdelete" id="'+nro+'" style="cursor:pointer;"><i class="fa fa-trash-o"></i></a></td>';
+    $("#nro").val(parseInt(nro) + 1);
+  }
+  
+  $("#btn_add").click(function(){
     var msg = [];
     var ids = [];
 
@@ -163,7 +170,13 @@ window.addEventListener('load', function() {
       values.push($("#position").val());
       values.push($("#birthdate").val());
       
-      agregarFila(values);      
+      agregarFila(values);
+
+      console.log($('input[name="hdnname"]').length);
+
+      if ($('input[name="hdnname"]').length > 0){
+        $("#btn_save").attr("style","display:block;");
+      }     
 
       $("#name").val("");
       $("#idnumber").val("");

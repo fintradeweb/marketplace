@@ -21,9 +21,10 @@ class InformationController extends Controller{
 
       $usuario = \App\Models\User::existe_usuario($request->input('txt_email'));         
             
-      if($usuario->existe == 1){      
+      if($usuario->existe == 1){ 
         $user = \App\Models\User::where('email',$request->input('txt_email'))->first();
-        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first();       
+        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first(); 
+
         return view('information.edit')->with('user', $user)
                                        ->with('business',$business)                                       
                                        ->with('token',$request->input('token'));
