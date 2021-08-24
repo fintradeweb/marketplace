@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+//use Illuminate\Support\Facades\DB;
 
 class InformationController extends Controller{
       
-  public function index(Request $request){
+  public function index(Request $request){    
     try{
       if (empty($request->input('token'))){
         throw new \Exception("Error, token is empty.");
@@ -18,37 +19,35 @@ class InformationController extends Controller{
         throw new \Exception("Error, company not registered in marketplace.");
       }      
 
-      $usuario = \App\Models\User::existe_usuario($request->input('txt_email'));   
-      $clientdata = \App\Models\Client::where('token', $request->input('token'))->first();   
+      $usuario = \App\Models\User::existe_usuario($request->input('txt_email'));         
             
-      if($usuario->existe == 1){      
+      if($usuario->existe == 1){ 
         $user = \App\Models\User::where('email',$request->input('txt_email'))->first();
-        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first();       
+        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first(); 
+
         return view('information.edit')->with('user', $user)
-                                       ->with('business',$business)
-                                       ->with('client',$clientdata)
+                                       ->with('business',$business)                                       
                                        ->with('token',$request->input('token'));
       }
       else{           
-        return view('information.create')->with('client',$clientdata)
-                                         ->with('nombre',$request->input('nombre'))
+        return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
-                                         ->with('txt_email',$request->input('txt_email'))
-                                         ->with('txt_taxid',$request->input('txt_taxid'))
-                                         ->with('txt_datecompany',$request->input('txt_datecompany'))
-                                         ->with('txt_contactname',$request->input('txt_contactname'))
-                                         ->with('txt_zipcode',$request->input('txt_zipcode'))
-                                         ->with('txt_typeofbusiness',$request->input('txt_typeofbusiness'))
-                                         ->with('txt_country',$request->input('txt_country'))
-                                         ->with('txt_state',$request->input('txt_state'))
-                                         ->with('txt_address',$request->input('txt_address'))
-                                         ->with('txt_city',$request->input('txt_city'))        
-                                         ->with('txt_dba',$request->input('txt_dba'))
-                                         ->with('txt_phone',$request->input('txt_phone'))
-                                         ->with('txt_website',$request->input('txt_website'))
-                                         ->with('txt_presidentname',$request->input('txt_presidentname'))
-                                         ->with('txt_cellphone',$request->input('txt_cellphone'))
-                                         ->with('txt_secretaryname',$request->input('txt_secretaryname'));
+                                         ->with('email',$request->input('txt_email'))
+                                         ->with('ruc_tax',$request->input('txt_taxid'))
+                                         ->with('date_company',$request->input('txt_datecompany'))
+                                         ->with('contact_name',$request->input('txt_contactname'))
+                                         ->with('zip',$request->input('txt_zipcode'))
+                                         ->with('type_business',$request->input('txt_typeofbusiness'))
+                                         ->with('country_id',$request->input('txt_country'))
+                                         ->with('state_id',$request->input('txt_state'))
+                                         ->with('address',$request->input('txt_address'))
+                                         ->with('city_id',$request->input('txt_city'))        
+                                         ->with('dba',$request->input('txt_dba'))
+                                         ->with('phone',$request->input('txt_phone'))
+                                         ->with('website',$request->input('txt_website'))
+                                         ->with('president_name',$request->input('txt_presidentname'))
+                                         ->with('cell_phone',$request->input('txt_cellphone'))
+                                         ->with('secretary_name',$request->input('txt_secretaryname'));
       }
       $error = ""; 
     }
@@ -60,8 +59,6 @@ class InformationController extends Controller{
     ]);
   }
 
-
-
   /**
    * Show the form for creating a new resource.
    *
@@ -72,120 +69,82 @@ class InformationController extends Controller{
   }
   
   public function store(Request $request){
-    $error = "";
-    try{   
-      $clientdata = \App\Models\Client::where('token', $request->input('token'))->first(); 
-      if (empty($clientdata->id)){
-        throw new \Exception("Error, company not registered in marketplace.");
-      } 
-
+    $error = "";   
+    
+    try{               
       $validator = Validator::make($request->all(), [
         'name' => 'required|max:255',
         'email' => 'required|unique:users|email',
         'ruc_tax' => 'required|unique:businessinformations|max:255',
-        'datecompany' => 'required|date_format:Y-m-d',
-        'contactname' => 'required|max:255',
-        'presidentname' => 'required|max:255',
-        'typeofbusiness' => 'required|max:255',
+        'date_company' => 'required|date_format:Y-m-d',
+        'contact_name' => 'required|max:255',
+        'president_name' => 'required|max:255',
+        'type_business' => 'required|max:255',
         'phone' => 'required|max:255',
-        'country' => 'required|max:255',
-        'city' => 'required|max:255',
-        'state' => 'required|max:255',
-        'zipcode' => 'required|max:255',
+        'country_id' => 'required|max:255',
+        'city_id' => 'required|max:255',
+        'state_id' => 'required|max:255',
+        'zip' => 'required|max:255',
         'address' => 'required|max:255',
-        'cellphone' => 'nullable|max:255',
+        'cell_phone' => 'nullable|max:255',
         'website' => 'nullable|max:255',
-        'dba' => 'nullable|max:255',
-        'website' => 'nullable|max:255',
-        'secretaryname' => 'nullable|max:255',
+        'dba' => 'nullable|max:255',        
+        'secretary_name' => 'nullable|max:255',
       ]);
+            
       if ($validator->fails()) {
-        return view('information.create')->with('client',$clientdata)
-                                         ->with('nombre',$request->input('name'))  
+        return view('information.create')->with('name',$request->input('name'))  
                                          ->with('token',$request->input('token'))     
-                                         ->with('txt_email',$request->input('email'))
-                                         ->with('txt_taxid',$request->input('ruc_tax'))
-                                         ->with('txt_datecompany',$request->input('datecompany'))
-                                         ->with('txt_contactname',$request->input('contactname'))
-                                         ->with('txt_zipcode',$request->input('zipcode'))
-                                         ->with('txt_typeofbusiness',$request->input('typeofbusiness'))
-                                         ->with('txt_country',$request->input('country'))
-                                         ->with('txt_state',$request->input('state'))
-                                         ->with('txt_address',$request->input('address'))
-                                         ->with('txt_city',$request->input('city'))                        
-                                         ->with('txt_dba',$request->input('dba'))
-                                         ->with('txt_phone',$request->input('phone'))
-                                         ->with('txt_website',$request->input('website'))
-                                         ->with('txt_presidentname',$request->input('presidentname'))
-                                         ->with('txt_cellphone',$request->input('cellphone'))
-                                         ->with('txt_secretaryname',$request->input('secretaryname'))
+                                         ->with('email',$request->input('email'))
+                                         ->with('ruc_tax',$request->input('ruc_tax'))
+                                         ->with('date_company',$request->input('date_company'))
+                                         ->with('contact_name',$request->input('contact_name'))
+                                         ->with('zip',$request->input('zip'))
+                                         ->with('type_business',$request->input('type_business'))
+                                         ->with('country_id',$request->input('country_id'))
+                                         ->with('state_id',$request->input('state_id'))
+                                         ->with('address',$request->input('address'))
+                                         ->with('city_id',$request->input('city_id'))
+                                         ->with('dba',$request->input('dba'))
+                                         ->with('phone',$request->input('phone'))
+                                         ->with('website',$request->input('website'))
+                                         ->with('president_name',$request->input('president_name'))
+                                         ->with('cell_phone',$request->input('cell_phone'))
+                                         ->with('secretary_name',$request->input('secretary_name'))
                                          ->withErrors($validator);    
       }
-      else{
-        $password = bcrypt(Str::random(10));
-        $user = new \App\Models\User;
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = $password;
-        $user->created_at = date("Y-m-d H:i:s");
-        $user->status = 1;
-
-        $business = new \App\Models\Businessinformation;
-        $business->company_name = $request->input('name');
-        $business->ruc_tax = $request->input('ruc_tax');
-        $business->date_company = $request->input('datecompany');
-        $business->contact_name = $request->input('contactname');
-        $business->president_name = $request->input('presidentname');
-        $business->type_business = $request->input('typeofbusiness');
-        $business->phone = $request->input('phone');
-        $business->country_id = $request->input('country');
-        $business->city_id = $request->input('city');
-        $business->state_id = $request->input('state');
-        $business->zip = $request->input('zipcode');
-        $business->address = $request->input('address');
-        $business->cell_phone = $request->input('cellphone');
-        $business->website = $request->input('website');
-        $business->dba = $request->input('dba');
-        $business->secretary_name = $request->input('secretaryname');
-        $business->client_id = $clientdata->id;
-        
-        if($user->save()){  
-          $business->user_id = $user->latest('id')->first();
-          if ($business->save()){
-            Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketReceived($user));
-            return view('ownership.index');  
-          }
-          else{
-            throw new \Exception("There was an error creating the user!");  
-          }
+      else{            
+        $result = \App\Models\Businessinformation::registrar($request);                     
+        if ($result->_error == 0 && $result->_msg == "ok"){                                
+          Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));     
+          return view('ownership.index');  
         }
         else{
           throw new \Exception("There was an error creating the user!");
         }       
       }
     }
-    catch(\Exception $e){
+    catch(\Exception $e){      
       $error = $e->getMessage(); 
-      return view('information.create')->with('client',$clientdata)
-                                       ->with('nombre',$request->input('name'))  
-                                       ->with('token',$request->input('token'))                
-                                       ->with('txt_email',$request->input('email'))
-                                       ->with('txt_taxid',$request->input('ruc_tax'))
-                                       ->with('txt_datecompany',$request->input('datecompany'))
-                                       ->with('txt_contactname',$request->input('contactname'))
-                                       ->with('txt_zipcode',$request->input('zipcode'))
-                                       ->with('txt_typeofbusiness',$request->input('typeofbusiness'))
-                                       ->with('txt_country',$request->input('country'))
-                                       ->with('txt_state',$request->input('state'))
-                                       ->with('txt_address',$request->input('address'))
-                                       ->with('txt_city',$request->input('city')) 
-                                       ->with('txt_dba',$request->input('dba'))
-                                       ->with('txt_phone',$request->input('phone'))
-                                       ->with('txt_website',$request->input('website'))
-                                       ->with('txt_presidentname',$request->input('presidentname'))
-                                       ->with('txt_cellphone',$request->input('cellphone'))
-                                       ->with('txt_secretaryname',$request->input('secretaryname'))
-                                       ->withErrors($error);      
+      return view('information.create')->with('nombre',$request->input('name'))  
+                                        ->with('token',$request->input('token'))     
+                                        ->with('email',$request->input('email'))
+                                        ->with('ruc_tax',$request->input('ruc_tax'))
+                                        ->with('date_company',$request->input('date_company'))
+                                        ->with('contact_name',$request->input('contact_name'))
+                                        ->with('zip',$request->input('zip'))
+                                        ->with('type_business',$request->input('type_bussiness'))
+                                        ->with('country_id',$request->input('country_id'))
+                                        ->with('state_id',$request->input('state_id'))
+                                        ->with('address',$request->input('address'))
+                                        ->with('city_id',$request->input('city_id'))
+                                        ->with('dba',$request->input('dba'))
+                                        ->with('phone',$request->input('phone'))
+                                        ->with('website',$request->input('website'))
+                                        ->with('president_name',$request->input('president_name'))
+                                        ->with('cell_phone',$request->input('cell_phone'))
+                                        ->with('secretary_name',$request->input('secretary_name'))
+                                       ->withErrors($error);   
     }           
   }
 
@@ -196,7 +155,7 @@ class InformationController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function show($id){
-        //
+       
   }
 
   /**
@@ -218,7 +177,7 @@ class InformationController extends Controller{
   */
   public function update(Request $request){
     $error = "";
-    try{   
+    try{         
       $objuser = new \App\Models\User;
       $user = $objuser::find($request->input('user_id'));      
       $user->name = $request->input('name');
@@ -227,69 +186,62 @@ class InformationController extends Controller{
 
       $objbusiness = new \App\Models\Businessinformation;
       $business = $objbusiness::find($request->input('business_id'));    
-      $business->ruc_tax = $request->input('taxid');
-      $business->date_company = $request->input('datecompany');
-      $business->contact_name = $request->input('contactname');
-      $business->president_name = $request->input('presidentname');
-      $business->type_business = $request->input('typeofbusiness');
+      $business->ruc_tax = $request->input('ruc_tax');
+      $business->date_company = $request->input('date_company');
+      $business->contact_name = $request->input('contact_name');
+      $business->president_name = $request->input('president_name');
+      $business->type_business = $request->input('type_business');
       $business->phone = $request->input('phone');
-      $business->country_id = $request->input('country');
-      $business->city_id = $request->input('city');
-      $business->state_id = $request->input('state');
-      $business->zip = $request->input('zipcode');
+      $business->country_id = $request->input('country_id');
+      $business->city_id = $request->input('city_id');
+      $business->state_id = $request->input('state_id');
+      $business->zip = $request->input('zip');
       $business->address = $request->input('address');
-      $business->cell_phone = $request->input('cellphone');
+      $business->cell_phone = $request->input('cell_phone');
       $business->website = $request->input('website');
       $business->dba = $request->input('dba');
-      $business->secretary_name = $request->input('secretaryname');
-
-      $clientdata = \App\Models\Client::where('token', $request->input('token'))->first(); 
-      if (empty($clientdata->id)){
-        throw new \Exception("Error, company not registered in marketplace.");
-      } 
+      $business->secretary_name = $request->input('secretary_name');
 
       $validator = Validator::make($request->all(), [
         'name' => 'required|max:255',
         'email' => 'required|unique:users,email,'.$request->input('user_id').'|email',
-        'taxid' => 'required|unique:businessinformations,ruc_tax,'.$request->input('business_id').'|max:255',
-        'datecompany' => 'required|date_format:Y-m-d',
-        'contactname' => 'required|max:255',
-        'presidentname' => 'required|max:255',
-        'typeofbusiness' => 'required|max:255',
+        'ruc_tax' => 'required|unique:businessinformations,ruc_tax,'.$request->input('business_id').'|max:255',
+        'date_company' => 'required|date_format:Y-m-d',
+        'contact_name' => 'required|max:255',
+        'president_name' => 'required|max:255',
+        'type_business' => 'required|max:255',
         'phone' => 'required|max:255',
-        'country' => 'required|max:255',
-        'city' => 'required|max:255',
-        'state' => 'required|max:255',
-        'zipcode' => 'required|max:255',
+        'country_id' => 'required|max:255',
+        'city_id' => 'required|max:255',
+        'state_id' => 'required|max:255',
+        'zip' => 'required|max:255',
         'address' => 'required|max:255',
-        'cellphone' => 'nullable|max:255',
+        'cell_phone' => 'nullable|max:255',
         'website' => 'nullable|max:255',
-        'dba' => 'nullable|max:255',
-        'website' => 'nullable|max:255',
-        'secretaryname' => 'nullable|max:255',
+        'dba' => 'nullable|max:255',        
+        'secretary_name' => 'nullable|max:255',
       ]);
       
       if ($validator->fails()) {        
         return view('information.edit')->with('user',$user)
-                                       ->with('business',$business)
-                                       ->with('client',$clientdata)
+                                       ->with('business',$business)      
                                        ->with('token',$request->input('token'))
                                        ->withErrors($validator);
       }
-      else{            
-        if($user->save() && $business->save()){                              
-          return view('ownership.index');
-        }
+      else{      
+        $result = \App\Models\Businessinformation::actualizar($request,$request->input('business_id'));
+        if ($result->_error == 0 && $result->_msg == "ok"){                                          
+          return view('ownership.index');  
+        }        
         else{
           throw new \Exception("There was an error editing the user!");
         }       
       }
     }
-    catch(\Exception $e){
+    catch(\Exception $e){      
       $error = $e->getMessage();
       return view('information.edit')->with('user',$user)
-                                     ->with('business',$business)
-                                     ->with('client',$clientdata)
+                                     ->with('business',$business)                                     
                                      ->with('token',$request->input('token'))
                                      ->withErrors($error);      
     } 

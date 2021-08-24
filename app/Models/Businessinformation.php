@@ -13,14 +13,17 @@ class Businessinformation extends Model {
     $result = DB::select("call Get_businessinformation(?)",[$id]);
     return $result;
   }
+
   public static function consulta_todos($email,$token) {
     $result = DB::select("call Get_businessinformation_client_user(?,?)",[$email,$token]);
-    return $result;
+    return $result[0];
   }
+  
   public static function registrar($request) {
     $error=0;
     $msg= "";
     $id = 0;
+
     $clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
 
     $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -28,27 +31,27 @@ class Businessinformation extends Model {
                     $request->input('name'),
                     $request->input('email'),
                     $clave,
-                    $request->input('taxid'),
-                    $request->input('datecompany'),
-                    $request->input('contactname'),
-                    $request->input('zipcode'),
-                    $request->input('typebussiness'),
+                    $request->input('ruc_tax'),
+                    $request->input('date_company'),
+                    $request->input('contact_name'),
+                    $request->input('zip'),
+                    $request->input('type_business'),
                     $request->input('phone'),
-                    $request->input('president'),
-                    $request->input('country'),
-                    $request->input('state'),
-                    $request->input('city'),
+                    $request->input('president_name'),
+                    $request->input('country_id'),
+                    $request->input('state_id'),
+                    $request->input('city_id'),
                     $request->input('address'),
                     $request->input('website'),
-                    $request->input('secretaryname'),
+                    $request->input('secretary_name'),
                     $request->input('dba'),
-                    $request->input('cellphone'),
+                    $request->input('cell_phone'),
                     $request->input('token'),
                     $msg,
                     $error,
                     $id
                 ]);
-      return $result[0];
+    return $result[0];
   }
 
   public static function actualizar($request,$codigo){
@@ -62,21 +65,21 @@ class Businessinformation extends Model {
                         $codigo,
                         $request->input('name'),
                         $request->input('email'),
-                        $request->input('taxid'),
-                        $request->input('datecompany'),
-                        $request->input('contactname'),
-                        $request->input('zipcode'),
-                        $request->input('typebussiness'),
+                        $request->input('ruc_tax'),
+                        $request->input('date_company'),
+                        $request->input('contact_name'),
+                        $request->input('zip'),
+                        $request->input('type_business'),
                         $request->input('phone'),
-                        $request->input('president'),
-                        $request->input('country'),
-                        $request->input('state'),
-                        $request->input('city'),
+                        $request->input('president_name'),
+                        $request->input('country_id'),
+                        $request->input('state_id'),
+                        $request->input('city_id'),
                         $request->input('address'),
                         $request->input('website'),
-                        $request->input('secretaryname'),
+                        $request->input('secretary_name'),
                         $request->input('dba'),
-                        $request->input('cellphone'),
+                        $request->input('cell_phone'),
                         $msg,
                         $error
 
