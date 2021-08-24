@@ -267,7 +267,7 @@ END;
 DELIMITER ;
 
 /*
- set @item = 1;
+ set @item = 8;
  call Get_businessinformation(@item);
  */
  
@@ -296,6 +296,7 @@ BEGIN
            s.descripcion state,
            m.user_id,
            m.client_id,
+           m.phone,
            u.email,
            c2.token,	       
 	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
@@ -317,8 +318,8 @@ DELIMITER ;
 
 
 /*
-SET @email = 'A11@AAA.COM';
-SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @email = 'dare.jude@example.com';
+SET @token = 'QQUGvNKrwR';
           
 call Get_businessinformation_client_user(@email ,@token);
  */
@@ -346,6 +347,9 @@ BEGIN
            ci.descripcion city,
            m.state_id,
            s.descripcion state,
+           m.phone,
+           u.email,
+           u.name,
            case u.status when 1 then 'true' else 'false' end  status_user,
            case c2.active when 1 then 'true' else 'false' end status_client,
            DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
