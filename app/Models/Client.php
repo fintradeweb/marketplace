@@ -5,10 +5,10 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 
 
-class Client extends Model 
+class Client extends Model
 {
-  protected $table = null;
-  
+  protected $table = 'clients';
+
   public static function todos() {
      $clients = DB::select("call get_clients_all();");
      return $clients;
@@ -22,7 +22,17 @@ class Client extends Model
   public static function valida_token($s_token) {
     $client = DB::select("call Get_client_token(?)",[$s_token]);
     return $client[0];
-  }  
+  }
+
+  public static function existe_usuario($s_email) {
+    $usuario = DB::select("call Get_existe_user(?)",[$s_email]);
+    return $usuario[0];
+  }
+
+  public static function existe_usuario_cliente($s_email,$s_token) {
+    $usuario = DB::select("call Get_existe_user_cliente(?,?)",[$s_email,$s_token]);
+    return $usuario[0];
+  }
 
   public static function registrar($request) {
     $error="0";
@@ -43,7 +53,7 @@ class Client extends Model
       if(!empty($request->input('active'))){
           $active = 1;
       }
-      
+
       $result = DB::select('call Update_client(?,?,?,?,?,?)',
                   [
                       $codigo,

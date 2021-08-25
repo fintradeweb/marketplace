@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class UserFactory extends Factory
 {
@@ -26,23 +27,8 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => Hash::make('$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'), // password
             'remember_token' => Str::random(10),
-            'taxid' => $this->faker->unique()->randomDigit(),
-            'datecompany' => $this->faker->date($format = 'Y-m-d'),
-            'contactname' => $this->faker->name(),
-            'presidentname' => $this->faker->name(),
-            'typeofbusiness' => $this->faker->catchPhrase(),
-            'phone' => $this->faker->phoneNumber(),
-            'country' => $this->faker->country(),
-            'city' => $this->faker->city(),
-            'state' => $this->faker->state(),
-            'zipcode' => $this->faker->postcode(),
-            'address' => $this->faker->address(),
-            'cellphone' => $this->faker->phoneNumber(),
-            'website' => '',
-            'dba' => Str::random(5),
-            'secretaryname' => $this->faker->name(),
             'status' => 1
         ];
     }
