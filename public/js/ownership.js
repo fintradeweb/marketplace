@@ -1,5 +1,12 @@
 window.addEventListener('load', function() {
 
+  var valname = [];
+  var validnumber = [];
+  var valpercentage = [];
+  var valposition = [];
+  var valbirthdate = [];  
+  var arrtemp = [];
+
   document.getElementById("percentage").addEventListener("keypress", validNumber);
 
   function validNumber(event){
@@ -79,27 +86,61 @@ window.addEventListener('load', function() {
     return false; //No es fecha válida
   }
 
-  function eliminarFila(rowCount){
+  function eliminarFila(rowCount){    
+    var indarr = rowCount - 2;
     var table = document.getElementById("tblowner");
-    //var rowCount = table.rows.length;
-    //console.log(rowCount);
-    
+    //var rowCount = table.rows.length;        
     if(rowCount <= 1)
       //alert('No se puede eliminar el encabezado');
       return false;
-    else
+    else{
+      
+      //quitar elemento del hidden
+      //si ya no tiene elementos los hiddens ocultar boton de save
       table.deleteRow(rowCount -1);
+
+      if (arrtemp.length > 0){
+        arrtemp.forEach(function(elemento, indice, array){
+          console.log(indice +" - "+indarr);
+          if (indice == indarr){
+            arrtemp.splice(indice,1);
+          }          
+        });
+      }
+
+      if (arrtemp.length <= 0){
+        $("#nro").val(1);
+        $("#btn_save").attr("style","display:none;");       
+      }
+      
+    }
   }
 
-  /*$(".linkdelete").click(function(){
-    var linkid = $(this).attr("id");
-    console.log("aaaa"+linkid);
-  });*/
-
+  
   function agregarFila(values){
     var nro = $("#nro").val();
-    document.getElementById("tblowner").insertRow(-1).innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td><td align="center"><a class="linkdelete" id="'+nro+'" style="cursor:pointer;"><i class="fa fa-trash-o"></i></a></td>';
-    $("#nro").val(parseInt(nro) + 1);
+    nro = parseInt(nro) + 1;
+    var tabla = document.getElementById("tblowner");
+    
+    var nuevafila= tabla.insertRow(-1);
+    nuevafila.innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td>';
+    
+    var enlace = document.createElement("a");
+    enlace.setAttribute("style","cursor:pointer;");
+    enlace.setAttribute("id",nro);
+    enlace.innerHTML = "<i class='fa fa-trash-o'></i>";
+    enlace.addEventListener("click",function(e){eliminarFila(nro);});
+    
+    var columna = document.createElement("td");
+    columna.setAttribute("align","center");
+    
+    columna.appendChild(enlace);
+    nuevafila.appendChild(columna);
+    tabla.appendChild(nuevafila);
+ 
+    arrtemp[nro-2] = values;
+    //document.getElementById("tblowner").insertRow(-1).innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td><td align="center"><a class="linkdelete" id="'+nro+'" style="cursor:pointer;"><i class="fa fa-trash-o"></i></a></td>';
+    $("#nro").val(nro);
   }
   
   $("#btn_add").click(function(){
@@ -163,27 +204,51 @@ window.addEventListener('load', function() {
       });
     }
     else{
-      var values = [];
+      var values = [];      
       values.push($("#name").val());
       values.push($("#idnumber").val());
       values.push($("#percentage").val());
       values.push($("#position").val());
       values.push($("#birthdate").val());
       
-      agregarFila(values);
+      agregarFila(values); 
+      
+      /*valname.push($("#name").val());
+      validnumber.push($("#idnumber").val());
+      valpercentage.push($("#percentage").val());
+      valposition.push($("#position").val());
+      valbirthdate.push($("#birthdate").val());
 
-      console.log($('input[name="hdnname"]').length);
-
-      if ($('input[name="hdnname"]').length > 0){
-        $("#btn_save").attr("style","display:block;");
-      }     
+      $('input[name="hdnname[]"]').val(JSON.stringify(valname));      
+      $('input[name="hdnidno[]"]').val(JSON.stringify(validnumber));      
+      $('input[name="hdnpercentage[]"]').val(JSON.stringify(valpercentage));      
+      $('input[name="hdnposition[]"]').val(JSON.stringify(valposition));      
+      $('input[name="hdnbirthdate[]"]').val(JSON.stringify(valbirthdate));*/      
 
       $("#name").val("");
       $("#idnumber").val("");
       $("#percentage").val("");
       $("#position").val("");
       $("#birthdate").val("");
+
+      if (arrtemp.length > 0){
+        $("#btn_save").attr("style","display:block;");
+      }
+      
     } 
   });
+
+  $("#btn_save").click(function(){
+    if (arrtemp.length > 0){
+      arrtemp.forEach(function(elemento, indice, array){        
+        $('input[name="hdnname[]"]').val(JSON.stringify(elemento[0]));      
+        $('input[name="hdnidno[]"]').val(JSON.stringify(elemento[1]));      
+        $('input[name="hdnpercentage[]"]').val(JSON.stringify(elemento[2]));      
+        $('input[name="hdnposition[]"]').val(JSON.stringify(elemento[3]));      
+        $('input[name="hdnbirthdate[]"]').val(JSON.stringify(elemento[4]));
+      });
+      $("#frm_createownership").submit();
+    }
+  }
 
 })   

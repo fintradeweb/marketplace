@@ -114,9 +114,10 @@ class InformationController extends Controller{
                                          ->withErrors($validator);    
       }
       else{            
-        $result = \App\Models\Businessinformation::registrar($request);                     
-        if ($result->_error == 0 && $result->_msg == "ok"){                                
-          Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));     
+        $result = \App\Models\Businessinformation::registrar($request);
+        if ($result->_error == 0 && $result->_msg == "ok"){ 
+          $user = \App\Models\User::where('email',$request->input('email'))->first();
+          Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));   
           return view('ownership.index');  
         }
         else{
@@ -126,7 +127,7 @@ class InformationController extends Controller{
     }
     catch(\Exception $e){      
       $error = $e->getMessage(); 
-      return view('information.create')->with('nombre',$request->input('name'))  
+      return view('information.create')->with('name',$request->input('name'))  
                                         ->with('token',$request->input('token'))     
                                         ->with('email',$request->input('email'))
                                         ->with('ruc_tax',$request->input('ruc_tax'))

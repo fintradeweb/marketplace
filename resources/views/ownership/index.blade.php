@@ -39,7 +39,7 @@
             <tbody>                       
             </tbody>
           </table> 
-          <form action="" method="POST" id="frm_createownership">
+          <form action="{{ route('management.create') }}" method="POST" id="frm_createownership">
             @csrf 
             <input type="hidden" name="hdnname[]" value="">
             <input type="hidden" name="hdnidno[]" value="">
