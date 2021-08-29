@@ -36,12 +36,11 @@ class Businessinformation extends Model {
         $is_seller = $request->input('is_buyer');
     }
 
-    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('name'),
                     $request->input('email'),
                     $clave,
-                    $clave2,
                     $request->input('ruc_tax'),
                     $request->input('date_company'),
                     $request->input('contact_name'),
@@ -64,7 +63,8 @@ class Businessinformation extends Model {
                     $error,
                     $id
                 ]);
-    return $result[0];
+    $result[1] =  $clave2;
+    return $result;
   }
 
   public static function actualizar($request,$codigo){

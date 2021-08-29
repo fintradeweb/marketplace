@@ -17,23 +17,23 @@ class AdminUserSeeder extends Seeder
     public function run()
     {
         $user1 = User::create([
-            'name' => 'Fernanda Fueltala', 
+            'name' => 'Fernanda Fueltala',
             'email' => 'ffueltala@fintradeweb.com',
-            'password' => bcrypt('password'),
-            'email_verified_at' => now(),
-            'remember_token' => Str::random(10),
-            'status' => 1            
-        ]);
-
-        $user2 = User::create([
-            'name' => 'Miguel Flores', 
-            'email' => 'mflores@fintradeweb.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
             'status' => 1
         ]);
-    
+
+        $user2 = User::create([
+            'name' => 'Miguel Flores',
+            'email' => 'mflores1@fintradeweb.com',
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
+            'remember_token' => Str::random(10),
+            'status' => 1
+        ]);
+
         $role = Role::create(['name' => 'Admin']);
         $user1->assignRole([$role->id]);
         $user2->assignRole([$role->id]);

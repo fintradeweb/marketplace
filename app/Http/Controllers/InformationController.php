@@ -115,13 +115,15 @@ class InformationController extends Controller{
       }
       else{
         $result = \App\Models\Businessinformation::registrar($request);
-        if ($result->_error == 0 && $result->_msg == "ok"){
+        if ($result[0]->_error == 0 && $result[0]->_msg == "ok"){
           $user = \App\Models\User::where('email',$request->input('email'))->first();
+          //$user->email = $request->input('email');
+          $user->password = $result[1];
           Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
           return view('ownership.index');
         }
         else{
-          throw new \Exception($result->_msg);
+          throw new \Exception($result[0]->_msg);
         }
       }
     }

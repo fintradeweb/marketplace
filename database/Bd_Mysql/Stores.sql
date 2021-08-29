@@ -409,7 +409,7 @@ SET @is_buyer = '0';
 SET @is_seller = '';
 SET @error = '';
 SET @id = 0;
-CALL Insert_businessinformation(@name,@email,@clave,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@is_buyer ,@is_seller ,@msg,@error,@id);
+CALL Insert_businessinformation(@name,@email,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@is_buyer ,@is_seller ,@msg,@error,@id);
 SELECT @msg,@error,@id;
   
  */
@@ -420,7 +420,6 @@ create  PROCEDURE Insert_businessinformation(
                                 IN _name varchar(255),
                                 IN _email varchar(255),
                                 IN _clave varchar(255),
-                                IN _clave2 varchar(255),
                                 IN _taxid varchar(255),
                                 IN _datecompany varchar(255),
                                 IN _contactname varchar(255),
@@ -602,7 +601,7 @@ sp:BEGIN
 		   end if; 
 		
 		 
-	       insert into users(name,email,password,first_password,created_at,status) values(_name,_email,_clave,_clave2,now(),1);
+	       insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
 		   select  LAST_INSERT_ID() into b_usuario_id;
 		      
 		      

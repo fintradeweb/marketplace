@@ -10,7 +10,7 @@
   <p>These are the user's data to access the platform:</p>
   <ul>
     <li>Email: {{ $usuarioCall->email }}</li>
-    <li>Password: {{ $usuarioCall->first_password }}</li>
+    <li>Password: {{ $usuarioCall->password }}</li>
   </ul>
   <ul>
     <li>
