@@ -243,7 +243,10 @@ BEGIN
 END;
 //
 DELIMITER ;
-
+/*
+ call Get_existe_user('mflores@fintradeweb.com')
+ * 
+ */
 
 DROP PROCEDURE IF EXISTS Get_existe_user;
 DELIMITER //
@@ -253,6 +256,7 @@ BEGIN
 	  exists(
 			select 1
 		    from users c
+		    inner join businessinformations b on b.user_id  = c.id 
 		    WHERE c.email = s_mail
 		   )
     then
@@ -304,7 +308,9 @@ BEGIN
 	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
 	       case u.status when 1 then 'true' else 'false' end  status_user,
-           case c2.active when 1 then 'true' else 'false' end status_client
+           case c2.active when 1 then 'true' else 'false' end status_client,
+           case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
+           case m.is_seller when 1 then 'true' else 'false' end is_seller
 	
     from businessinformations m 
     inner join users u on u.id =m.user_id 
@@ -356,7 +362,9 @@ BEGIN
            case u.status when 1 then 'true' else 'false' end  status_user,
            case c2.active when 1 then 'true' else 'false' end status_client,
            DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
-	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
+           case m.is_seller when 1 then 'true' else 'false' end is_seller
 	
     from businessinformations m 
     inner join users u on u.id  = m.user_id 
@@ -397,9 +405,11 @@ SET @dba = 'a';
 SET @cellphone = 'a';
 SET @token = 'QQUGvNKrwR';
 SET @msg = '';
+SET @is_buyer = '0';
+SET @is_seller = '';
 SET @error = '';
 SET @id = 0;
-CALL Insert_businessinformation(@name,@email,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@msg,@error,@id);
+CALL Insert_businessinformation(@name,@email,@clave,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@is_buyer ,@is_seller ,@msg,@error,@id);
 SELECT @msg,@error,@id;
   
  */
@@ -410,6 +420,7 @@ create  PROCEDURE Insert_businessinformation(
                                 IN _name varchar(255),
                                 IN _email varchar(255),
                                 IN _clave varchar(255),
+                                IN _clave2 varchar(255),
                                 IN _taxid varchar(255),
                                 IN _datecompany varchar(255),
                                 IN _contactname varchar(255),
@@ -426,6 +437,8 @@ create  PROCEDURE Insert_businessinformation(
                                 IN _dba varchar(255),
                                 IN _cellphone varchar(255),
                                 IN _token varchar(255),
+                                IN _is_buyer varchar(255),
+                                IN _is_seller varchar(255),
                                 OUT _msg varchar(255),
                                 OUT _error tinyint ,
                                 OUT _id bigint
@@ -440,6 +453,8 @@ sp:BEGIN
 	   declare b_rol_id bigint;
 	   declare s_modelo varchar(255);
 	   declare b_city_id bigint;
+	   declare t_is_buyer tinyint;
+	   declare t_is_seller tinyint;
 	   declare d_datecompany date;
 	   DECLARE exit HANDLER FOR SQLEXCEPTION 
 	   
@@ -457,6 +472,26 @@ sp:BEGIN
 	      select 0 into _id;
 	      select 0 into b_rol_id;
 	      select '' into s_modelo;
+	      select 0 into t_is_buyer;
+	      select 0 into t_is_seller;
+	      if trim(ifnull(_is_buyer,''))='' then
+		        select 1 into _error;
+		        select 'Error, el is Buyer es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		  if trim(ifnull(_is_seller,''))='' then
+		        select 1 into _error;
+		        select 'Error, el is Seller es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		  end if;
+		  if upper(trim(_is_seller))='true' or trim(_is_seller)='1' then
+		        select 1 into _is_seller;
+		  end if;
+		  if upper(trim(_is_buyer))='true' or trim(_is_buyer)='1' then
+		        select 1 into _is_buyer;
+		  end if;
 	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
 		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
@@ -559,18 +594,19 @@ sp:BEGIN
 		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
 		         WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id;
 		   
-		   
-		
-		   
 		   if exists(select 1 from users u  WHERE u.email = _email) then
-		     select id into b_usuario_id from users u2 where u2.email = _email;
-	         update users  set updated_at =now(),password =_clave, name = _name where id = b_usuario_id;
-	       else
-	          insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
-		      select  LAST_INSERT_ID() into b_usuario_id;
-		      
-		      
+			  select 1 into _error;
+			        select 'Error, usuario ya existe.' into _msg;
+			        select _error,_msg,_id;
+			        LEAVE sp2;
 		   end if; 
+		
+		 
+	       insert into users(name,email,password,first_password,created_at,status) values(_name,_email,_clave,_clave2,now(),1);
+		   select  LAST_INSERT_ID() into b_usuario_id;
+		      
+		      
+		  
 		  if not exists(select 1 from model_has_roles where model_id= b_usuario_id) then
 		       select 0 into b_rol_id;
 	           select '' into s_modelo; 
@@ -626,7 +662,9 @@ sp:BEGIN
 		                 client_id,
 		                 country_id,
 		                 state_id,
-		                 city_id)
+		                 city_id,
+		                 is_buyer,
+		                 is_seller)
 		       values(
 		               now(),
 		               _name,
@@ -646,7 +684,9 @@ sp:BEGIN
 		               b_client_id,
 		               b_country_id,
 		               b_state_id,
-		               b_city_id
+		               b_city_id,
+		               t_is_buyer,
+		               t_is_seller
 		            );
 		   
 		   select  LAST_INSERT_ID() into _id;
@@ -686,8 +726,10 @@ SET @secretary = 'a';
 SET @dba = 'a';
 SET @cellphone = 'a';
 SET @msg = '';
+SET @is_buyer = '';
+SET @is_seller = '';
 SET @error = '';
-CALL Update_businessinformation(@id,@name,@email,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@msg,@error);
+CALL Update_businessinformation(@id,@name,@email,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@is_buyer ,@is_seller @msg,@error);
 SELECT @msg,@error;
 
 */
@@ -713,6 +755,8 @@ create  PROCEDURE Update_businessinformation(
                                 IN _secretaryname varchar(255),
                                 IN _dba varchar(255),
                                 IN _cellphone varchar(255),
+                                IN _is_buyer varchar(255),
+                                IN _is_seller varchar(255),
                                 OUT _msg varchar(255),
                                 OUT _error tinyint
                                 )
@@ -725,6 +769,8 @@ sp:BEGIN
 	   declare b_state_id bigint;
 	   declare b_city_id bigint;
 	   declare d_datecompany date;
+	   declare t_is_buyer tinyint;
+	   declare t_is_seller tinyint;
 	   DECLARE exit HANDLER FOR SQLEXCEPTION 
 	   
 	   sp1:begin
@@ -738,6 +784,26 @@ sp:BEGIN
        end;
       
       sp2:begin 
+	      select 0 into t_is_buyer;
+	      select 0 into t_is_seller;
+	      if trim(ifnull(_is_buyer,''))='' then
+		        select 1 into _error;
+		        select 'Error, el is Buyer es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		   end if;
+		  if trim(ifnull(_is_seller,''))='' then
+		        select 1 into _error;
+		        select 'Error, el is Seller es obligatorio.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+		  end if;
+		  if upper(trim(_is_seller))='true' or trim(_is_seller)='1' then
+		        select 1 into _is_seller;
+		  end if;
+		  if upper(trim(_is_buyer))='true' or trim(_is_buyer)='1' then
+		        select 1 into _is_buyer;
+		  end if;
 	      if not exists(select 1 from businessinformations c WHERE c.id = _id_bi) then
 		   		select 1 into _error;
 		        select 'Error, businessinformations no existe.' into _msg;
@@ -877,7 +943,9 @@ sp:BEGIN
 		                 cell_phone = _cellphone,
 		                 country_id = b_country_id,
 		                 state_id = b_state_id,
-		                 city_id = b_city_id
+		                 city_id = b_city_id,
+		                 is_buyer = t_is_buyer,
+		                 is_seller = t_is_seller
 		  where id = _id_bi;
 		   
 		  

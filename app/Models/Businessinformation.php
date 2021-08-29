@@ -18,19 +18,30 @@ class Businessinformation extends Model {
     $result = DB::select("call Get_businessinformation_client_user(?,?)",[$email,$token]);
     return $result[0];
   }
-  
+
   public static function registrar($request) {
     $error=0;
     $msg= "";
     $id = 0;
+    $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
 
-    $clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
+    $clave = Hash::make($clave2);
 
-    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    $is_buyer = "0";
+    if(!empty($request->input('is_buyer'))){
+        $is_buyer = $request->input('is_buyer');
+    }
+    $is_seller = "0";
+    if(!empty($request->input('is_buyer'))){
+        $is_seller = $request->input('is_buyer');
+    }
+
+    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('name'),
                     $request->input('email'),
                     $clave,
+                    $clave2,
                     $request->input('ruc_tax'),
                     $request->input('date_company'),
                     $request->input('contact_name'),
@@ -47,6 +58,8 @@ class Businessinformation extends Model {
                     $request->input('dba'),
                     $request->input('cell_phone'),
                     $request->input('token'),
+                    $is_buyer,
+                    $is_seller,
                     $msg,
                     $error,
                     $id
@@ -58,9 +71,18 @@ class Businessinformation extends Model {
       $error="0";
       $msg= "";
 
-     // $clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
+      $is_buyer = "0";
+      if(!empty($request->input('is_buyer'))){
+        $is_buyer = $request->input('is_buyer');
+      }
+      $is_seller = "0";
+      if(!empty($request->input('is_buyer'))){
+        $is_seller = $request->input('is_buyer');
+      }
 
-      $result = DB::select('call Update_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+
+
+      $result = DB::select('call Update_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,
                         $request->input('name'),
@@ -80,6 +102,8 @@ class Businessinformation extends Model {
                         $request->input('secretary_name'),
                         $request->input('dba'),
                         $request->input('cell_phone'),
+                        $is_buyer,
+                        $is_seller,
                         $msg,
                         $error
 
