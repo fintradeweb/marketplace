@@ -7,29 +7,29 @@ use Illuminate\Support\Str;
 //use Illuminate\Support\Facades\DB;
 
 class InformationController extends Controller{
-      
-  public function index(Request $request){    
+
+  public function index(Request $request){
     try{
       if (empty($request->input('token'))){
         throw new \Exception("Error, token is empty.");
-        
+
       }
-      $client = \App\Models\Client::valida_token($request->input('token'));      
+      $client = \App\Models\Client::valida_token($request->input('token'));
       if ($client->error == 1){
         throw new \Exception("Error, company not registered in marketplace.");
-      }      
+      }
 
-      $usuario = \App\Models\User::existe_usuario($request->input('txt_email'));         
-            
-      if($usuario->existe == 1){ 
+      $usuario = \App\Models\User::existe_usuario($request->input('txt_email'));
+
+      if($usuario->existe == 1){
         $user = \App\Models\User::where('email',$request->input('txt_email'))->first();
-        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first(); 
+        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first();
 
         return view('information.edit')->with('user', $user)
-                                       ->with('business',$business)                                       
+                                       ->with('business',$business)
                                        ->with('token',$request->input('token'));
       }
-      else{           
+      else{
         return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
                                          ->with('email',$request->input('txt_email'))
@@ -41,7 +41,7 @@ class InformationController extends Controller{
                                          ->with('country_id',$request->input('txt_country'))
                                          ->with('state_id',$request->input('txt_state'))
                                          ->with('address',$request->input('txt_address'))
-                                         ->with('city_id',$request->input('txt_city'))        
+                                         ->with('city_id',$request->input('txt_city'))
                                          ->with('dba',$request->input('txt_dba'))
                                          ->with('phone',$request->input('txt_phone'))
                                          ->with('website',$request->input('txt_website'))
@@ -49,10 +49,10 @@ class InformationController extends Controller{
                                          ->with('cell_phone',$request->input('txt_cellphone'))
                                          ->with('secretary_name',$request->input('txt_secretaryname'));
       }
-      $error = ""; 
+      $error = "";
     }
     catch(\Exception $e){
-      $error = $e->getMessage();      
+      $error = $e->getMessage();
     }
     return view('information.index', [
       'error' => $error
@@ -67,11 +67,11 @@ class InformationController extends Controller{
   public function create(){
     //
   }
-  
+
   public function store(Request $request){
-    $error = "";   
-    
-    try{               
+    $error = "";
+
+    try{
       $validator = Validator::make($request->all(), [
         'name' => 'required|max:255',
         'email' => 'required|unique:users|email',
@@ -88,13 +88,13 @@ class InformationController extends Controller{
         'address' => 'required|max:255',
         'cell_phone' => 'nullable|max:255',
         'website' => 'nullable|max:255',
-        'dba' => 'nullable|max:255',        
+        'dba' => 'nullable|max:255',
         'secretary_name' => 'nullable|max:255',
       ]);
-            
+
       if ($validator->fails()) {
-        return view('information.create')->with('name',$request->input('name'))  
-                                         ->with('token',$request->input('token'))     
+        return view('information.create')->with('name',$request->input('name'))
+                                         ->with('token',$request->input('token'))
                                          ->with('email',$request->input('email'))
                                          ->with('ruc_tax',$request->input('ruc_tax'))
                                          ->with('date_company',$request->input('date_company'))
@@ -111,24 +111,26 @@ class InformationController extends Controller{
                                          ->with('president_name',$request->input('president_name'))
                                          ->with('cell_phone',$request->input('cell_phone'))
                                          ->with('secretary_name',$request->input('secretary_name'))
-                                         ->withErrors($validator);    
+                                         ->withErrors($validator);
       }
-      else{            
+      else{
         $result = \App\Models\Businessinformation::registrar($request);
-        if ($result->_error == 0 && $result->_msg == "ok"){ 
+        if ($result[0]->_error == 0 && $result[0]->_msg == "ok"){
           $user = \App\Models\User::where('email',$request->input('email'))->first();
-          Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));   
-          return view('ownership.index');  
+          //$user->email = $request->input('email');
+          $user->password = $result[1];
+          Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
+          return view('ownership.index');
         }
         else{
-          throw new \Exception("There was an error creating the user!");
-        }       
+          throw new \Exception($result[0]->_msg);
+        }
       }
     }
-    catch(\Exception $e){      
-      $error = $e->getMessage(); 
-      return view('information.create')->with('name',$request->input('name'))  
-                                        ->with('token',$request->input('token'))     
+    catch(\Exception $e){
+      $error = $e->getMessage();
+      return view('information.create')->with('name',$request->input('name'))
+                                        ->with('token',$request->input('token'))
                                         ->with('email',$request->input('email'))
                                         ->with('ruc_tax',$request->input('ruc_tax'))
                                         ->with('date_company',$request->input('date_company'))
@@ -145,8 +147,8 @@ class InformationController extends Controller{
                                         ->with('president_name',$request->input('president_name'))
                                         ->with('cell_phone',$request->input('cell_phone'))
                                         ->with('secretary_name',$request->input('secretary_name'))
-                                       ->withErrors($error);   
-    }           
+                                       ->withErrors($error);
+    }
   }
 
   /**
@@ -156,7 +158,7 @@ class InformationController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function show($id){
-       
+
   }
 
   /**
@@ -178,15 +180,15 @@ class InformationController extends Controller{
   */
   public function update(Request $request){
     $error = "";
-    try{         
+    try{
       $objuser = new \App\Models\User;
-      $user = $objuser::find($request->input('user_id'));      
+      $user = $objuser::find($request->input('user_id'));
       $user->name = $request->input('name');
-      $user->email = $request->input('email');        
+      $user->email = $request->input('email');
       $user->updated_at = date("Y-m-d H:i:s");
 
       $objbusiness = new \App\Models\Businessinformation;
-      $business = $objbusiness::find($request->input('business_id'));    
+      $business = $objbusiness::find($request->input('business_id'));
       $business->ruc_tax = $request->input('ruc_tax');
       $business->date_company = $request->input('date_company');
       $business->contact_name = $request->input('contact_name');
@@ -219,33 +221,33 @@ class InformationController extends Controller{
         'address' => 'required|max:255',
         'cell_phone' => 'nullable|max:255',
         'website' => 'nullable|max:255',
-        'dba' => 'nullable|max:255',        
+        'dba' => 'nullable|max:255',
         'secretary_name' => 'nullable|max:255',
       ]);
-      
-      if ($validator->fails()) {        
+
+      if ($validator->fails()) {
         return view('information.edit')->with('user',$user)
-                                       ->with('business',$business)      
+                                       ->with('business',$business)
                                        ->with('token',$request->input('token'))
                                        ->withErrors($validator);
       }
-      else{      
+      else{
         $result = \App\Models\Businessinformation::actualizar($request,$request->input('business_id'));
-        if ($result->_error == 0 && $result->_msg == "ok"){                                          
-          return view('ownership.index');  
-        }        
+        if ($result->_error == 0 && $result->_msg == "ok"){
+          return view('ownership.index');
+        }
         else{
-          throw new \Exception("There was an error editing the user!");
-        }       
+          throw new \Exception($result->_msg);
+        }
       }
     }
-    catch(\Exception $e){      
+    catch(\Exception $e){
       $error = $e->getMessage();
       return view('information.edit')->with('user',$user)
-                                     ->with('business',$business)                                     
+                                     ->with('business',$business)
                                      ->with('token',$request->input('token'))
-                                     ->withErrors($error);      
-    } 
+                                     ->withErrors($error);
+    }
   }
 
   /**
