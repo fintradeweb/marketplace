@@ -35,5 +35,5 @@ Route::group(['middleware' => ['role:SuperAdmin']], function () {
 
 Route::group(['middleware' => ['role:Admin']], function () {
   //rutas accesibles solo para clientes
-  Route::resource('clients', App\Http\Controllers\ClientsController::class);
+  //Route::resource('clients', App\Http\Controllers\ClientsController::class);
 });

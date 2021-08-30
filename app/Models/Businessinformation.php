@@ -24,7 +24,9 @@ class Businessinformation extends Model {
     $msg= "";
     $id = 0;
 
-    $clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
+    //$clave = Hash::make("MARKET" .  Str::random(5) . "PLACE" . date('Y-m-d H:i:s'));
+    $clavesinencriptar = Str::random(5);
+    $claveencriptada = bcrypt($clavesinencriptar);
 
     $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [

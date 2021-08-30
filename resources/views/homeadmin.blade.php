@@ -9,7 +9,7 @@
         <a href="/home" class="list-group-item list-group-item-action active">
           Home
         </a>
-        <a href="/clients" class="list-group-item list-group-item-action">Clients</a>
+        <!--<a href="/clients" class="list-group-item list-group-item-action">Clients</a>-->
       </div> 
     </div>
   </div>

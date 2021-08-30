@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use DB;
 
-class Management extends Model {
+class Managment extends Model {
 
   protected $table = 'managments';
 

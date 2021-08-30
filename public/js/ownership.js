@@ -249,6 +249,6 @@ window.addEventListener('load', function() {
       });
       $("#frm_createownership").submit();
     }
-  }
+  });
 
 })   
