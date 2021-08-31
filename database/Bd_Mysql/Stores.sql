@@ -223,6 +223,12 @@ END;
 //
 DELIMITER ;
 
+/*
+ set @s_token='TdpbeSGsdsg3g';
+ call Get_client_token(@s_token);
+ 
+ */
+
 DROP PROCEDURE IF EXISTS Get_client_token;
 DELIMITER //
 create  PROCEDURE Get_client_token(IN s_token varchar(200))
@@ -231,7 +237,8 @@ BEGIN
 	  exists(
 			select 1
 		    from clients c
-		    WHERE c.token = s_token
+		    WHERE c.token = s_token AND  
+		          c.active = 1
 		   )
     then
     	select 0 as error,'' as msg ;
@@ -386,9 +393,9 @@ DELIMITER ;
 /*
 
 SET @name = '11user nuevo';
-SET @email = '11nuevoa457812@aaa.com';
+SET @email = '2aa11nuevoa457812@aaa.com';
 SET @clave = '$2y$10$YSjPChBAf6yLym4aKhveQeYTxsbCuPuNS9nHu5aGYKcsSrkDHM3sy';
-SET @taxid = '11a12311';
+SET @taxid = 'aa11a12311';
 SET @datecompany = '1982-06-28';
 SET @contactname = 'a';
 SET @zipcode = 'a';
@@ -403,10 +410,10 @@ SET @website = 'http://www.aa.com';
 SET @secretary = 'a';
 SET @dba = 'a';
 SET @cellphone = 'a';
-SET @token = 'QQUGvNKrwR';
+SET @token = 'TdpbeSGg3g';
 SET @msg = '';
-SET @is_buyer = '0';
-SET @is_seller = '';
+SET @is_buyer = 'true';
+SET @is_seller = 'false';
 SET @error = '';
 SET @id = 0;
 CALL Insert_businessinformation(@name,@email,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@is_buyer ,@is_seller ,@msg,@error,@id);
@@ -486,10 +493,10 @@ sp:BEGIN
 		        LEAVE sp2;
 		  end if;
 		  if upper(trim(_is_seller))='true' or trim(_is_seller)='1' then
-		        select 1 into _is_seller;
+		        select 1 into t_is_seller;
 		  end if;
 		  if upper(trim(_is_buyer))='true' or trim(_is_buyer)='1' then
-		        select 1 into _is_buyer;
+		        select 1 into t_is_buyer;
 		  end if;
 	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
@@ -798,10 +805,10 @@ sp:BEGIN
 		        LEAVE sp2;
 		  end if;
 		  if upper(trim(_is_seller))='true' or trim(_is_seller)='1' then
-		        select 1 into _is_seller;
+		        select 1 into t_is_seller;
 		  end if;
 		  if upper(trim(_is_buyer))='true' or trim(_is_buyer)='1' then
-		        select 1 into _is_buyer;
+		        select 1 into t_is_buyer;
 		  end if;
 	      if not exists(select 1 from businessinformations c WHERE c.id = _id_bi) then
 		   		select 1 into _error;
