@@ -62,6 +62,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Date Company Was Established: <span class="text-danger">(*)</span></strong>
+              <!--<input type="text" name="date_company" id="date_company" class="form-control @error('date_company') is-invalid @enderror" value="{{ $business->date_company }}" placeholder="">-->
               <input type="text" name="date_company" id="date_company" class="form-control @error('date_company') is-invalid @enderror" value="{{ $business->date_company }}" placeholder="">
               <span class="font-italic text-info">Ex: 2021-08-17</span>
               @error('date_company')
@@ -120,7 +121,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Country: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="country_id" id="country_id" class="form-control @error('country_id') is-invalid @enderror" value="{{ $business->country_id }}" placeholder="">
+              <input type="text" name="country_id" id="country_id" class="form-control @error('country_id') is-invalid @enderror" value="{{ $business->country }}" placeholder="">
               @error('country_id')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
@@ -133,7 +134,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>State: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="state_id" id="state_id" class="form-control @error('state_id') is-invalid @enderror" value="{{ $business->state_id }}" placeholder="">
+              <input type="text" name="state_id" id="state_id" class="form-control @error('state_id') is-invalid @enderror" value="{{ $business->state }}" placeholder="">
               @error('state_id')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
@@ -144,7 +145,7 @@
           <div class="col-xs-12 col-sm-4 col-md-4">            
             <div class="form-group">
               <strong>City: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="city_id" id="city_id" class="form-control @error('city_id') is-invalid @enderror" value="{{ $business->city_id }}" placeholder="">
+              <input type="text" name="city_id" id="city_id" class="form-control @error('city_id') is-invalid @enderror" value="{{ $business->city }}" placeholder="">
               @error('city_id')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>

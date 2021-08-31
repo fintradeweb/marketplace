@@ -28,7 +28,9 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Name: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="name" id="name" class="form-control" value="{{ $name }}" placeholder="">              
+              <input type="text" name="name" id="name" class="form-control" value="{{ $name }}" placeholder="">
+              <input type="hidden" name="is_buyer" id="is_buyer" value="{{ $is_buyer }}">
+              <input type="hidden" name="is_seller" id="is_seller" value="{{ $is_seller }}">
             </div>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">

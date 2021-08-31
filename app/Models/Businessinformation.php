@@ -27,14 +27,14 @@ class Businessinformation extends Model {
 
     $clave = Hash::make($clave2);
 
-    $is_buyer = "0";
-    if(!empty($request->input('is_buyer'))){
-        $is_buyer = $request->input('is_buyer');
-    }
-    $is_seller = "0";
-    if(!empty($request->input('is_buyer'))){
-        $is_seller = $request->input('is_buyer');
-    }
+    //$is_buyer = "0";
+    //if(!empty($request->input('is_buyer'))){
+    //  $is_buyer = $request->input('is_buyer');
+    //}
+    //$is_seller = "0";
+    //if(!empty($request->input('is_seller'))){
+    //  $is_seller = $request->input('is_seller');
+    //}
 
     $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
@@ -57,8 +57,8 @@ class Businessinformation extends Model {
                     $request->input('dba'),
                     $request->input('cell_phone'),
                     $request->input('token'),
-                    $is_buyer,
-                    $is_seller,
+                    $request->input('is_buyer'),
+                    $request->input('is_seller'),
                     $msg,
                     $error,
                     $id

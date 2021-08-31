@@ -23,13 +23,21 @@ class InformationController extends Controller{
 
       if($usuario->existe == 1){
         $user = \App\Models\User::where('email',$request->input('txt_email'))->first();
-        $business = \App\Models\Businessinformation::where('user_id',$user->id)->first();
+        //$business = \App\Models\Businessinformation::where('user_id',$user->id)->first();
+        $business = \App\Models\Businessinformation::consulta_todos($request->input('txt_email'),$request->input('token'));        
+        if (empty($business)){
+          throw new \Exception("Error, user already registered in marketplace with different role.");
+        }
 
         return view('information.edit')->with('user', $user)
                                        ->with('business',$business)
                                        ->with('token',$request->input('token'));
       }
       else{
+        
+        $is_buyer = ($request->input('txt_typeuser') == "Buyer") ? 1 : 0;
+        $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;
+        
         return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
                                          ->with('email',$request->input('txt_email'))
@@ -47,7 +55,9 @@ class InformationController extends Controller{
                                          ->with('website',$request->input('txt_website'))
                                          ->with('president_name',$request->input('txt_presidentname'))
                                          ->with('cell_phone',$request->input('txt_cellphone'))
-                                         ->with('secretary_name',$request->input('txt_secretaryname'));
+                                         ->with('secretary_name',$request->input('txt_secretaryname'))
+                                         ->with('is_buyer',$is_buyer)
+                                         ->with('is_seller',$is_seller);
       }
       $error = "";
     }
@@ -89,7 +99,7 @@ class InformationController extends Controller{
         'cell_phone' => 'nullable|max:255',
         'website' => 'nullable|max:255',
         'dba' => 'nullable|max:255',
-        'secretary_name' => 'nullable|max:255',
+        'secretary_name' => 'nullable|max:255'
       ]);
 
       if ($validator->fails()) {
@@ -111,6 +121,8 @@ class InformationController extends Controller{
                                          ->with('president_name',$request->input('president_name'))
                                          ->with('cell_phone',$request->input('cell_phone'))
                                          ->with('secretary_name',$request->input('secretary_name'))
+                                         ->with('is_buyer',$request->input('is_buyer'))
+                                         ->with('is_seller',$request->input('is_seller'))
                                          ->withErrors($validator);
       }
       else{
@@ -123,7 +135,7 @@ class InformationController extends Controller{
           return view('ownership.index');
         }
         else{
-          throw new \Exception($result[0]->_msg);
+          throw new \Exception("There was an error creating the user!");
         }
       }
     }
@@ -147,7 +159,9 @@ class InformationController extends Controller{
                                         ->with('president_name',$request->input('president_name'))
                                         ->with('cell_phone',$request->input('cell_phone'))
                                         ->with('secretary_name',$request->input('secretary_name'))
-                                       ->withErrors($error);
+                                        ->with('is_buyer',$request->input('is_buyer'))
+                                        ->with('is_seller',$request->input('is_seller'))
+                                        ->withErrors($error);
     }
   }
 
@@ -237,7 +251,7 @@ class InformationController extends Controller{
           return view('ownership.index');
         }
         else{
-          throw new \Exception($result->_msg);
+          throw new \Exception("There was an error editing the user!");
         }
       }
     }
