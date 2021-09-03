@@ -27,10 +27,10 @@ class Managment extends Model {
                 [
                     $request->input('name'),
                     $request->input('email'),
-                    $request->input('idno'),
+                    $request->input('idnumber'),
                     $request->input('position'),
                     $request->input('percentage'),
-                    $request->input('birthday'),
+                    $request->input('birthdate'),
                     $request->input('token'),
                     $msg,
                     $error,

@@ -16,7 +16,7 @@ class Businessinformation extends Model {
 
   public static function consulta_todos($email,$token) {
     $result = DB::select("call Get_businessinformation_client_user(?,?)",[$email,$token]);
-    return $result[0];
+    return ((isset($result[0])) ? $result[0] : false);
   }
 
   public static function registrar($request) {

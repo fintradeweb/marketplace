@@ -19,12 +19,11 @@
   <div class="row justify-content-center"> 
     <div class="row col-md-10 p-4 text-center">
       <div class="col-md-12"><h5>Management / Ownership</h5></div>
-      <div class="col-md-12">The values ​​must be equal to or greater than 25%, and a maximum of 4 values</div>
-      <input type="hidden" name="nro" id="nro" value="1">        
+      <div class="col-md-12">The values ​​must be equal to or greater than 25%, and a maximum of 4 values</div>   
     </div> 
     <div class="col-md-12 p-4">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-md-8">
+        <div class="col-xs-12 col-sm-8 col-md-8 text-center">
           <table class="table table-hover table-bordered" id="tblowner">
             <thead>
               <tr>
@@ -36,22 +35,26 @@
                 <th width="10%">Remove</th>              
               </tr>        
             </thead>
-            <tbody>                       
+            <tbody>
+             @foreach ($records as $record)  
+               <tr>
+                <td>{{ $record->name }}</td>
+                <td>{{ $record->idno }}</td>
+                <td>{{ $record->percentage }}</td>
+                <td>{{ $record->position }}</td>
+                <td>{{ $record->birthdate }}</td>
+                <td align="center"><a href=""><i class='fa fa-trash-o'></i></a> </td>
+              </tr>
+             @endforeach  
+            <!--consulta de los ownershio de ese usuario ingresados-->                       
             </tbody>
           </table> 
-          <form action="{{ route('managment.create') }}" method="POST" id="frm_createownership">
-            @csrf 
-            <input type="hidden" name="hdnname[]" value="">
-            <input type="hidden" name="hdnidno[]" value="">
-            <input type="hidden" name="hdnpercentage[]" value="">
-            <input type="hidden" name="hdnposition[]" value="">
-            <input type="hidden" name="hdnbirthdate[]" value="">
-            <button type="button" class="btn btn-primary" id="btn_save" style="display:none;">Save</button>
-          </form> 
         </div>
         
         <div class="col-xs-12 col-sm-4 col-md-4">
-          <!--<form action="/ownership/create" method="POST" id="frm_createownership">-->
+          <form action="{{ route('managment.store') }}" method="POST" id="frm_createownership">
+            <input type="hidden" name="token" id="token" value="{{ $token }}">  
+            <input type="hidden" name="email" id="email" value="{{ $email }}">     
             @csrf            
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
@@ -99,9 +102,9 @@
               </div>
             </div>          
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-              <button type="button" class="btn btn-primary" id="btn_add">Save</button>
+              <button type="button" class="btn btn-primary" id="btn_save">Save</button>
             </div>          
-          <!--</form>-->
+          </form>
         </div>      
       </div>
     </div>  

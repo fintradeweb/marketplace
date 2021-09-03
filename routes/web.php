@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/information', [App\Http\Controllers\InformationController::class, 'index']);
 Route::post('/information/create', [App\Http\Controllers\InformationController::class, 'store'])->name('information.create');
-Route::post('/management/create', [App\Http\Controllers\ManagmentController::class, 'store'])->name('managment.create');
+Route::post('/management', [App\Http\Controllers\ManagmentController::class, 'store'])->name('managment.store');
+Route::get('/management/create/{email}/{token}', [App\Http\Controllers\ManagmentController::class, 'create'])->name('managment.create');
 Route::put('/information/edit', [App\Http\Controllers\InformationController::class, 'update'])->name('information.edit');
 
 Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);

@@ -19,25 +19,24 @@ class InformationController extends Controller{
         throw new \Exception("Error, company not registered in marketplace.");
       }
 
-      $usuario = \App\Models\User::existe_usuario($request->input('txt_email'));
-
-      if($usuario->existe == 1){
-        $user = \App\Models\User::where('email',$request->input('txt_email'))->first();
-        //$business = \App\Models\Businessinformation::where('user_id',$user->id)->first();
-        $business = \App\Models\Businessinformation::consulta_todos($request->input('txt_email'),$request->input('token'));        
+      //$usuario = \App\Models\User::existe_usuario($request->input('txt_email'));
+      $usuario = \App\Models\User::where('email',$request->input('txt_email'))->first();
+  
+      //if($usuario->existe == 1){
+      if(!empty($usuario)){
+        $business = \App\Models\Businessinformation::consulta_todos($request->input('txt_email'),$request->input('token'));   
+ 
         if (empty($business)){
           throw new \Exception("Error, user already registered in marketplace with different role.");
         }
-
-        return view('information.edit')->with('user', $user)
+        $business->date_company = substr($business->date_company,0,10);
+        return view('information.edit')->with('user', $usuario)
                                        ->with('business',$business)
                                        ->with('token',$request->input('token'));
       }
       else{
-        
         $is_buyer = ($request->input('txt_typeuser') == "Buyer") ? 1 : 0;
-        $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;
-        
+        $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;  
         return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
                                          ->with('email',$request->input('txt_email'))
@@ -132,7 +131,7 @@ class InformationController extends Controller{
           //$user->email = $request->input('email');
           $user->password = $result[1];
           Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
-          return view('ownership.index');
+          return redirect('/management/create/'.$request->input('email').'/'.$request->input('token'));
         }
         else{
           throw new \Exception("There was an error creating the user!");
@@ -248,7 +247,8 @@ class InformationController extends Controller{
       else{
         $result = \App\Models\Businessinformation::actualizar($request,$request->input('business_id'));
         if ($result->_error == 0 && $result->_msg == "ok"){
-          return view('ownership.index');
+          return redirect('/management/create/'.$user->email.'/'.$request->input('token'));
+          
         }
         else{
           throw new \Exception("There was an error editing the user!");

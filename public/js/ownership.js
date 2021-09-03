@@ -143,7 +143,7 @@ window.addEventListener('load', function() {
     $("#nro").val(nro);
   }
   
-  $("#btn_add").click(function(){
+  $("#btn_save").click(function(){
     var msg = [];
     var ids = [];
 
@@ -204,41 +204,11 @@ window.addEventListener('load', function() {
       });
     }
     else{
-      var values = [];      
-      values.push($("#name").val());
-      values.push($("#idnumber").val());
-      values.push($("#percentage").val());
-      values.push($("#position").val());
-      values.push($("#birthdate").val());
-      
-      agregarFila(values); 
-      
-      /*valname.push($("#name").val());
-      validnumber.push($("#idnumber").val());
-      valpercentage.push($("#percentage").val());
-      valposition.push($("#position").val());
-      valbirthdate.push($("#birthdate").val());
-
-      $('input[name="hdnname[]"]').val(JSON.stringify(valname));      
-      $('input[name="hdnidno[]"]').val(JSON.stringify(validnumber));      
-      $('input[name="hdnpercentage[]"]').val(JSON.stringify(valpercentage));      
-      $('input[name="hdnposition[]"]').val(JSON.stringify(valposition));      
-      $('input[name="hdnbirthdate[]"]').val(JSON.stringify(valbirthdate));*/      
-
-      $("#name").val("");
-      $("#idnumber").val("");
-      $("#percentage").val("");
-      $("#position").val("");
-      $("#birthdate").val("");
-
-      if (arrtemp.length > 0){
-        $("#btn_save").attr("style","display:block;");
-      }
-      
+      $("#frm_createownership").submit();
     } 
   });
 
-  $("#btn_save").click(function(){
+  /*$("#btn_save").click(function(){
     if (arrtemp.length > 0){
       arrtemp.forEach(function(elemento, indice, array){        
         $('input[name="hdnname[]"]').val(JSON.stringify(elemento[0]));      
@@ -249,6 +219,6 @@ window.addEventListener('load', function() {
       });
       $("#frm_createownership").submit();
     }
-  });
+  });*/
 
 })   
