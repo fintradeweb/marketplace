@@ -1097,9 +1097,13 @@ create  PROCEDURE Get_managments(IN item bigint)
 BEGIN
 	select m.id,m.name, m.idno,m.percentage,m.position,DATE_FORMAT(m.birthdate, '%Y-%m-%d') as birthdate,
 	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
-	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+           u.email,
+           c.token
 	
     from managements m 
+    inner join users u on u.id = m.user_id 
+    inner join clients c on c.id = m.client_id 
     WHERE m.id = item;
 
 END;
