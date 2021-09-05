@@ -7,7 +7,7 @@ use DB;
 
 class Managment extends Model {
 
-  protected $table = 'managments';
+  protected $table = 'managements';
 
   public static function consulta($id) {
     $managments = DB::select("call Get_managments(?)",[$id]);
@@ -22,6 +22,7 @@ class Managment extends Model {
     $error=0;
     $msg= "";
     $id = 0;
+
 
     $result = DB::select('call Insert_managment(?,?,?,?,?,?,?,?,?,?)',
                 [

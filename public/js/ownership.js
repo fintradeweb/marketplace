@@ -4,7 +4,7 @@ window.addEventListener('load', function() {
   var validnumber = [];
   var valpercentage = [];
   var valposition = [];
-  var valbirthdate = [];  
+  var valbirthdate = [];
   var arrtemp = [];
 
   document.getElementById("percentage").addEventListener("keypress", validNumber);
@@ -14,40 +14,40 @@ window.addEventListener('load', function() {
         value = event.target.value,
         n = value+String.fromCharCode(key);
     if ( isNaN(n) || n<1 || n>100)
-      event.preventDefault();    
+      event.preventDefault();
   }
 
   function regexValidarFecha() {
     let sep              = "[-]",
-    
+
         dia1a28          = "(0?[1-9]|1\\d|2[0-8])",
         dia29            = "(29)",
         dia29o30         = "(29|30)",
         dia31            = "(31)",
-        
+
         mes1a12          = "(0?[1-9]|1[0-2])",
         mes2             = "(0?2)",
         mesNoFeb         = "(0?[13-9]|1[0-2])",
         mes31dias        = "(0?[13578]|1[02])",
-        
+
         diames29Feb      = mes2+sep+dia29,
         diames1a28       = mes1a12+sep+dia1a28,
         diames29o30noFeb = mesNoFeb+sep+dia29o30,
         diames31         = mes31dias+sep+dia31,
         diamesNo29Feb    = "(?:"+diames1a28+"|"+diames29o30noFeb+"|"+diames31+")",
-        
+
         anno1a9999     = "(0{2,3}[1-9]|0{1,2}[1-9]\\d|0?[1-9]\\d{2}|[1-9]\\d{3})",
         annoMult4no100   = "\\d{1,2}(?:0[48]|[2468][048]|[13579][26])",
         annoMult400      = "(?:0?[48]|[13579][26]|[2468][048])00",
         annoBisiesto     = "("+annoMult4no100+"|"+annoMult400+")",
-        
+
         fechaNo29Feb     = anno1a9999+sep+diamesNo29Feb,
         fecha29Feb       = annoBisiesto+sep+diames29Feb,
-        
+
         fechaFinal       = "^(?:"+fechaNo29Feb+"|"+fecha29Feb+")$";
-    
+
     return new RegExp(fechaFinal);
-  } 
+  }
 
   //Valida una fecha ingresada como "aaaa-mm-dd"
   // - Si no es válida, devuelve false
@@ -58,7 +58,7 @@ window.addEventListener('load', function() {
     let fechaValida = regexValidarFecha(),
         // fechaValida = /^(?:(?:(0?[1-9]|1\d|2[0-8])[/](0?[1-9]|1[0-2])|(29|30)[/](0?[13-9]|1[0-2])|(31)[/](0?[13578]|1[02]))[/](0{2,3}[1-9]|0{1,2}[1-9]\d|0?[1-9]\d{2}|[1-9]\d{3})|(29)[/](0?2)[/](\d{1,2}(?:0[48]|[2468][048]|[13579][26])|(?:0?[48]|[13579][26]|[2468][048])00))$/,
         grupos;
-        
+
     if (grupos = fechaValida.exec(texto)) {
         //Unir día mes y año desde los grupos que pueden haber coincidido
         let d = [grupos[1],grupos[3],grupos[5],grupos[8]].join(''),
@@ -74,7 +74,7 @@ window.addEventListener('load', function() {
             date.setHours(0);
             date.setFullYear(a,parseInt(m,10) - 1,d);
         }
-        
+
         //Devolver como objeto con cada número por separado
         return {
             d: d,
@@ -86,15 +86,15 @@ window.addEventListener('load', function() {
     return false; //No es fecha válida
   }
 
-  function eliminarFila(rowCount){    
+  function eliminarFila(rowCount){
     var indarr = rowCount - 2;
     var table = document.getElementById("tblowner");
-    //var rowCount = table.rows.length;        
+    //var rowCount = table.rows.length;
     if(rowCount <= 1)
       //alert('No se puede eliminar el encabezado');
       return false;
     else{
-      
+
       //quitar elemento del hidden
       //si ya no tiene elementos los hiddens ocultar boton de save
       table.deleteRow(rowCount -1);
@@ -104,45 +104,45 @@ window.addEventListener('load', function() {
           console.log(indice +" - "+indarr);
           if (indice == indarr){
             arrtemp.splice(indice,1);
-          }          
+          }
         });
       }
 
       if (arrtemp.length <= 0){
         $("#nro").val(1);
-        $("#btn_save").attr("style","display:none;");       
+        $("#btn_save").attr("style","display:none;");
       }
-      
+
     }
   }
 
-  
+
   function agregarFila(values){
     var nro = $("#nro").val();
     nro = parseInt(nro) + 1;
     var tabla = document.getElementById("tblowner");
-    
+
     var nuevafila= tabla.insertRow(-1);
     nuevafila.innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td>';
-    
+
     var enlace = document.createElement("a");
     enlace.setAttribute("style","cursor:pointer;");
     enlace.setAttribute("id",nro);
     enlace.innerHTML = "<i class='fa fa-trash-o'></i>";
     enlace.addEventListener("click",function(e){eliminarFila(nro);});
-    
+
     var columna = document.createElement("td");
     columna.setAttribute("align","center");
-    
+
     columna.appendChild(enlace);
     nuevafila.appendChild(columna);
     tabla.appendChild(nuevafila);
- 
+
     arrtemp[nro-2] = values;
     //document.getElementById("tblowner").insertRow(-1).innerHTML = '<td>'+values[0]+'</td><td>'+values[1]+'</td><td>'+values[2]+'</td><td>'+values[3]+'</td><td>'+values[4]+'</td><td align="center"><a class="linkdelete" id="'+nro+'" style="cursor:pointer;"><i class="fa fa-trash-o"></i></a></td>';
     $("#nro").val(nro);
   }
-  
+
   $("#btn_save").click(function(){
     var msg = [];
     var ids = [];
@@ -162,6 +162,7 @@ window.addEventListener('load', function() {
     $("#msg_percentage").html("");
     $("#msg_position").html("");
     $("#msg_birthdate").html("");
+
 
     if ($("#name").val() == ""){
       msg.push("The name is required");
@@ -188,37 +189,38 @@ window.addEventListener('load', function() {
       ids.push("position");
     }
     if ($("#birthdate").val() == ""){
-      msg.push("The birthdate is required");      
+      msg.push("The birthdate is required");
       ids.push("birthdate");
     }
     var resultado = validarFecha($("#birthdate").val());
+
     if (resultado == false){
-      msg.push("The birthdate is not in the correct format");       
-      ids.push("birthday");
-    }    
-    if (msg.length > 0){      
-      msg.forEach(function(elemento, indice, array){        
-        $("#"+ids[indice]).attr("class","form-control is-invalid");  
-        $("#msg_"+ids[indice]).attr("style","display:block;");                   
+      msg.push("The birthdate is not in the correct format");
+      ids.push("birthdate");
+    }
+    if (msg.length > 0){
+      msg.forEach(function(elemento, indice, array){
+        $("#"+ids[indice]).attr("class","form-control is-invalid");
+        $("#msg_"+ids[indice]).attr("style","display:block;");
         $("#msg_"+ids[indice]).html(msg[indice]);
       });
     }
     else{
       $("#frm_createownership").submit();
-    } 
+    }
   });
 
   /*$("#btn_save").click(function(){
     if (arrtemp.length > 0){
-      arrtemp.forEach(function(elemento, indice, array){        
-        $('input[name="hdnname[]"]').val(JSON.stringify(elemento[0]));      
-        $('input[name="hdnidno[]"]').val(JSON.stringify(elemento[1]));      
-        $('input[name="hdnpercentage[]"]').val(JSON.stringify(elemento[2]));      
-        $('input[name="hdnposition[]"]').val(JSON.stringify(elemento[3]));      
+      arrtemp.forEach(function(elemento, indice, array){
+        $('input[name="hdnname[]"]').val(JSON.stringify(elemento[0]));
+        $('input[name="hdnidno[]"]').val(JSON.stringify(elemento[1]));
+        $('input[name="hdnpercentage[]"]').val(JSON.stringify(elemento[2]));
+        $('input[name="hdnposition[]"]').val(JSON.stringify(elemento[3]));
         $('input[name="hdnbirthdate[]"]').val(JSON.stringify(elemento[4]));
       });
       $("#frm_createownership").submit();
     }
   });*/
 
-})   
+})

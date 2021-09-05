@@ -251,26 +251,141 @@ END;
 //
 DELIMITER ;
 /*
- call Get_existe_user('mflores@fintradeweb.com')
+ call Get_existe_user('frederik65@example.com','h5Vw5GRoyM')
  * 
  */
 
 DROP PROCEDURE IF EXISTS Get_existe_user;
 DELIMITER //
-create  PROCEDURE Get_existe_user(IN s_mail varchar(200))
+create  PROCEDURE Get_existe_user(IN s_mail varchar(200),IN s_token varchar(200) )
 BEGIN
+	declare b_is_completed bigint;
+    declare b_is_exists bigint;
+    declare b_is_corporation_user bigint;
+    
+    select  0 into b_is_completed;
+    select  0 into b_is_exists ;
+    select  0 into b_is_corporation_user ;
 	if 
 	  exists(
 			select 1
 		    from users c
 		    inner join businessinformations b on b.user_id  = c.id 
-		    WHERE c.email = s_mail
+		    inner join clients c2 on c2.id = b.client_id 
+		    WHERE c.email = s_mail AND 
+		          c2.token = s_token
 		   )
     then
-    	select 1 as existe, 0 as bussinesinformation;
-    else
-    	select 0 as existe, 0 as bussinesinformation;
+    	select 1 into  b_is_exists;
     end if;
+   
+    if 
+	  exists(
+			select 1
+		    from users c
+		    inner join businessinformations b on b.user_id  = c.id 
+		    inner join clients c2 on c2.id = b.client_id 
+		    WHERE c.email = s_mail AND 
+		          c2.token = s_token
+		   ) AND 
+	  exists(
+			select 1
+		    from users c
+		    inner join managements b on b.user_id  = c.id 
+		    inner join clients c2 on c2.id = b.client_id 
+		    WHERE c.email = s_mail AND 
+		          c2.token = s_token
+		   ) AND 
+	   exists(
+			select 1
+		    from users c
+		    inner join financialrequests b on b.user_id  = c.id 
+		    inner join clients c2 on c2.id = b.client_id 
+		    WHERE c.email = s_mail AND 
+		          c2.token = s_token
+		   ) AND 
+	   exists(
+			select 1
+		    from users c
+		    inner join bankinformations  b on b.user_id  = c.id 
+		    inner join clients c2 on c2.id = b.client_id 
+		    WHERE c.email = s_mail AND 
+		          c2.token = s_token
+		   ) AND 
+	   exists(
+			select 1
+		    from users c
+		    inner join certificationauthorizations  b on b.user_id  = c.id 
+		    inner join clients c2 on c2.id = b.client_id 
+		    WHERE c.email = s_mail AND 
+		          c2.token = s_token
+		   ) 
+    then
+    	select 1 into  b_is_completed;
+    end if;
+   
+    if exists(
+            select 1 
+            from users u 
+            join model_has_roles mhr on u.id = mhr.model_id 
+            where u.email = s_mail AND 
+                  mhr.role_id != 3
+            )
+    THEN 
+        select 1 into b_is_corporation_user;
+    end if;
+    
+    
+    
+   
+    select b_is_completed as completo,
+           b_is_exists as existe,
+           b_is_corporation_user as usuario_corporativo;
+  
+    
+     select m.id ,
+	       m.company_name,
+	       DATE_FORMAT(m.date_company , '%Y-%m-%d') as date_company,
+	       m.type_business,
+	       m.contact_name,
+	       m.zip,
+	       m.president_name,
+	       m.address,
+	       m.ruc_tax,
+	       m.website,
+	       m.secretary_name,
+	       m.dba,
+           m.cell_phone,
+           m.country_id,
+           c.descripcion country,
+           m.city_id,
+           ci.descripcion city,
+           m.state_id,
+           s.descripcion state,
+           m.phone,
+           u.email,
+           u.name,
+           u.id user_id,
+           case u.status when 1 then 'true' else 'false' end  status_user,
+           case c2.active when 1 then 'true' else 'false' end status_client,
+           DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
+           case m.is_seller when 1 then 'true' else 'false' end is_seller
+	
+    from businessinformations m 
+    inner join users u on u.id  = m.user_id 
+    inner join clients c2 on c2.id  = m.client_id 
+    left outer join catalogodet c on c.id = m.country_id 
+    left outer join catalogodet s on s.id = m.state_id 
+    left outer join catalogodet ci on ci.id = m.city_id 
+    WHERE 
+          u.email = s_mail AND 
+          c2.token = s_token ;
+         
+    select id,email,name
+    from users u 
+    where u.email = s_mail;
 		   
 
 END;
@@ -1019,12 +1134,12 @@ DELIMITER ;
 /*
 
 SET @name = 'a';
-SET @email = 'a4578@aaa.com';
+SET @email = 'mflores@fintradeweb.com';
 SET @idno = '1234';
 SET @position = 'escala 1234';
 SET @birthday = '1982-06-28';
 SET @percentage = '45';
-SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+SET @token = 'h5Vw5GRoyM';
 SET @msg = '';
 SET @error = '';
 SET @id = 0;
@@ -1091,6 +1206,18 @@ sp:BEGIN
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
 		        select 'Error, Email no existe con ese mail.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if; 
+	      if exists(select count(*) from managements m 
+	                inner join users u on u.id = m.user_id 
+	                inner join clients c on c.id = m.client_id 
+	                WHERE u.email = _email AND
+	                      c.token = _token
+	                group by m.user_id,m.client_id
+	                HAVING count(*)=4) then
+		     select 1 into _error;
+		        select 'Error, No se pueden guardar mas de 4 items como ownership.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if; 

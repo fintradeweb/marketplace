@@ -19,24 +19,27 @@ class InformationController extends Controller{
         throw new \Exception("Error, company not registered in marketplace.");
       }
 
-      //$usuario = \App\Models\User::existe_usuario($request->input('txt_email'));
-      $usuario = \App\Models\User::where('email',$request->input('txt_email'))->first();
-  
-      //if($usuario->existe == 1){
-      if(!empty($usuario)){
-        $business = \App\Models\Businessinformation::consulta_todos($request->input('txt_email'),$request->input('token'));   
- 
-        if (empty($business)){
-          throw new \Exception("Error, user already registered in marketplace with different role.");
-        }
-        $business->date_company = substr($business->date_company,0,10);
-        return view('information.edit')->with('user', $usuario)
-                                       ->with('business',$business)
-                                       ->with('token',$request->input('token'));
+      $usuario = \App\Models\User::existe_usuario($request->input('txt_email'),$request->input('token'));
+
+      $b_existe = 0;
+
+
+      if($usuario[0][0]->usuario_corporativo == 1){
+        throw new \Exception("Error, user already registered in marketplace with different role.");
+      }
+      if($usuario[0][0]->completo == 1){
+        throw new \Exception("Error, with this user we already have information on the platform, please log in to MarketPlace.");
+      }
+
+      if($usuario[0][0]->existe == 1){
+
+        return view('information.edit')->with('user',$usuario[2][0])
+                                        ->with('business',$usuario[1][0])
+                                        ->with('token',$request->input('token'));
       }
       else{
         $is_buyer = ($request->input('txt_typeuser') == "Buyer") ? 1 : 0;
-        $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;  
+        $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;
         return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
                                          ->with('email',$request->input('txt_email'))
@@ -131,7 +134,19 @@ class InformationController extends Controller{
           //$user->email = $request->input('email');
           $user->password = $result[1];
           Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
-          return redirect('/management/create/'.$request->input('email').'/'.$request->input('token'));
+          //return redirect('/management/create/'.$request->input('email').'/'.$request->input('token'));
+
+        return view('ownership.index',[
+            'records' => [],
+            'email' => $request->input('email'),
+            'token' => $request->input('token'),
+            'idnumber' => "",
+            'percentage' =>"",
+            'name' => "",
+            'position' => "",
+            'birthdate' => ""
+        ]);
+
         }
         else{
           throw new \Exception("There was an error creating the user!");
@@ -247,8 +262,20 @@ class InformationController extends Controller{
       else{
         $result = \App\Models\Businessinformation::actualizar($request,$request->input('business_id'));
         if ($result->_error == 0 && $result->_msg == "ok"){
-          return redirect('/management/create/'.$user->email.'/'.$request->input('token'));
-          
+         // return redirect('/management/create/'.$user->email.'/'.$request->input('token'));
+          $records = \App\Models\Managment::consulta_todos( $request->input('email'), $request->input('token'));
+          return view('ownership.index',[
+             'records' => $records,
+             'email' => $request->input('email'),
+             'token' =>$request->input('token'),
+             'idnumber' => "",
+            'percentage' =>"",
+            'name' => "",
+            'position' => "",
+            'birthdate' => ""
+           ]);
+
+
         }
         else{
           throw new \Exception("There was an error editing the user!");
