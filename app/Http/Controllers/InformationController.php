@@ -136,15 +136,10 @@ class InformationController extends Controller{
           Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
           //return redirect('/management/create/'.$request->input('email').'/'.$request->input('token'));
 
-        return view('ownership.index',[
+        return view('managment.index',[
             'records' => [],
             'email' => $request->input('email'),
-            'token' => $request->input('token'),
-            'idnumber' => "",
-            'percentage' =>"",
-            'name' => "",
-            'position' => "",
-            'birthdate' => ""
+            'token' => $request->input('token')
         ]);
 
         }
@@ -264,15 +259,10 @@ class InformationController extends Controller{
         if ($result->_error == 0 && $result->_msg == "ok"){
          // return redirect('/management/create/'.$user->email.'/'.$request->input('token'));
           $records = \App\Models\Managment::consulta_todos( $request->input('email'), $request->input('token'));
-          return view('ownership.index',[
+          return view('managment.index',[
              'records' => $records,
              'email' => $request->input('email'),
-             'token' =>$request->input('token'),
-             'idnumber' => "",
-            'percentage' =>"",
-            'name' => "",
-            'position' => "",
-            'birthdate' => ""
+             'token' =>$request->input('token')
            ]);
 
 
