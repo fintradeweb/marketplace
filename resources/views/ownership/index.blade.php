@@ -112,8 +112,16 @@
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
               <button type="button" class="btn btn-primary" id="btn_save">Save</button>
             </div>
+
           </form>
-        </div>
+
+          <form action="{{ route('financial.index') }}" method="POST">
+                     @csrf
+                     <input type="hidden" name="token" id="token" value="{{ $token }}">
+                     <input type="hidden" name="email" id="email" value="{{ $email }}">
+                    <button type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+            </form>
+
       </div>
     </div>
   </div>

@@ -14,8 +14,10 @@ class Financial extends Model {
     return $managments;
   }
   public static function consulta_todos($email,$token) {
-    $result = DB::select("call Get_financial_client_user(?,?)",[$email,$token]);
-    return $result;
+    $params = [$email,$token];
+    return  \App\Models\User::CallRaw('Get_financial_client_user',$params );
+    //$result = DB::select("call Get_financial_client_user(?,?)",[$email,$token]);
+    //return $result;
   }
 
 
