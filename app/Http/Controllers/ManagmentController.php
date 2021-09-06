@@ -11,7 +11,7 @@ class ManagmentController extends Controller{
 
     public function create($email,$token){
         $records = \App\Models\Managment::consulta_todos($email, $token);
-        return view('ownership.index',[
+        return view('managment.index',[
           'records' => $records,
           'email' => $email,
           'token' => $token
@@ -30,7 +30,7 @@ class ManagmentController extends Controller{
     if ($result->_error == 0 && $result->_msg == "ok"){
       //return redirect('/management/create/'$request->input('token').'/'.$request->input('token'));
       $records = \App\Models\Managment::consulta_todos($request->input('email'), $request->input('token'));
-        return view('ownership.index',[
+        return view('managment.index',[
             'records' => $records,
             'email' => $request->input('email'),
             'token' => $request->input('token'),
@@ -45,7 +45,7 @@ class ManagmentController extends Controller{
       /*return redirect('/management/create/'.$request->input('email').'/'.$request->input('token'))
              ->withErrors('There was an error creating the ownership!');*/
              $records = \App\Models\Managment::consulta_todos($request->input('email'), $request->input('token'));
-             return view('ownership.index',[
+             return view('managment.index',[
                'records' => $records,
                'email' => $request->input('email'),
                'token' => $request->input('token'),
@@ -64,7 +64,7 @@ class ManagmentController extends Controller{
         $task->delete();
 
        $records = \App\Models\Managment::consulta_todos($indiv[0]->email, $indiv[0]->token);
-        return view('ownership.index',[
+        return view('managment.index',[
             'records' => $records,
             'email' => $indiv[0]->email,
             'token' =>  $indiv[0]->token,

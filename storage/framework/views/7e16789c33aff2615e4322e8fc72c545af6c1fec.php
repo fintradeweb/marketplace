@@ -36,13 +36,20 @@
             </thead>
             <tbody>
              <?php $__currentLoopData = $records; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $record): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
                <tr>
                 <td><?php echo e($record->name); ?></td>
                 <td><?php echo e($record->idno); ?></td>
                 <td><?php echo e($record->percentage); ?></td>
                 <td><?php echo e($record->position); ?></td>
                 <td><?php echo e($record->birthdate); ?></td>
-                <td align="center"><a href="" id="btn_delete"><i class='fa fa-trash-o'></i></a> </td>
+                <td align="center">
+                <form action="<?php echo e(route('managment.destroy',$record->id)); ?>" method="POST">
+                     <?php echo csrf_field(); ?>
+
+                    <button onclick="return confirm('Are you sure?')" type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+                </form>
+                <!--<a href="" id="btn_delete"><i class='fa fa-trash-o'></i></a> </td>-->
               </tr>
              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             <!--consulta de los ownershio de ese usuario ingresados-->
@@ -58,7 +65,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>Name: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="name" id="name" class="form-control" value="" placeholder="Name">
+                <input type="text" name="name" id="name" class="form-control" value="<?php echo e($name); ?>" placeholder="Name">
                 <span class="invalid-feedback" role="alert">
                   <strong id="msg_name" style="display:none;"></strong>
                 </span>
@@ -67,7 +74,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>Id Number: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="idnumber" id="idnumber" class="form-control" value="" placeholder="Id Number">
+                <input type="text" name="idnumber" id="idnumber" class="form-control" value="<?php echo e($idnumber); ?>" placeholder="Id Number">
                 <span class="invalid-feedback" role="alert">
                   <strong id="msg_idnumber" style="display:none;"></strong>
                 </span>
@@ -76,7 +83,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>% Ownership: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="percentage" id="percentage" class="form-control" value="" placeholder="%">
+                <input type="text" name="percentage" id="percentage" class="form-control" value="<?php echo e($percentage); ?>" placeholder="%">
                 <span class="invalid-feedback" role="alert">
                   <strong id="msg_percentage" style="display:none;"></strong>
                 </span>
@@ -85,7 +92,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>Position: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="position" id="position" class="form-control" value="" placeholder="Position">
+                <input type="text" name="position" id="position" class="form-control" value="<?php echo e($position); ?>" placeholder="Position">
                 <span class="invalid-feedback" role="alert">
                   <strong id="msg_position" style="display:none;"></strong>
                 </span>
@@ -94,7 +101,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
                 <strong>Birthdate: <span class="text-danger">(*)</span></strong>
-                <input type="text" name="birthdate" id="birthdate" class="form-control" value="" placeholder="YYYY-MM-DD">
+                <input type="text" name="birthdate" id="birthdate" class="form-control"value="<?php echo e($birthdate); ?>" placeholder="YYYY-MM-DD">
                 <span class="invalid-feedback" role="alert">
                   <strong id="msg_birthdate" style="display:none;"></strong>
                 </span>
@@ -104,8 +111,16 @@
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
               <button type="button" class="btn btn-primary" id="btn_save">Save</button>
             </div>
+
           </form>
-        </div>
+
+          <form action="<?php echo e(route('financial.index')); ?>" method="POST">
+                     <?php echo csrf_field(); ?>
+                     <input type="hidden" name="token" id="token" value="<?php echo e($token); ?>">
+                     <input type="hidden" name="email" id="email" value="<?php echo e($email); ?>">
+                    <button type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+            </form>
+
       </div>
     </div>
   </div>

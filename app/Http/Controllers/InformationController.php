@@ -139,7 +139,12 @@ class InformationController extends Controller{
         return view('managment.index',[
             'records' => [],
             'email' => $request->input('email'),
-            'token' => $request->input('token')
+            'token' => $request->input('token'),
+            'idnumber' => "",
+            'percentage' =>"",
+            'name' => "",
+            'position' => "",
+            'birthdate' => ""
         ]);
 
         }
@@ -262,6 +267,11 @@ class InformationController extends Controller{
           return view('managment.index',[
              'records' => $records,
              'email' => $request->input('email'),
+             'idnumber' => "",
+            'percentage' =>"",
+            'name' => "",
+            'position' => "",
+            'birthdate' => "",
              'token' =>$request->input('token')
            ]);
 

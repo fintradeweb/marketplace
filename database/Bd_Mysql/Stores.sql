@@ -1391,7 +1391,7 @@ DELIMITER ;
 
 /*
 SET @email = 'mflores@fintradeweb.com';
-SET @token = 'h5Vw5GRoyM222';
+SET @token = 'h5Vw5GRoyM';
  call Get_financial_client_user(@email,@token);
  avg_montky_sales
  */
@@ -1417,13 +1417,13 @@ BEGIN
    select f.id,
           f.avg_montky_sales,
           f.ams_how_clients,
-          case f.has_applicant when 0 then 'false' else 'true' end has_applicant,
-          case f.po_finance when 0 then 'false' else 'true' end po_finance,
-          case f.in_finance when 0 then 'false' else 'true' end in_finance,
-          case f.lawsuits_pending when 0 then 'false' else 'true' end lawsuits_pending,
-          case f.receivable_finance when 0 then 'false' else 'true' end receivable_finance,
-          case f.credit_insurance_policy when 0 then 'false' else 'true' end credit_insurance_policy,
-          case f.declared_bank_ruptcy when 0 then 'false' else 'true' end declared_bank_ruptcy,
+          case f.has_applicant when 0 then 'false' else 'checked' end has_applicant,
+          case f.po_finance when 0 then 'false' else 'checked' end po_finance,
+          case f.in_finance when 0 then 'false' else 'checked' end in_finance,
+          case f.lawsuits_pending when 0 then 'false' else 'checked' end lawsuits_pending,
+          case f.receivable_finance when 0 then 'false' else 'checked' end receivable_finance,
+          case f.credit_insurance_policy when 0 then 'false' else 'checked' end credit_insurance_policy,
+          case f.declared_bank_ruptcy when 0 then 'false' else 'checked' end declared_bank_ruptcy,
           f.estimated_montly_financing,
           f.emf_number_clients,
           f.rf_when_with_whom,

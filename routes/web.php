@@ -27,6 +27,7 @@ Route::put('/information/edit', [App\Http\Controllers\InformationController::cla
 
 Route::post('/financial', [App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
 Route::post('/financial/create', [App\Http\Controllers\FinancialController::class, 'store'])->name('financial.store');
+Route::put('/financial/update/{id}', [App\Http\Controllers\FinancialController::class, 'update'])->name('financial.update');
 
 Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
 
