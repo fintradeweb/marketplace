@@ -14,8 +14,10 @@ class Bankinformation extends Model {
     return $managments;
   }
   public static function consulta_todos($email,$token) {
-    $result = DB::select("call Get_bankinformation_client_user(?,?)",[$email,$token]);
-    return $result;
+    //$result = DB::select("call Get_bankinformation_client_user(?,?)",[$email,$token]);
+    //return $result;
+    $params = [$email,$token];
+    return  \App\Models\User::CallRaw('Get_bankinformation_client_user',$params );
   }
 
   public static function registrar($request) {
@@ -23,7 +25,7 @@ class Bankinformation extends Model {
     $msg= "";
     $id = 0;
 
-    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('email'),
                     $request->input('bank_name'),

@@ -1734,6 +1734,20 @@ DROP PROCEDURE IF EXISTS Get_bankinformation_client_user;
 DELIMITER //
 create  PROCEDURE Get_bankinformation_client_user(IN _mail varchar(255), in _token varchar(255))
 BEGIN
+    declare b_is_exist tinyint;
+   select 0 into b_is_exist ;
+   if(exists(
+         select
+             1
+	        from bankinformations f 
+		    inner join users u on u.id  = f.user_id 
+		    inner join clients c2 on c2.id  = f.client_id 
+		    WHERE u.email = _mail AND 
+		          c2.token = _token 
+      )) then
+    	select 1 into b_is_exist ;
+   end if;
+   select b_is_exist existe;
    
    select f.id,
           f.bank_name,

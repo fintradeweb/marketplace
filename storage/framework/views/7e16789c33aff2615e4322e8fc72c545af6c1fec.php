@@ -118,7 +118,7 @@
                      <?php echo csrf_field(); ?>
                      <input type="hidden" name="token" id="token" value="<?php echo e($token); ?>">
                      <input type="hidden" name="email" id="email" value="<?php echo e($email); ?>">
-                    <button type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+                    <button type="submit" class="btn btn-success">Siguiente</button>
             </form>
 
       </div>

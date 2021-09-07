@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/information', [App\Http\Controllers\InformationController::class, 'index']);
 Route::post('/information/create', [App\Http\Controllers\InformationController::class, 'store'])->name('information.create');
 Route::post('/management/create', [App\Http\Controllers\ManagmentController::class, 'store'])->name('managment.store');
-Route::post('/financial/create', [App\Http\Controllers\FinancialController::class, 'store'])->name('financial.store');
+
 Route::post('/management/{id}', [App\Http\Controllers\ManagmentController::class, 'destroy'])->name('managment.destroy');
 Route::get('/management/create/{email}/{token}', [App\Http\Controllers\ManagmentController::class, 'create'])->name('managment.create');
 Route::put('/information/edit', [App\Http\Controllers\InformationController::class, 'update'])->name('information.edit');
@@ -28,6 +28,10 @@ Route::put('/information/edit', [App\Http\Controllers\InformationController::cla
 Route::post('/financial', [App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
 Route::post('/financial/create', [App\Http\Controllers\FinancialController::class, 'store'])->name('financial.store');
 Route::put('/financial/update/{id}', [App\Http\Controllers\FinancialController::class, 'update'])->name('financial.update');
+
+Route::post('/bankinformation', [App\Http\Controllers\BankinformationController::class, 'index'])->name('bankinformation.index');
+Route::post('/bankinformation/create', [App\Http\Controllers\BankinformationController::class, 'store'])->name('bankinformation.store');
+Route::put('/bankinformation/update/{id}', [App\Http\Controllers\BankinformationController::class, 'update'])->name('bankinformation.update');
 
 Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
 

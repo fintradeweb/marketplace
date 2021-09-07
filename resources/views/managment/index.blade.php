@@ -119,7 +119,7 @@
                      @csrf
                      <input type="hidden" name="token" id="token" value="{{ $token }}">
                      <input type="hidden" name="email" id="email" value="{{ $email }}">
-                    <button type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+                    <button type="submit" class="btn btn-success">Siguiente</button>
             </form>
 
       </div>
