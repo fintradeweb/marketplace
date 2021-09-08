@@ -33,6 +33,10 @@ Route::post('/bankinformation', [App\Http\Controllers\BankinformationController:
 Route::post('/bankinformation/create', [App\Http\Controllers\BankinformationController::class, 'store'])->name('bankinformation.store');
 Route::put('/bankinformation/update/{id}', [App\Http\Controllers\BankinformationController::class, 'update'])->name('bankinformation.update');
 
+Route::post('/certification', [App\Http\Controllers\CertificationController::class, 'index'])->name('certification.index');
+Route::post('/certification/create', [App\Http\Controllers\CertificationController::class, 'store'])->name('certification.store');
+Route::put('/certification/update/{id}', [App\Http\Controllers\CertificationController::class, 'update'])->name('certification.update');
+
 Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
 
 Auth::routes();

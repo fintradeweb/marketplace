@@ -14,8 +14,10 @@ class Certification extends Model {
     return $managments;
   }
   public static function consulta_todos($email,$token) {
-    $result = DB::select("call Get_certification_client_user(?,?)",[$email,$token]);
-    return $result;
+    $params = [$email,$token];
+    return  \App\Models\User::CallRaw('Get_certification_client_user',$params );
+   // $result = DB::select("call Get_certification_client_user(?,?)",[$email,$token]);
+    //return $result;
   }
 
   public static function registrar($request) {
@@ -26,7 +28,7 @@ class Certification extends Model {
         $approved_agreed = 1;
     }
 
-    $result = DB::select('call Insert_certification(?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_certification(?,?,?,?,?,?,?,?)',
                 [
                     $request->input('email'),
                     $approved_agreed,

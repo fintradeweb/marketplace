@@ -116,17 +116,17 @@ class BankinformationController extends Controller{
             ])->withErrors('There was an error creating the bank information!');
         }
         else{
-            $indiv = \App\Models\Bankinformation::consulta_todos( $request->input('email'),  $request->input('token'));
-            $indiv_new = new \App\Models\Bankinformation();
+            $indiv = \App\Models\Certification::consulta_todos( $request->input('email'),  $request->input('token'));
+            $indiv_new = new \App\Models\Certification();
             if($indiv[0][0]->existe==0){
-                return view('bankinformation.create',[
+                return view('certification.create',[
                     'email' =>$request->input('email'),
                     'token' =>  $request->input('token'),
                     'indiv' =>  $indiv_new
                 ]);
             }
             else{
-                return view('bankinformation.edit',[
+                return view('certification.edit',[
                     'email' =>$request->input('email'),
                     'token' =>  $request->input('token'),
                     'indiv' =>  $indiv[1][0]

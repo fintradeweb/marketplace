@@ -1992,7 +1992,7 @@ create  PROCEDURE Get_certification(IN item bigint)
 BEGIN
    
    select f.id,
-          case f.approved_agreed when 1 then 'true' else 'false' end approved_agreed,
+          case f.approved_agreed when 1 then ' checked ' else ' ' end approved_agreed,
           f.name,
           f.title,
            
@@ -2018,9 +2018,21 @@ DROP PROCEDURE IF EXISTS Get_certification_client_user;
 DELIMITER //
 create  PROCEDURE Get_certification_client_user(IN _mail varchar(255), in _token varchar(255))
 BEGIN
-   
+   declare b_is_exist tinyint;
+   if(exists(
+         select
+             1
+	        from certificationauthorizations  f 
+		    inner join users u on u.id  = f.user_id 
+		    inner join clients c2 on c2.id  = f.client_id 
+		    WHERE u.email = _mail AND 
+		          c2.token = _token 
+      )) then
+    	select 1 into b_is_exist ;
+   end if;
+   select b_is_exist existe;
    select f.id,
-          case f.approved_agreed when 1 then 'true' else 'false' end approved_agreed,
+          case f.approved_agreed when 1 then ' checked' else ' ' end approved_agreed,
           f.name,
           f.title,
            
