@@ -226,7 +226,7 @@
         <div class="row">                                      
           <input type="hidden" id="token" name="token" value="{{ $token }}">
           <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-            <button type="submit" class="btn btn-primary" id="btn_save">Save</button>
+            <button type="submit" class="btn btn-primary" id="btn_save">Save & Next</button>
           </div>
         </div>
       </form>
