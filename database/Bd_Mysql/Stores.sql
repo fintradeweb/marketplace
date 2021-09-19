@@ -2300,3 +2300,37 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+/*
+ SET @role = 0;
+ call Get_users_roles (@role);
+ */
+ 
+DROP PROCEDURE IF EXISTS Get_users_roles;
+DELIMITER //
+create  PROCEDURE Get_users_roles(IN _roleid bigint)
+BEGIN
+       
+	   if(_roleid>0) then
+	   begin
+		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id
+		   FROM model_has_roles mhr 
+		   INNER JOIN users u ON u.id = mhr.model_id
+		   inner join roles r on r.id = mhr.role_id 
+		   where r.id = _roleid
+		   order by 2;
+	   end;
+	   else
+	   begin
+	      select u.email ,u.name ,,r.name  as role_desc,r.id as role_id
+		   FROM model_has_roles mhr 
+		   INNER JOIN users u ON u.id = mhr.model_id
+		   inner join roles r on r.id = mhr.role_id 
+		   order by 2;
+	   end;
+	   end if;
+	
+
+END;
+//
+DELIMITER ;
