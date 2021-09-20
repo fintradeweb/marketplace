@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('content'); ?>
 
 <?php if($errors->any()): ?>
@@ -109,19 +110,18 @@
 
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-              <button type="button" class="btn btn-primary" id="btn_save">Save</button>
+              <button type="button" class="btn btn-success" id="btn_save">Save</button>
             </div>
-
           </form>
-
-          <form action="<?php echo e(route('financial.index')); ?>" method="POST">
-                     <?php echo csrf_field(); ?>
-                     <input type="hidden" name="token" id="token" value="<?php echo e($token); ?>">
-                     <input type="hidden" name="email" id="email" value="<?php echo e($email); ?>">
-                    <button type="submit" class="btn btn-success">Siguiente</button>
-            </form>
-
       </div>
+      <div class="col-sm-12 col-md-12 col-xs-12 text-center">
+        <form action="<?php echo e(route('financial.index')); ?>" method="POST">
+          <?php echo csrf_field(); ?>
+          <input type="hidden" name="token" id="token" value="<?php echo e($token); ?>">
+          <input type="hidden" name="email" id="email" value="<?php echo e($email); ?>">
+          <button type="submit" class="btn btn-primary">Save & Next</button>
+        </form>
+      </div>      
     </div>
   </div>
 </div>
