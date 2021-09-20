@@ -89,4 +89,9 @@ class User extends Authenticatable
         if (1 === count($results)) return $results[0];
         return $results;
     }
+
+  public static function getUsersByRol($rolid) {
+     $rs = DB::select("call Get_users_roles (?);",[ $rolid ]);
+     return ((isset($rs[0])) ? $rs[0] : false);
+  }
 }

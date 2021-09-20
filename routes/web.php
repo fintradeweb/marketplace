@@ -19,23 +19,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/information', [App\Http\Controllers\InformationController::class, 'index']);
 Route::post('/information/create', [App\Http\Controllers\InformationController::class, 'store'])->name('information.create');
-Route::post('/management/create', [App\Http\Controllers\ManagmentController::class, 'store'])->name('managment.store');
-
-Route::post('/management/{id}', [App\Http\Controllers\ManagmentController::class, 'destroy'])->name('managment.destroy');
-Route::get('/management/create/{email}/{token}', [App\Http\Controllers\ManagmentController::class, 'create'])->name('managment.create');
 Route::put('/information/edit', [App\Http\Controllers\InformationController::class, 'update'])->name('information.edit');
-
-Route::post('/financial', [App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
-Route::post('/financial/create', [App\Http\Controllers\FinancialController::class, 'store'])->name('financial.store');
-Route::put('/financial/update/{id}', [App\Http\Controllers\FinancialController::class, 'update'])->name('financial.update');
-
-Route::post('/bankinformation', [App\Http\Controllers\BankinformationController::class, 'index'])->name('bankinformation.index');
-Route::post('/bankinformation/create', [App\Http\Controllers\BankinformationController::class, 'store'])->name('bankinformation.store');
-Route::put('/bankinformation/update/{id}', [App\Http\Controllers\BankinformationController::class, 'update'])->name('bankinformation.update');
-
-Route::post('/certification', [App\Http\Controllers\CertificationController::class, 'index'])->name('certification.index');
-Route::post('/certification/create', [App\Http\Controllers\CertificationController::class, 'store'])->name('certification.store');
-Route::put('/certification/update/{id}', [App\Http\Controllers\CertificationController::class, 'update'])->name('certification.update');
+Route::post('/management/create', [App\Http\Controllers\ManagmentController::class, 'store'])->name('managment.create');
 
 Route::get('/', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
 
@@ -43,13 +28,8 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['role:SuperAdmin']], function () {
-  //rutas accesibles solo para clientes
+//rutas accesibles para SuperAdmin y Admin
+Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {  
   Route::resource('clients', App\Http\Controllers\ClientsController::class);
+  Route::resource('users', App\Http\Controllers\UsersController::class);
 });
-
-Route::group(['middleware' => ['role:Admin']], function () {
-  //rutas accesibles solo para clientes
-  Route::resource('clients', App\Http\Controllers\ClientsController::class);
-});
-
