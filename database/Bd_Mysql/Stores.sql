@@ -2322,7 +2322,7 @@ BEGIN
 	   end;
 	   else
 	   begin
-	      select u.email ,u.name ,,r.name  as role_desc,r.id as role_id
+	      select u.email ,u.name ,r.name  as role_desc,r.id as role_id
 		   FROM model_has_roles mhr 
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id 
