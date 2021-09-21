@@ -16,9 +16,9 @@
       <div class="row col-md-12 p-4">
         <div class="col-md-6"><h5>List of Users</h5></div>
         <div class="col-md-6 ml-auto text-right">
-        
-          <a type="button" class="btn btn-primary" href="/clients/create">New User</a>
-          
+          @if ($rol == 1)
+            <a type="button" class="btn btn-primary" href="/clients/create">New User</a>
+          @endif
         </div>
       </div>
       <div class="col-md-12">
@@ -45,7 +45,11 @@
                 @else
                   <td>Inactive</td>
                 @endif                
-                <td><a href="/users/{{$user->id}}">Ver</a> / <a href="users/{{$user->id}}/edit">Editar</a></td>
+                <td>
+                  <a href="/users/{{$user->id}}">View Credit</a>
+                  
+                  <a href="users/{{$user->id}}/edit">Editar</a>
+                </td>
               </tr>
             @endforeach
           </tbody>

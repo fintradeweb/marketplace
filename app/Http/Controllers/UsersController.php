@@ -12,15 +12,16 @@ class UsersController extends Controller{
 
   public function index(){
     if(@Auth::user()->hasRole('SuperAdmin')){
-      $users = \App\Models\User::getUsersByRol();
+      $users = \App\Models\User::getUsersByRol(0);
+      $rol = "1";
     }
     else{
-      $users = \App\Models\User::getUsersByRol();
+      $users = \App\Models\User::getUsersByRol(3);
+      $rol = "3";
     }
-    var_dump($users);
-    exit;
     return view('users.index', [
-        'users' => $users
+      'users' => $users,
+      'rol' => $rol
     ]);
   }
   
