@@ -4,28 +4,28 @@ DELIMITER //
 create  PROCEDURE get_clients_all()
 BEGIN
 	select * from clients;
-	/*SELECT * 
-	FROM fintradeacf.fina0001 
-	WHERE   CODCIA IN ('1','2') AND 
+	/*SELECT *
+	FROM fintradeacf.fina0001
+	WHERE   CODCIA IN ('1','2') AND
 			( PRELIMINAR = 0 OR PRELIMINAR IS NULL) AND
-			ANULADA = 0 AND 
+			ANULADA = 0 AND
 			ESTADO <> 'A';
 */
 
-END 
+END
 //
 DELIMITER
 
 /*
  call Get_client_item(1)
- * 
+ *
  */
 DROP PROCEDURE IF EXISTS Get_client_item;
 DELIMITER //
 create  PROCEDURE Get_client_item(IN item bigint)
 BEGIN
-	select id,name, token, email, 
-	   case active 
+	select id,name, token, email,
+	   case active
 	      when '0' then ''
 	      else 'checked'
 	    end as active
@@ -48,35 +48,35 @@ create  PROCEDURE Insert_client(
                                 IN _name varchar(255),
                                 IN _email varchar(255),
                                 OUT _msg varchar(255),
-                                OUT _error char(1) 
+                                OUT _error char(1)
                                 )
 sp: BEGIN
 	   DECLARE token2 varchar(255);
 	   DECLARE substring3 varchar(200);
 	   Declare code varchar(10);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare existe int;
 	   declare email2 varchar(255);
 	   declare size_token int;
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
 	   begin
 		   select '1' into _error;
-		   
-		   Get diagnostics condition 1 code=MYSQL_ERRNO, MSG=MESSAGE_TEXT; 
+
+		   Get diagnostics condition 1 code=MYSQL_ERRNO, MSG=MESSAGE_TEXT;
 		   select CONCAT('Inserts failed Client, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
-   		  
+
        end;
        select 0 into size_token;
 	   select 0 into existe;
 	   select trim(_email) into email2;
 	   select upper(email2) into email2;
-	   
+
  	   select count(*) into existe
 	       from clients where  upper(email) collate utf8mb4_unicode_ci = email2;
-	      
-	   
-       if existe > 0 THEN 
+
+
+       if existe > 0 THEN
             select '1' into _error;
             select '' into _msg;
             select description into _msg
@@ -88,14 +88,14 @@ sp: BEGIN
             select _error, _msg;
             leave sp;
        end if;
-  
-       
-       
+
+
+
       select 1 into existe;
       select valorint  into size_token
-        from catalogodet d 
+        from catalogodet d
         inner join catalogocab c on c.id = d.catalogocab_id
-        where c.tabla ='Reglas tabla clients' AND 
+        where c.tabla ='Reglas tabla clients' AND
               d.valorstring = 'SIZE_TOKEN';
       if(size_token=0) then
       	 select 10 into size_token;
@@ -106,30 +106,30 @@ sp: BEGIN
 	     select count(*) into existe
 	       from clients where  token collate utf8mb4_unicode_ci = substring3;
 	  end while;
-    
+
 	  select trim(_email) into _email;
-	   
-	  
+
+
 	  select  substring3 into token2 ;
-	   
+
       insert into clients(name,email,created_at,token,active) values(_name,_email,now(),token2,1);
-	 
+
 	  select '0' into  _error;
-	
+
 	  select 'ok' into _msg;
 	  select _error,_msg;
-	    
-	
- 	
+
+
+
 
 END;
 //
 DELIMITER ;
 
 /*
- 
+
  call Update_client(1,'MIguel Flores','mFj1.desarrollo@gmail.com',@_msg5,@_error5)
- 
+
  select @_msg5,@_error5
  */
 DROP PROCEDURE IF EXISTS Update_client;
@@ -140,37 +140,37 @@ create  PROCEDURE Update_client(
                                 IN _email varchar(255),
                                 IN _active tinyint(1),
                                 OUT _msg varchar(255),
-                                OUT _error char(1) 
+                                OUT _error char(1)
                                 )
 sp: BEGIN
 	   DECLARE token2 varchar(255);
 	   DECLARE substring3 varchar(200);
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare existe int;
 	   declare email2 varchar(255);
 	   declare size_token int;
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
 	   begin
 		   select '1' into _error;
-		   
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Update failed Client, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
-   		  
+
        end;
        select 0 into size_token;
 	   select 0 into existe;
 	   select trim(_email) into email2;
 	   select upper(email2) into email2;
-	   
+
  	   select count(*) into existe
-	       from clients 
-	     where  upper(email) collate utf8mb4_unicode_ci = email2 AND 
+	       from clients
+	     where  upper(email) collate utf8mb4_unicode_ci = email2 AND
 	            id <> _id;
-	      
-	   
-       if existe > 0 THEN 
+
+
+       if existe > 0 THEN
             select '1' into _error;
             select '' into _msg;
             select description into _msg
@@ -182,14 +182,14 @@ sp: BEGIN
             select _error, _msg;
             leave sp;
        end if;
-  
-       
-       
+
+
+
       select 1 into existe;
       select valorint  into size_token
-        from catalogodet d 
+        from catalogodet d
         inner join catalogocab c on c.id = d.catalogocab_id
-        where c.tabla ='Reglas tabla clients' AND 
+        where c.tabla ='Reglas tabla clients' AND
               d.valorstring = 'SIZE_TOKEN';
       if(size_token=0) then
       	 select 10 into size_token;
@@ -200,25 +200,25 @@ sp: BEGIN
 	     select count(*) into existe
 	       from clients where  token collate utf8mb4_unicode_ci = substring3;
 	  end while;
-    
+
 	  select trim(_email) into _email;
-	   
-	  
+
+
 	  select  substring3 into token2 ;
-	   
-     
-      update clients 
+
+
+      update clients
          set email= _email,
              name = _name,
              updated_at = now(),
              active  = _active,
              token = token2
          where id = _id;
-	 
+
 	  select '0','ok' into  _error,_msg;
 	 select _error,_msg;
-	
-	  
+
+
 END;
 //
 DELIMITER ;
@@ -226,18 +226,18 @@ DELIMITER ;
 /*
  set @s_token='TdpbeSGsdsg3g';
  call Get_client_token(@s_token);
- 
+
  */
 
 DROP PROCEDURE IF EXISTS Get_client_token;
 DELIMITER //
 create  PROCEDURE Get_client_token(IN s_token varchar(200))
 BEGIN
-	if 
+	if
 	  exists(
 			select 1
 		    from clients c
-		    WHERE c.token = s_token AND  
+		    WHERE c.token = s_token AND
 		          c.active = 1
 		   )
     then
@@ -245,14 +245,14 @@ BEGIN
     else
     	select 1 error,'Error, Token de cliente no estï¿½ asignado.' as msg;
     end if;
-		   
+
 
 END;
 //
 DELIMITER ;
 /*
  call Get_existe_user('frederik65@example.com','h5Vw5GRoyM')
- * 
+ *
  */
 
 DROP PROCEDURE IF EXISTS Get_existe_user;
@@ -262,87 +262,87 @@ BEGIN
 	declare b_is_completed bigint;
     declare b_is_exists bigint;
     declare b_is_corporation_user bigint;
-    
+
     select  0 into b_is_completed;
     select  0 into b_is_exists ;
     select  0 into b_is_corporation_user ;
-	if 
+	if
 	  exists(
 			select 1
 		    from users c
-		    inner join businessinformations b on b.user_id  = c.id 
-		    inner join clients c2 on c2.id = b.client_id 
-		    WHERE c.email = s_mail AND 
+		    inner join businessinformations b on b.user_id  = c.id
+		    inner join clients c2 on c2.id = b.client_id
+		    WHERE c.email = s_mail AND
 		          c2.token = s_token
 		   )
     then
     	select 1 into  b_is_exists;
     end if;
-   
-    if 
+
+    if
 	  exists(
 			select 1
 		    from users c
-		    inner join businessinformations b on b.user_id  = c.id 
-		    inner join clients c2 on c2.id = b.client_id 
-		    WHERE c.email = s_mail AND 
+		    inner join businessinformations b on b.user_id  = c.id
+		    inner join clients c2 on c2.id = b.client_id
+		    WHERE c.email = s_mail AND
 		          c2.token = s_token
-		   ) AND 
+		   ) AND
 	  exists(
 			select 1
 		    from users c
-		    inner join managements b on b.user_id  = c.id 
-		    inner join clients c2 on c2.id = b.client_id 
-		    WHERE c.email = s_mail AND 
+		    inner join managements b on b.user_id  = c.id
+		    inner join clients c2 on c2.id = b.client_id
+		    WHERE c.email = s_mail AND
 		          c2.token = s_token
-		   ) AND 
+		   ) AND
 	   exists(
 			select 1
 		    from users c
-		    inner join financialrequests b on b.user_id  = c.id 
-		    inner join clients c2 on c2.id = b.client_id 
-		    WHERE c.email = s_mail AND 
+		    inner join financialrequests b on b.user_id  = c.id
+		    inner join clients c2 on c2.id = b.client_id
+		    WHERE c.email = s_mail AND
 		          c2.token = s_token
-		   ) AND 
+		   ) AND
 	   exists(
 			select 1
 		    from users c
-		    inner join bankinformations  b on b.user_id  = c.id 
-		    inner join clients c2 on c2.id = b.client_id 
-		    WHERE c.email = s_mail AND 
+		    inner join bankinformations  b on b.user_id  = c.id
+		    inner join clients c2 on c2.id = b.client_id
+		    WHERE c.email = s_mail AND
 		          c2.token = s_token
-		   ) AND 
+		   ) AND
 	   exists(
 			select 1
 		    from users c
-		    inner join certificationauthorizations  b on b.user_id  = c.id 
-		    inner join clients c2 on c2.id = b.client_id 
-		    WHERE c.email = s_mail AND 
+		    inner join certificationauthorizations  b on b.user_id  = c.id
+		    inner join clients c2 on c2.id = b.client_id
+		    WHERE c.email = s_mail AND
 		          c2.token = s_token
-		   ) 
+		   )
     then
     	select 1 into  b_is_completed;
     end if;
-   
+
     if exists(
-            select 1 
-            from users u 
-            join model_has_roles mhr on u.id = mhr.model_id 
-            where u.email = s_mail AND 
+            select 1
+            from users u
+            join model_has_roles mhr on u.id = mhr.model_id
+            where u.email = s_mail AND
                   mhr.role_id != 3
             )
-    THEN 
+    THEN
         select 1 into b_is_corporation_user;
     end if;
-    
-    
-    
-   
+
+
+
+
     select b_is_completed as completo,
            b_is_exists as existe,
            b_is_corporation_user as usuario_corporativo;
-  
-    
+
+
      select m.id ,
 	       m.company_name,
 	       DATE_FORMAT(m.date_company , '%Y-%m-%d') as date_company,
@@ -372,21 +372,21 @@ BEGIN
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
 	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
            case m.is_seller when 1 then 'true' else 'false' end is_seller
-	
-    from businessinformations m 
-    inner join users u on u.id  = m.user_id 
-    inner join clients c2 on c2.id  = m.client_id 
-    left outer join catalogodet c on c.id = m.country_id 
-    left outer join catalogodet s on s.id = m.state_id 
-    left outer join catalogodet ci on ci.id = m.city_id 
-    WHERE 
-          u.email = s_mail AND 
+
+    from businessinformations m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    left outer join catalogodet c on c.id = m.country_id
+    left outer join catalogodet s on s.id = m.state_id
+    left outer join catalogodet ci on ci.id = m.city_id
+    WHERE
+          u.email = s_mail AND
           c2.token = s_token ;
-         
+
     select id,email,name
-    from users u 
+    from users u
     where u.email = s_mail;
-		   
+
 
 END;
 //
@@ -396,7 +396,7 @@ DELIMITER ;
  set @item = 8;
  call Get_businessinformation(@item);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_businessinformation;
 DELIMITER //
 create  PROCEDURE Get_businessinformation(IN item bigint)
@@ -426,20 +426,20 @@ BEGIN
            u.email,
            u.name,
            u.id user_id,
-           c2.token,	       
+           c2.token,
 	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
 	       case u.status when 1 then 'true' else 'false' end  status_user,
            case c2.active when 1 then 'true' else 'false' end status_client,
            case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
            case m.is_seller when 1 then 'true' else 'false' end is_seller
-	
-    from businessinformations m 
-    inner join users u on u.id =m.user_id 
-    inner JOIN clients c2 on c2.id  = m.client_id 
-    left outer join catalogodet c on c.id = m.country_id 
-    left outer join catalogodet s on s.id = m.state_id 
-    left outer join catalogodet ci on ci.id = m.city_id 
+
+    from businessinformations m
+    inner join users u on u.id =m.user_id
+    inner JOIN clients c2 on c2.id  = m.client_id
+    left outer join catalogodet c on c.id = m.country_id
+    left outer join catalogodet s on s.id = m.state_id
+    left outer join catalogodet ci on ci.id = m.city_id
     WHERE m.id = item;
 
 END;
@@ -450,10 +450,10 @@ DELIMITER ;
 /*
 SET @email = 'dare.jude@example.com';
 SET @token = 'QQUGvNKrwR';
-          
+
 call Get_businessinformation_client_user(@email ,@token);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_businessinformation_client_user;
 DELIMITER //
 create  PROCEDURE Get_businessinformation_client_user(IN _mail varchar(255), in _token varchar(255))
@@ -487,16 +487,16 @@ BEGIN
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
 	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
            case m.is_seller when 1 then 'true' else 'false' end is_seller
-	
-    from businessinformations m 
-    inner join users u on u.id  = m.user_id 
-    inner join clients c2 on c2.id  = m.client_id 
-    left outer join catalogodet c on c.id = m.country_id 
-    left outer join catalogodet s on s.id = m.state_id 
-    left outer join catalogodet ci on ci.id = m.city_id 
-    WHERE 
-          u.email = _mail AND 
-          c2.token = _token 
+
+    from businessinformations m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    left outer join catalogodet c on c.id = m.country_id
+    left outer join catalogodet s on s.id = m.state_id
+    left outer join catalogodet ci on ci.id = m.city_id
+    WHERE
+          u.email = _mail AND
+          c2.token = _token
           ;
 
 END;
@@ -533,7 +533,7 @@ SET @error = '';
 SET @id = 0;
 CALL Insert_businessinformation(@name,@email,@clave,@taxid,@datecompany,@contactname,@zipcode,@typebusiness,@phone,@president,@country,@state,@city,@address,@website,@secretary,@dba,@cellphone,@token,@is_buyer ,@is_seller ,@msg,@error,@id);
 SELECT @msg,@error,@id;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Insert_businessinformation;
@@ -566,7 +566,7 @@ create  PROCEDURE Insert_businessinformation(
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare b_client_id bigint;
 	   declare b_usuario_id bigint;
 	   declare b_country_id bigint;
@@ -577,19 +577,19 @@ sp:BEGIN
 	   declare t_is_buyer tinyint;
 	   declare t_is_seller tinyint;
 	   declare d_datecompany date;
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
 		   select 0 into _id;
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Inserts failed Business Information, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
+
+      sp2:begin
 	      select 0 into _id;
 	      select 0 into b_rol_id;
 	      select '' into s_modelo;
@@ -615,15 +615,15 @@ sp:BEGIN
 		  end if;
 	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
-		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
+		        select 'Error, el formato de la fecha no es vï¿½lido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
-	       
-	      
-		   
+
+
+
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
 		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
@@ -652,117 +652,117 @@ sp:BEGIN
 		   select trim(upper(_country)) into _country;
 		   select trim(upper(_state)) into _state;
 		   select trim(upper(_city)) into _city;
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
-		 
-		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado) 
+
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado)
 		          values((select id from catalogocab where tabla='PAISES'), _country,_country,1);
-		      
+
 		   end if;
-		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
 		   		select 1 into _error;
 		        select 'Error, Country no existe.' into _msg;
-		        select _error,_msg,_id; 
+		        select _error,_msg,_id;
 		        LEAVE sp2;
 		  end if;
-		  
+
 		   select c2.id into b_country_id
-		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country;
-		            
-		   
+
+
 		   /*States*/
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
-		 
-		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint)
 		          values((select id from catalogocab where tabla='STATES'), _state,_state,1,b_country_id);
-		      
+
 		   end if;
-		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
 		   		select 1 into _error;
 		        select 'Error, State no existe.' into _msg;
-		        select _error,_msg,_id; 
+		        select _error,_msg,_id;
 		        LEAVE sp2;
 		  end if;
-		  
+
 		  select c2.id into b_state_id
-		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		         WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id;
-		  
+
 		  /*Ciudades*/
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
-		 
-		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint)
 		          values((select id from catalogocab where tabla='CIUDADES'), _city,_city,1,b_state_id);
-		      
+
 		   end if;
-		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
 		   		select 1 into _error;
 		        select 'Error, City no existe.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 		  end if;
-		  
+
 		  select c2.id into b_city_id
-		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		         WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id;
-		   
+
 		   if exists(select 1 from users u  WHERE u.email = _email) then
 			  select 1 into _error;
 			        select 'Error, usuario ya existe.' into _msg;
 			        select _error,_msg,_id;
 			        LEAVE sp2;
-		   end if; 
-		
-		 
+		   end if;
+
+
 	       insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
 		   select  LAST_INSERT_ID() into b_usuario_id;
-		      
-		      
-		  
+
+
+
 		  if not exists(select 1 from model_has_roles where model_id= b_usuario_id) then
 		       select 0 into b_rol_id;
-	           select '' into s_modelo; 
+	           select '' into s_modelo;
 	           select valor_bigint into b_rol_id
-		          from catalogodet c2 
+		          from catalogodet c2
 		          inner join catalogocab c1 on c1.id = c2.catalogocab_id
 		          where c1.tabla='ROL-USER-CLIENT' and
 		                c2.valorstring='ROL_ID';
 	           select valorstring2 into s_modelo
-		          from catalogodet c2 
+		          from catalogodet c2
 		          inner join catalogocab c1 on c1.id = c2.catalogocab_id
 		          where c1.tabla='ROL-USER-CLIENT' and
-		                c2.valorstring='MODELO'; 
+		                c2.valorstring='MODELO';
 		  	   insert into model_has_roles(role_id,model_type,model_id) values(b_rol_id,s_modelo,b_usuario_id);
 		  end if;
-		  
+
 		  if b_usuario_id = 0 then
 		  		select 1 into _error;
-		        select 'Error, Código de Usuario no existe.' into _msg;
-		        select _error,_msg,_id;   
+		        select 'Error, Cï¿½digo de Usuario no existe.' into _msg;
+		        select _error,_msg,_id;
 		        LEAVE sp2;
 		  end if;
-		 
+
 		  select c.id into b_client_id from clients c where c.token = _token;
-		   
-		  
-		   if exists(select 1 from businessinformations b 
+
+
+		   if exists(select 1 from businessinformations b
 		             WHERE b.user_id = b_usuario_id AND
 		                   b.client_id = b_client_id) then
 		      	select 1 into _error;
-		        select 'Error, ya tenemos registrado con esta cuenta en la Sección Business Information.' into _msg;
-		        select _error,_msg,_id; 
+		        select 'Error, ya tenemos registrado con esta cuenta en la Secciï¿½n Business Information.' into _msg;
+		        select _error,_msg,_id;
 		        LEAVE sp2;
 		   end if;
-		  
+
 		   insert into businessinformations
 		                (
 		                 created_at,
@@ -809,19 +809,19 @@ sp:BEGIN
 		               t_is_buyer,
 		               t_is_seller
 		            );
-		   
+
 		   select  LAST_INSERT_ID() into _id;
-		       
-		  
+
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
 		end;
-	    
-	
- 	
+
+
+
 
 END;
 //
@@ -883,8 +883,8 @@ create  PROCEDURE Update_businessinformation(
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
-	 
+	   Declare MSG text;
+
 	   declare b_usuario_id bigint;
 	   declare b_country_id bigint;
 	   declare b_state_id bigint;
@@ -892,19 +892,19 @@ sp:BEGIN
 	   declare d_datecompany date;
 	   declare t_is_buyer tinyint;
 	   declare t_is_seller tinyint;
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
-		   
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Updates failed Business Information, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
+
+      sp2:begin
 	      select 0 into t_is_buyer;
 	      select 0 into t_is_seller;
 	      if trim(ifnull(_is_buyer,''))='' then
@@ -928,7 +928,7 @@ sp:BEGIN
 	      if not exists(select 1 from businessinformations c WHERE c.id = _id_bi) then
 		   		select 1 into _error;
 		        select 'Error, businessinformations no existe.' into _msg;
-		        select _error,_msg; 
+		        select _error,_msg;
 		        LEAVE sp2;
 		  end if;
 		 if trim(ifnull(_email,''))='' then
@@ -941,24 +941,24 @@ sp:BEGIN
 		  select c.user_id into b_usuario_id from  businessinformations c where c.id = _id_bi;
 		  if b_usuario_id = 0 then
 		  		select 1 into _error;
-		        select 'Error, Código de Usuario no existe.' into _msg;
-		        select _error,_msg;   
+		        select 'Error, Cï¿½digo de Usuario no existe.' into _msg;
+		        select _error,_msg;
 		        LEAVE sp2;
 		  else
 			   update users set updated_at =now(),email = _email, name = _name where id = b_usuario_id;
 		  end if;
 	      if STR_TO_DATE(_datecompany, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
-		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
+		        select 'Error, el formato de la fecha no es vï¿½lido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
-	       
-	      
-		   
-		  
+
+
+
+
 		   /*Paises*/
 		  if trim(ifnull(_country,''))='' then
 		        select 1 into _error;
@@ -981,73 +981,73 @@ sp:BEGIN
 		  select trim(upper(_country)) into _country;
 		  select trim(upper(_state)) into _state;
 		  select trim(upper(_city)) into _city;
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
-		 
-		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado) 
+
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado)
 		          values((select id from catalogocab where tabla='PAISES'), _country,_country,1);
-		      
+
 		   end if;
-		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country) then
 		   		select 1 into _error;
 		        select 'Error, Country no existe.' into _msg;
-		        select _error,_msg; 
+		        select _error,_msg;
 		        LEAVE sp2;
 		  end if;
-		  
+
 		   select c2.id into b_country_id
-		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='PAISES' AND c2.valorstring = _country;
-		            
-		   
+
+
 		   /*States*/
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
-		 
-		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint)
 		          values((select id from catalogocab where tabla='STATES'), _state,_state,1,b_country_id);
-		      
+
 		   end if;
-		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id) then
 		   		select 1 into _error;
 		        select 'Error, State no existe.' into _msg;
-		        select _error,_msg; 
+		        select _error,_msg;
 		        LEAVE sp2;
 		  end if;
-		  
+
 		  select c2.id into b_state_id
-		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		         WHERE c.tabla='STATES' AND c2.valorstring = _state AND c2.valor_bigint = b_country_id;
-		  
+
 		  /*Ciudades*/
-		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		   if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
-		 
-		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint) 
+
+		        insert into catalogodet(catalogocab_id,descripcion,valorstring,estado,valor_bigint)
 		          values((select id from catalogocab where tabla='CIUDADES'), _city,_city,1,b_state_id);
-		      
+
 		   end if;
-		  
-		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+
+		  if not exists(select 1 from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		             WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id) then
 		   		select 1 into _error;
 		        select 'Error, City no existe.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 		  end if;
-		  
+
 		  select c2.id into b_city_id
-		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id  
+		         from catalogocab c inner join catalogodet c2  on c2.catalogocab_id  = c.id
 		         WHERE c.tabla='CIUDADES' AND c2.valorstring = _city AND c2.valor_bigint = b_state_id;
-		   
-		
-		  
+
+
+
 		   update businessinformations
-		              set 
+		              set
 		                 updated_at  = now(),
 		                 company_name  = _name,
 		                 date_company  = d_datecompany,
@@ -1068,29 +1068,29 @@ sp:BEGIN
 		                 is_buyer = t_is_buyer,
 		                 is_seller = t_is_seller
 		  where id = _id_bi;
-		   
-		  
-		       
-		  
+
+
+
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg;
 		end;
-	    
-	
- 	
+
+
+
 
 END;
 //
 DELIMITER ;
 
 /*
- set @item = 1;
+ set @item = 12;
  call Get_managments(@item);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_managments;
 DELIMITER //
 create  PROCEDURE Get_managments(IN item bigint)
@@ -1100,10 +1100,10 @@ BEGIN
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
            u.email,
            c.token
-	
-    from managements m 
-    inner join users u on u.id = m.user_id 
-    inner join clients c on c.id = m.client_id 
+
+    from managements m
+    inner join users u on u.id = m.user_id
+    inner join clients c on c.id = m.client_id
     WHERE m.id = item;
 
 END;
@@ -1116,7 +1116,7 @@ SET @email = 'a4578@aaa.com';
 SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
  call Get_managments_client_user(@email,@token);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_managments_client_user;
 DELIMITER //
 create  PROCEDURE Get_managments_client_user(IN _mail varchar(255), in _token varchar(255))
@@ -1124,11 +1124,11 @@ BEGIN
 	select m.id,m.name, m.idno,m.percentage,m.position,DATE_FORMAT(m.birthdate, '%Y-%m-%d') as birthdate,
 	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from managements m 
-    inner join users u on u.id  = m.user_id 
-    inner join clients c2 on c2.id  = m.client_id 
-    WHERE u.email = _mail AND 
+
+    from managements m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    WHERE u.email = _mail AND
           c2.token = _token ;
 
 END;
@@ -1149,7 +1149,7 @@ SET @error = '';
 SET @id = 0;
 CALL Insert_managment(@name,@email,@idno,@position,@percentage,@birthday,@token,@msg,@error,@id);
 SELECT @msg,@error,@id;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Insert_managment;
@@ -1168,54 +1168,54 @@ create  PROCEDURE Insert_managment(
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare b_client_id bigint;
 	   declare b_usuario_id bigint;
 	   declare d_datecompany date;
 	   declare d_percentage double;
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
 		   select 0 into _id;
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Inserts failed Managment, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
+
+      sp2:begin
 	      select 0 into _id;
-	      select 0 into d_percentage; 
+	      select 0 into d_percentage;
 	      if STR_TO_DATE(_birthday, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
-		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
+		        select 'Error, el formato de la fecha no es vï¿½lido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
-	       
-	      
-		   
+
+
+
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
 		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 		   end if;
-		   
-		   
+
+
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
 		        select 'Error, Email no existe con ese mail.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-	      if exists(select count(*) from managements m 
-	                inner join users u on u.id = m.user_id 
-	                inner join clients c on c.id = m.client_id 
+	      end if;
+	      if exists(select count(*) from managements m
+	                inner join users u on u.id = m.user_id
+	                inner join clients c on c.id = m.client_id
 	                WHERE u.email = _email AND
 	                      c.token = _token
 	                group by m.user_id,m.client_id
@@ -1224,15 +1224,15 @@ sp:BEGIN
 		        select 'Error, No se pueden guardar mas de 4 items como ownership.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
+	      end if;
+
 		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
 		  select c.id into b_client_id from clients c where c.token = _token;
-		 
-		 
+
+
 		  select _percentage into d_percentage;
-		  
-		   insert into managements 
+
+		   insert into managements
 		                (
 		                 created_at,
 		                 name,
@@ -1252,13 +1252,13 @@ sp:BEGIN
 		               b_usuario_id,
 		               b_client_id
 		            );
-		   
+
 		   select  LAST_INSERT_ID() into _id;
-		       
-		  
+
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
 		end;
@@ -1280,7 +1280,7 @@ SET @error = '';
 
 CALL Update_managment(@id,@name,@idno,@position,@percentage,@birthday,@msg,@error);
 SELECT @msg,@error;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Update_managment;
@@ -1293,28 +1293,28 @@ create  PROCEDURE Update_managment(
                                 IN _percentage varchar(255),
                                 IN _birthday varchar(255),
                                 OUT _msg varchar(255),
-                                OUT _error tinyint 
+                                OUT _error tinyint
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare d_datecompany date;
 	   declare d_percentage double;
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
-		   
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Update failed Managment, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
-	     
-	      select 0 into d_percentage; 
+
+      sp2:begin
+
+	      select 0 into d_percentage;
 	      if not exists(select 1 from managements m where m.id = _id) then
 	      		select 1 into _error;
 		        select 'Error, no existe el registro en la tabla managements.' into _msg;
@@ -1323,17 +1323,17 @@ sp:BEGIN
 	      end if;
 	      if STR_TO_DATE(_birthday, '%Y-%m-%d') is  NULL then
 	      		select 1 into _error;
-		        select 'Error, el formato de la fecha no es válido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
+		        select 'Error, el formato de la fecha no es vï¿½lido. El formato es yyyy-MM-dd Ejm: 2021-08-21.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
-	       
+
 		  select _percentage into d_percentage;
-		  
-		   update  managements 
-		             set 
+
+		   update  managements
+		             set
 		                 updated_at = now(),
 		                 name = _name,
 		                 idno = _idno,
@@ -1341,10 +1341,10 @@ sp:BEGIN
 		                 position = _position ,
 		                 birthdate = d_datecompany
 		    where id = _id;
-		   
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg;
 		end;
@@ -1357,12 +1357,12 @@ DELIMITER ;
  set @item = 1;
  call Get_financial(@item);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_financial;
 DELIMITER //
 create  PROCEDURE Get_financial(IN item bigint)
 BEGIN
-   
+
    select f.id,
           f.avg_montky_sales,
           f.ams_how_clients,
@@ -1377,11 +1377,11 @@ BEGIN
           f.emf_number_clients,
           f.rf_when_with_whom,
           f.cip_when_with_whom,
-           
+
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from financialrequests f 
+
+    from financialrequests f
     WHERE f.id = item;
 
 END;
@@ -1395,7 +1395,7 @@ SET @token = 'h5Vw5GRoyM';
  call Get_financial_client_user(@email,@token);
  avg_montky_sales
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_financial_client_user;
 DELIMITER //
 create  PROCEDURE Get_financial_client_user(IN _mail varchar(255), in _token varchar(255))
@@ -1405,11 +1405,11 @@ BEGIN
    if(exists(
          select
              1
-	        from financialrequests f 
-		    inner join users u on u.id  = f.user_id 
-		    inner join clients c2 on c2.id  = f.client_id 
-		    WHERE u.email = _mail AND 
-		          c2.token = _token 
+	        from financialrequests f
+		    inner join users u on u.id  = f.user_id
+		    inner join clients c2 on c2.id  = f.client_id
+		    WHERE u.email = _mail AND
+		          c2.token = _token
       )) then
     	select 1 into b_is_exist ;
    end if;
@@ -1428,14 +1428,14 @@ BEGIN
           f.emf_number_clients,
           f.rf_when_with_whom,
           f.cip_when_with_whom,
-           
+
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from financialrequests f 
-    inner join users u on u.id  = f.user_id 
-    inner join clients c2 on c2.id  = f.client_id 
-    WHERE u.email = _mail AND 
+
+    from financialrequests f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.email = _mail AND
           c2.token = _token ;
 
 END;
@@ -1463,10 +1463,10 @@ SET @msg = '';
 SET @error = '';
 SET @id = 0;
 CALL Insert_financial(@avg_montky_sales,@ams_how_clients,@has_applicant,@po_finance,@in_finance,
-       @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing, 
+       @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing,
        @emf_number_clients, @rf_when_with_whom, @cip_when_with_whom,  @email,@token,@msg,@error,@id);
 SELECT @msg,@error,@id;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Insert_financial;
@@ -1485,7 +1485,7 @@ create  PROCEDURE Insert_financial(
                                 IN _emf_number_clients int,
                                 IN _rf_when_with_whom double,
                                 IN _cip_when_with_whom int,
-                                                                
+
                                 IN _email varchar(255),
                                 IN _token varchar(255),
                                 OUT _msg varchar(255),
@@ -1494,54 +1494,54 @@ create  PROCEDURE Insert_financial(
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare b_client_id bigint;
 	   declare b_usuario_id bigint;
 
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
 		   select 0 into _id;
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Inserts failed Financial, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
+
+      sp2:begin
 	      select 0 into _id;
-	      
-	      
-		   
+
+
+
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
 		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 		   end if;
-		   
-		   
+
+
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
 		        select 'Error, Email no existe con ese mail.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
+	      end if;
+
 		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
 		  select c.id into b_client_id from clients c where c.token = _token;
-		 
+
 		  if exists(select 1 from financialrequests u  WHERE u.client_id =b_client_id and u.user_id  = b_usuario_id ) then
 		     select 1 into _error;
 		        select 'Error, Ya se encuentra registrado un Financial.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
-		  
-		   insert into financialrequests 
+	      end if;
+
+
+		   insert into financialrequests
 		                (
 		                created_at,
 		                avg_montky_sales ,
@@ -1577,13 +1577,13 @@ sp:BEGIN
 		                b_usuario_id,
 		                b_client_id
 		            );
-		   
+
 		   select  LAST_INSERT_ID() into _id;
-		       
-		  
+
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
 		end;
@@ -1612,10 +1612,10 @@ SET @msg = '';
 SET @error = '';
 
 CALL Update_financial(@id,@avg_montky_sales,@ams_how_clients,@has_applicant,@po_finance,@in_finance,
-       @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing, 
+       @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing,
        @emf_number_clients, @rf_when_with_whom, @cip_when_with_whom,@msg,@error);
 SELECT @msg,@error;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Update_financial;
@@ -1636,36 +1636,36 @@ create  PROCEDURE Update_financial(
                                 IN _rf_when_with_whom double,
                                 IN _cip_when_with_whom int,
                                 OUT _msg varchar(255),
-                                OUT _error tinyint 
+                                OUT _error tinyint
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
-	  
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   Declare MSG text;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
-		   
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Update failed Financial, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
-	     
+
+      sp2:begin
+
 	      if not exists(select 1 from financialrequests f  where f.id = _id) then
 	      		select 1 into _error;
 		        select 'Error, no existe el registro en la tabla financial.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	      
-		  
-		   update  financialrequests 
-		             set 
+
+
+		   update  financialrequests
+		             set
 		                updated_at = now(),
 		                avg_montky_sales  = _avg_montky_sales,
                         ams_how_clients  = _ams_how_clients,
@@ -1681,10 +1681,10 @@ sp:BEGIN
                         rf_when_with_whom = _rf_when_with_whom ,
                         cip_when_with_whom  = _cip_when_with_whom
 		    where id = _id;
-		   
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg;
 		end;
@@ -1698,12 +1698,12 @@ DELIMITER ;
  set @item = 1;
  call Get_bankinformation(@item);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_bankinformation;
 DELIMITER //
 create  PROCEDURE Get_bankinformation(IN item bigint)
 BEGIN
-   
+
    select f.id,
           f.bank_name,
           f.account_same_swift,
@@ -1712,12 +1712,12 @@ BEGIN
           f.bank_adress,
           f.telephone,
           f.account_officer,
-                     
-           
+
+
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from bankinformations f 
+
+    from bankinformations f
     WHERE f.id = item;
 
 END;
@@ -1729,7 +1729,7 @@ SET @email = 'a4578@aaa.com';
 SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
  call Get_bankinformation_client_user(@email,@token);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_bankinformation_client_user;
 DELIMITER //
 create  PROCEDURE Get_bankinformation_client_user(IN _mail varchar(255), in _token varchar(255))
@@ -1739,16 +1739,16 @@ BEGIN
    if(exists(
          select
              1
-	        from bankinformations f 
-		    inner join users u on u.id  = f.user_id 
-		    inner join clients c2 on c2.id  = f.client_id 
-		    WHERE u.email = _mail AND 
-		          c2.token = _token 
+	        from bankinformations f
+		    inner join users u on u.id  = f.user_id
+		    inner join clients c2 on c2.id  = f.client_id
+		    WHERE u.email = _mail AND
+		          c2.token = _token
       )) then
     	select 1 into b_is_exist ;
    end if;
    select b_is_exist existe;
-   
+
    select f.id,
           f.bank_name,
           f.account_same_swift,
@@ -1757,15 +1757,15 @@ BEGIN
           f.bank_adress,
           f.telephone,
           f.account_officer,
-                     
-           
+
+
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from bankinformations f 
-    inner join users u on u.id  = f.user_id 
-    inner join clients c2 on c2.id  = f.client_id 
-    WHERE u.email = _mail AND 
+
+    from bankinformations f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.email = _mail AND
           c2.token = _token ;
 
 END;
@@ -1790,7 +1790,7 @@ CALL Insert_bankinformation(@email,@_bank_name, @account_same_swift,
       @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,
       @token,@msg,@error,@id);
 SELECT @msg,@error,@id;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Insert_bankinformation;
@@ -1811,54 +1811,54 @@ create  PROCEDURE Insert_bankinformation(
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare b_client_id bigint;
 	   declare b_usuario_id bigint;
 
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
 		   select 0 into _id;
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Inserts failed Bank Information, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
+
+      sp2:begin
 	      select 0 into _id;
-	      
-	      
-		   
+
+
+
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
 		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 		   end if;
-		   
-		   
+
+
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
 		        select 'Error, Email no existe con ese mail.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
+	      end if;
+
 		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
 		  select c.id into b_client_id from clients c where c.token = _token;
-		 
+
 		  if exists(select 1 from bankinformations u  WHERE u.client_id =b_client_id and u.user_id  = b_usuario_id ) then
 		     select 1 into _error;
 		        select 'Error, Ya se encuentra registrado un bank Information.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
-		  
-		   insert into bankinformations 
+	      end if;
+
+
+		   insert into bankinformations
 		                (
 		                created_at,
 		                bank_name ,
@@ -1882,13 +1882,13 @@ sp:BEGIN
 		                b_usuario_id,
 		                b_client_id
 		            );
-		   
+
 		   select  LAST_INSERT_ID() into _id;
-		       
-		  
+
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
 		end;
@@ -1913,7 +1913,7 @@ SET @error = '';
 CALL Update_bankinformation(@id,@_bank_name, @account_same_swift,
       @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,@msg,@error);
 SELECT @msg,@error;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Update_bankinformation;
@@ -1928,36 +1928,36 @@ create  PROCEDURE Update_bankinformation(
                                 IN _telephone varchar(255),
                                 IN _account_officer varchar(255),
                                 OUT _msg varchar(255),
-                                OUT _error tinyint 
+                                OUT _error tinyint
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
-	  
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   Declare MSG text;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
-		   
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Update failed Bank information, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
-	     
+
+      sp2:begin
+
 	      if not exists(select 1 from bankinformations f  where f.id = _id) then
 	      		select 1 into _error;
 		        select 'Error, no existe el registro en la tabla bank Information.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	      
-		  
-		   update  bankinformations 
-		             set 
+
+
+		   update  bankinformations
+		             set
 		                updated_at = now(),
 		                bank_name  = _bank_name,
 		                account_same_swift = _account_same_swift,
@@ -1967,10 +1967,10 @@ sp:BEGIN
 		                telephone = _telephone,
 		                account_officer = _account_officer
 		    where id = _id;
-		   
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg;
 		end;
@@ -1985,21 +1985,21 @@ DELIMITER ;
  set @item = 1;
  call Get_certification(@item);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_certification;
 DELIMITER //
 create  PROCEDURE Get_certification(IN item bigint)
 BEGIN
-   
+
    select f.id,
           case f.approved_agreed when 1 then ' checked ' else ' ' end approved_agreed,
           f.name,
           f.title,
-           
+
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from certificationauthorizations f 
+
+    from certificationauthorizations f
     WHERE f.id = item;
 
 END;
@@ -2013,7 +2013,7 @@ SET @email = 'a4578@aaa.com';
 SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
  call Get_certification_client_user(@email,@token);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_certification_client_user;
 DELIMITER //
 create  PROCEDURE Get_certification_client_user(IN _mail varchar(255), in _token varchar(255))
@@ -2022,11 +2022,11 @@ BEGIN
    if(exists(
          select
              1
-	        from certificationauthorizations  f 
-		    inner join users u on u.id  = f.user_id 
-		    inner join clients c2 on c2.id  = f.client_id 
-		    WHERE u.email = _mail AND 
-		          c2.token = _token 
+	        from certificationauthorizations  f
+		    inner join users u on u.id  = f.user_id
+		    inner join clients c2 on c2.id  = f.client_id
+		    WHERE u.email = _mail AND
+		          c2.token = _token
       )) then
     	select 1 into b_is_exist ;
    end if;
@@ -2035,14 +2035,14 @@ BEGIN
           case f.approved_agreed when 1 then ' checked' else ' ' end approved_agreed,
           f.name,
           f.title,
-           
+
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at
-	
-    from certificationauthorizations f 
-    inner join users u on u.id  = f.user_id 
-    inner join clients c2 on c2.id  = f.client_id 
-    WHERE u.email = _mail AND 
+
+    from certificationauthorizations f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.email = _mail AND
           c2.token = _token ;
 
 END;
@@ -2063,7 +2063,7 @@ SET @error = '';
 SET @id = 0;
 CALL Insert_certification(@email,@_approved_agreed, @_name,@_title,@token,@msg,@error,@id);
 SELECT @msg,@error,@id;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Insert_certification;
@@ -2080,54 +2080,54 @@ create  PROCEDURE Insert_certification(
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
+	   Declare MSG text;
 	   declare b_client_id bigint;
 	   declare b_usuario_id bigint;
 
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
 		   select 0 into _id;
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Inserts failed Certifications, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg,_id;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
+
+      sp2:begin
 	      select 0 into _id;
-	      
-	      
-		   
+
+
+
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
 		        select 'Error, Origen del Market no existe, error en Token.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 		   end if;
-		   
-		   
+
+
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
 		        select 'Error, Email no existe con ese mail.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
+	      end if;
+
 		  select u.id into b_usuario_id from users u  WHERE u.email = _email;
 		  select c.id into b_client_id from clients c where c.token = _token;
-		 
+
 		  if exists(select 1 from certificationauthorizations u  WHERE u.client_id =b_client_id and u.user_id  = b_usuario_id ) then
 		     select 1 into _error;
 		        select 'Error, Ya se encuentra registrado en Certifications.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
-	      end if; 
-		  
-		  
-		   insert into certificationauthorizations 
+	      end if;
+
+
+		   insert into certificationauthorizations
 		                (
 		                created_at,
 		                name ,
@@ -2143,13 +2143,13 @@ sp:BEGIN
 		                b_usuario_id,
 		                b_client_id
 		            );
-		   
+
 		   select  LAST_INSERT_ID() into _id;
-		       
-		  
+
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg, _id;
 		end;
@@ -2171,7 +2171,7 @@ SET @error = '';
 
 CALL Update_certification(@id,@_approved_agreed, @_name,@_title,@msg,@error);
 SELECT @msg,@error;
-  
+
  */
 
 DROP PROCEDURE IF EXISTS Update_certification;
@@ -2182,45 +2182,45 @@ create  PROCEDURE Update_certification(
                                 IN _name varchar(255),
                                 IN _title varchar(255),
                                 OUT _msg varchar(255),
-                                OUT _error tinyint 
+                                OUT _error tinyint
                                 )
 sp:BEGIN
 	   Declare code varchar(5);
-	   Declare MSG text; 
-	  
-	   DECLARE exit HANDLER FOR SQLEXCEPTION 
-	   
+	   Declare MSG text;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
 	   sp1:begin
 		   select 1 into _error;
-		   
-		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT; 
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
 		   select CONCAT('Update failed Certification, error = ',code,', message = ',MSG) into _msg;
 		   select _error,_msg;
 		   LEAVE sp1;
-   		  
+
        end;
-      
-      sp2:begin 
-	     
+
+      sp2:begin
+
 	      if not exists(select 1 from bankinformations f  where f.id = _id) then
 	      		select 1 into _error;
 		        select 'Error, no existe el registro en la tabla Certification.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	      
-		  
-		   update  certificationauthorizations 
-		             set 
+
+
+		   update  certificationauthorizations
+		             set
 		                updated_at = now(),
 		                title  = _title,
 		                approved_agreed = _approved_agreed,
 		                name = _name
 		    where id = _id;
-		   
+
 		   select 0 into  _error;
-		   
-		
+
+
 		   select 'ok' into _msg;
 		   select _error,_msg;
 		end;
@@ -2234,18 +2234,18 @@ DELIMITER ;
 /*
  call Get_countries;
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_countries;
 DELIMITER //
 create  PROCEDURE Get_countries()
 BEGIN
-   
-   select 
+
+   select
    c3.id,
    c3.descripcion description
-	
-    from catalogocab c 
-    inner join catalogodet c3 on c.id = c3.catalogocab_id 
+
+    from catalogocab c
+    inner join catalogodet c3 on c.id = c3.catalogocab_id
     WHERE c.tabla ='PAISES'
    order by 2;
 
@@ -2257,19 +2257,19 @@ DELIMITER ;
  SET @country_id = 2;
  call Get_states(@country_id);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_states;
 DELIMITER //
 create  PROCEDURE Get_states(IN _country_id bigint)
 BEGIN
-   
-   select 
+
+   select
    c3.id,
    c3.descripcion description
-	
-    from catalogocab c 
-    inner join catalogodet c3 on c.id = c3.catalogocab_id 
-    WHERE c.tabla ='STATES' AND  
+
+    from catalogocab c
+    inner join catalogodet c3 on c.id = c3.catalogocab_id
+    WHERE c.tabla ='STATES' AND
           c3.valor_bigint  = _country_id
    order by 2;
 
@@ -2281,19 +2281,19 @@ DELIMITER ;
  SET @state_id = 5;
  call Get_cities(@state_id);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_cities;
 DELIMITER //
 create  PROCEDURE Get_cities(IN _state_id bigint)
 BEGIN
-   
-   select 
+
+   select
    c3.id,
    c3.descripcion description
-	
-    from catalogocab c 
-    inner join catalogodet c3 on c.id = c3.catalogocab_id 
-    WHERE c.tabla ='CIUDADES' AND  
+
+    from catalogocab c
+    inner join catalogodet c3 on c.id = c3.catalogocab_id
+    WHERE c.tabla ='CIUDADES' AND
           c3.valor_bigint  = _state_id
    order by 2;
 
@@ -2302,35 +2302,396 @@ END;
 DELIMITER ;
 
 /*
- SET @role = 0;
+ SET @role = 3;
  call Get_users_roles (@role);
  */
- 
+
 DROP PROCEDURE IF EXISTS Get_users_roles;
 DELIMITER //
 create  PROCEDURE Get_users_roles(IN _roleid bigint)
 BEGIN
-       
+
 	   if(_roleid>0) then
 	   begin
-		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id
-		   FROM model_has_roles mhr 
+		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+		       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+		       CASE
+		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+		         else 'He is not client.'
+		       END credit_status
+
+		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
-		   inner join roles r on r.id = mhr.role_id 
+		   inner join roles r on r.id = mhr.role_id
 		   where r.id = _roleid
 		   order by 2;
 	   end;
 	   else
 	   begin
-	      select u.email ,u.name ,r.name  as role_desc,r.id as role_id
-		   FROM model_has_roles mhr 
+	      select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+	       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+		    CASE
+		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+		         else 'He is not client.'
+		       END credit_status
+		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
-		   inner join roles r on r.id = mhr.role_id 
+		   inner join roles r on r.id = mhr.role_id
 		   order by 2;
 	   end;
 	   end if;
-	
+
 
 END;
 //
 DELIMITER ;
+
+/*
+set @_rolid =1;
+set @_name ="name 2 test ";
+set @_email ="correo@a.com";
+set @_clave ="2323asas";
+SET @msg = '';
+SET @error = '';
+
+CALL Create_users_admin_super(@_rolid ,@_clave ,@_email,@_name ,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Create_users_admin_super;
+DELIMITER //
+create  PROCEDURE Create_users_admin_super(
+                                IN _rolid bigint,
+								IN _clave varchar(255),
+								IN _email varchar(255),
+                                IN _name varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+	   declare b_usuario_id bigint;
+	   declare s_modelo varchar(200);
+	   
+	   
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Create Users admin o super failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+
+	      if exists(select 1 from users u  where u.email=_email) then
+	      		select 1 into _error;
+		        select 'Error, ya existe registrado un user con ese email.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if  _rolid = 3  then
+	      		select 1 into _error;
+		        select 'Error, el rol cliente no aplica para el registro.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	     end if; 
+	     if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
+	      		select 1 into _error;
+		        select 'Error, no existe el rol.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if ifnull(_email,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, email es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      if ifnull(_name,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, Name es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+
+		  insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
+		  select  LAST_INSERT_ID() into b_usuario_id;
+			
+		  select valorstring2 into s_modelo
+	          from catalogodet c2
+	          inner join catalogocab c1 on c1.id = c2.catalogocab_id
+	          where c1.tabla='ROL-USER-CLIENT' and
+	                c2.valorstring='MODELO';
+		   insert into model_has_roles(role_id,model_type,model_id) values(_rolid,s_modelo,b_usuario_id); 
+		   select 0 into  _error;
+
+
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+set @_rolid =1;
+set @_userid =19;
+set @_name ="name 3 test ";
+set @_email ="mflores355@gmail.com";
+set @_clave ="2323asas";
+set @_active =0;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_users_admin_super(@_userid,@_rolid ,@_clave ,@_email,@_name ,@_active,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Update_users_admin_super;
+DELIMITER //
+create  PROCEDURE Update_users_admin_super(
+                                IN _userid bigint,
+								IN _rolid bigint,
+								IN _clave varchar(255),
+								IN _email varchar(255),
+                                IN _name varchar(255),
+                                IN _active tinyint,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+	   
+	   
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Update Users admin o super failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+	      if _userid is null  then
+	      		select 1 into _error;
+		        select 'Error, userid es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	      if not exists(select 1 from users u where u.id=_userid) then
+	      		select 1 into _error;
+		        select 'Error, no existe user con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if  _rolid = 3  then
+	      		select 1 into _error;
+		        select 'Error, el rol cliente no aplica para el registro.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	     end if; 
+	     if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
+	      		select 1 into _error;
+		        select 'Error, no existe el rol.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if exists(select 1 from users u where u.email = _email and u.id <> _userid) or _rolid is NULL  then
+	      		select 1 into _error;
+		        select 'Error, correo ya existe en otra cuenta de usuario.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if ifnull(_email,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, email es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      if ifnull(_name,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, Name es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+   	      update model_has_roles set role_id = _rolid where model_id = _userid; 
+   	      update users set email = _email, name= _name, updated_at = now(), status = _active where id = _userid;
+		  select 0 into  _error;
+
+
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+ SET @userid = 3;
+ call Get_users_roles (@role);
+ */
+
+DROP PROCEDURE IF EXISTS Get_info_credit;
+DELIMITER //
+create  PROCEDURE Get_info_credit(IN _userid bigint)
+BEGIN
+
+	   select m.id,
+	       m.company_name,
+	       DATE_FORMAT(m.date_company , '%Y-%m-%d %T.%f') as date_company,
+	       m.type_business,
+	       m.contact_name,
+	       m.zip,
+	       m.president_name,
+	       m.address,
+	       m.ruc_tax,
+	       m.website,
+	       m.secretary_name,
+	       m.dba,
+           m.cell_phone,
+           m.country_id,
+           c.descripcion country,
+           m.city_id,
+           ci.descripcion city,
+           m.state_id,
+           s.descripcion state,
+           m.phone,
+           u.email,
+           u.name,
+           u.id user_id,
+           case u.status when 1 then 'true' else 'false' end  status_user,
+           case c2.active when 1 then 'true' else 'false' end status_client,
+           DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
+           case m.is_seller when 1 then 'true' else 'false' end is_seller,
+           c2.id client_id,
+           c2.name client_name
+
+    from businessinformations m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    left outer join catalogodet c on c.id = m.country_id
+    left outer join catalogodet s on s.id = m.state_id
+    left outer join catalogodet ci on ci.id = m.city_id
+    WHERE u.id = _userid;
+
+   select m.id,m.name, m.idno,m.percentage,m.position,DATE_FORMAT(m.birthdate, '%Y-%m-%d') as birthdate,
+	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from managements m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    WHERE u.id = _userid;
+
+
+
+
+    select f.id,
+          f.avg_montky_sales,
+          f.ams_how_clients,
+          case f.has_applicant when 0 then 'false' else 'checked' end has_applicant,
+          case f.po_finance when 0 then 'false' else 'checked' end po_finance,
+          case f.in_finance when 0 then 'false' else 'checked' end in_finance,
+          case f.lawsuits_pending when 0 then 'false' else 'checked' end lawsuits_pending,
+          case f.receivable_finance when 0 then 'false' else 'checked' end receivable_finance,
+          case f.credit_insurance_policy when 0 then 'false' else 'checked' end credit_insurance_policy,
+          case f.declared_bank_ruptcy when 0 then 'false' else 'checked' end declared_bank_ruptcy,
+          f.estimated_montly_financing,
+          f.emf_number_clients,
+          f.rf_when_with_whom,
+          f.cip_when_with_whom,
+
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from financialrequests f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.id = _userid;
+
+
+
+
+    select f.id,
+          f.bank_name,
+          f.account_same_swift,
+          f.account_number,
+          f.aba_routing,
+          f.bank_adress,
+          f.telephone,
+          f.account_officer,
+
+
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from bankinformations f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.id = _userid;
+
+
+
+    select f.id,
+          case f.approved_agreed when 1 then ' checked' else ' ' end approved_agreed,
+          f.name,
+          f.title,
+
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from certificationauthorizations f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.email = _mail
+
+
+END;
+//
+DELIMITER ;
+
+
+
+
+

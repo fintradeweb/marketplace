@@ -91,6 +91,7 @@ class User extends Authenticatable
         return $results;
     }
 
+
   public static function getUsersByRol($rolid) {
     return DB::select("call Get_users_roles (?);",[ $rolid ]);     
   }
@@ -136,4 +137,11 @@ class User extends Authenticatable
     $result[1] =  $clave2;
     return $result;
   }
+
+      public static function credit_info($user_id) {
+
+         $params = [$user_id];
+         return User::CallRaw('Get_info_credit',$params );
+     }
+
 }
