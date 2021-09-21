@@ -2313,7 +2313,14 @@ BEGIN
        
 	   if(_roleid>0) then
 	   begin
-		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id
+		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+		       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+		       CASE 
+		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+		         else 'He is not client.'
+		       END credit_status
+		       
 		   FROM model_has_roles mhr 
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id 
@@ -2322,7 +2329,13 @@ BEGIN
 	   end;
 	   else
 	   begin
-	      select u.email ,u.name ,,r.name  as role_desc,r.id as role_id
+	      select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+	       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+		    CASE 
+		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+		         else 'He is not client.'
+		       END credit_status
 		   FROM model_has_roles mhr 
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id 
