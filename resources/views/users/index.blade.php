@@ -17,7 +17,7 @@
         <div class="col-md-6"><h5>List of Users</h5></div>
         <div class="col-md-6 ml-auto text-right">
           @if ($rol == 1)
-            <a type="button" class="btn btn-primary" href="/clients/create">New User</a>
+            <a type="button" class="btn btn-primary" href="/users/create">New User</a>
           @endif
         </div>
       </div>
@@ -29,26 +29,28 @@
               <th>Date created</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Status</th>
+              <th>Credit Status</th>
               <th>Actions</th>
             </tr>        
           </thead>
           <tbody>
-            @foreach ($users as $user)     
+            @foreach ($users as $user)                   
               <tr>
-                <td>{{ $user->id }}</td>
+                <td>{{ $user->user_id }}</td>
                 <td>{{ $user->created_at }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                @if ($user->status)
-                  <td>Active</td>
+                @if ($user->role_id == 3)
+                  <td>{{ $user->credit_status }}</td> 
                 @else
-                  <td>Inactive</td>
-                @endif                
+                  <td>&nbsp;</td>
+                @endif
                 <td>
-                  <a href="/users/{{$user->id}}">View Credit</a>
-                  
-                  <a href="users/{{$user->id}}/edit">Editar</a>
+                  @if ($user->role_id == 3)
+                    <a href="/users/{{$user->user_id}}">View Credit</a>
+                  @else
+                    <a href="users/{{$user->user_id}}/edit">Edit</a>
+                  @endif
                 </td>
               </tr>
             @endforeach

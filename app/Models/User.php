@@ -1,12 +1,13 @@
 <?php
 namespace App\Models;
 
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 use DB;
 
@@ -91,7 +92,48 @@ class User extends Authenticatable
     }
 
   public static function getUsersByRol($rolid) {
-     $rs = DB::select("call Get_users_roles (?);",[ $rolid ]);
-     return ((isset($rs[0])) ? $rs[0] : false);
+    return DB::select("call Get_users_roles (?);",[ $rolid ]);     
+  }
+
+  public static function update_user_admin_super($request,$id) {
+    $error=0;
+    $msg= "";
+    $status = 0;
+    if(!empty($request->input('status'))){
+      $status = 1;
+    }
+    $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
+    $clave = Hash::make($clave2);
+    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,?,?)',
+                [
+                    $id,
+                    $request->input('rol_id'),
+                    $clave ,
+                    $request->input('email'),
+                    $request->input('name'),
+                    $status,
+                    $msg,
+                    $error
+                ]);
+    $result[1] =  $clave2;
+    return $result[0];
+  }
+
+  public static function create_user_admin_super($request) {
+    $error=0;
+    $msg= "";
+    $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
+    $clave = Hash::make($clave2);
+    $result = DB::select('call Create_users_admin_super(?,?,?,?,?,?)',
+                [
+                    $request->input('rol_id'),
+                    $clave ,
+                    $request->input('email'),
+                    $request->input('name'),
+                    $msg,
+                    $error
+                ]);
+    $result[1] =  $clave2;
+    return $result;
   }
 }
