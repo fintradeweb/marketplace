@@ -1087,7 +1087,7 @@ END;
 DELIMITER ;
 
 /*
- set @item = 1;
+ set @item = 12;
  call Get_managments(@item);
  */
 
@@ -2551,6 +2551,141 @@ sp:BEGIN
 		   select 'ok' into _msg;
 		   select _error,_msg;
 		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+ SET @userid = 3;
+ call Get_users_roles (@role);
+ */
+
+DROP PROCEDURE IF EXISTS Get_info_credit;
+DELIMITER //
+create  PROCEDURE Get_info_credit(IN _userid bigint)
+BEGIN
+
+	   select m.id,
+	       m.company_name,
+	       DATE_FORMAT(m.date_company , '%Y-%m-%d %T.%f') as date_company,
+	       m.type_business,
+	       m.contact_name,
+	       m.zip,
+	       m.president_name,
+	       m.address,
+	       m.ruc_tax,
+	       m.website,
+	       m.secretary_name,
+	       m.dba,
+           m.cell_phone,
+           m.country_id,
+           c.descripcion country,
+           m.city_id,
+           ci.descripcion city,
+           m.state_id,
+           s.descripcion state,
+           m.phone,
+           u.email,
+           u.name,
+           u.id user_id,
+           case u.status when 1 then 'true' else 'false' end  status_user,
+           case c2.active when 1 then 'true' else 'false' end status_client,
+           DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
+           case m.is_seller when 1 then 'true' else 'false' end is_seller,
+           c2.id client_id,
+           c2.name client_name
+
+    from businessinformations m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    left outer join catalogodet c on c.id = m.country_id
+    left outer join catalogodet s on s.id = m.state_id
+    left outer join catalogodet ci on ci.id = m.city_id
+    WHERE u.id = _userid;
+
+   select m.id,m.name, m.idno,m.percentage,m.position,DATE_FORMAT(m.birthdate, '%Y-%m-%d') as birthdate,
+	       DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from managements m
+    inner join users u on u.id  = m.user_id
+    inner join clients c2 on c2.id  = m.client_id
+    WHERE u.id = _userid;
+
+
+
+
+    select f.id,
+          f.avg_montky_sales,
+          f.ams_how_clients,
+          case f.has_applicant when 0 then 'false' else 'checked' end has_applicant,
+          case f.po_finance when 0 then 'false' else 'checked' end po_finance,
+          case f.in_finance when 0 then 'false' else 'checked' end in_finance,
+          case f.lawsuits_pending when 0 then 'false' else 'checked' end lawsuits_pending,
+          case f.receivable_finance when 0 then 'false' else 'checked' end receivable_finance,
+          case f.credit_insurance_policy when 0 then 'false' else 'checked' end credit_insurance_policy,
+          case f.declared_bank_ruptcy when 0 then 'false' else 'checked' end declared_bank_ruptcy,
+          f.estimated_montly_financing,
+          f.emf_number_clients,
+          f.rf_when_with_whom,
+          f.cip_when_with_whom,
+
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from financialrequests f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.id = _userid;
+
+
+
+
+    select f.id,
+          f.bank_name,
+          f.account_same_swift,
+          f.account_number,
+          f.aba_routing,
+          f.bank_adress,
+          f.telephone,
+          f.account_officer,
+
+
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from bankinformations f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.id = _userid;
+
+
+
+    select f.id,
+          case f.approved_agreed when 1 then ' checked' else ' ' end approved_agreed,
+          f.name,
+          f.title,
+
+	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
+	       DATE_FORMAT(f.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	       c2.id client_id,
+           c2.name client_name
+
+    from certificationauthorizations f
+    inner join users u on u.id  = f.user_id
+    inner join clients c2 on c2.id  = f.client_id
+    WHERE u.email = _mail
+
 
 END;
 //
