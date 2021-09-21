@@ -2347,3 +2347,214 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+/*
+set @_rolid =1;
+set @_name ="name 2 test ";
+set @_email ="correo@a.com";
+set @_clave ="2323asas";
+SET @msg = '';
+SET @error = '';
+
+CALL Create_users_admin_super(@_rolid ,@_clave ,@_email,@_name ,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Create_users_admin_super;
+DELIMITER //
+create  PROCEDURE Create_users_admin_super(
+                                IN _rolid bigint,
+								IN _clave varchar(255),
+								IN _email varchar(255),
+                                IN _name varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+	   declare b_usuario_id bigint;
+	   declare s_modelo varchar(200);
+	   
+	   
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Create Users admin o super failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+
+	      if exists(select 1 from users u  where u.email=_email) then
+	      		select 1 into _error;
+		        select 'Error, ya existe registrado un user con ese email.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if  _rolid = 3  then
+	      		select 1 into _error;
+		        select 'Error, el rol cliente no aplica para el registro.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	     end if; 
+	     if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
+	      		select 1 into _error;
+		        select 'Error, no existe el rol.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if ifnull(_email,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, email es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      if ifnull(_name,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, Name es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+
+		  insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
+		  select  LAST_INSERT_ID() into b_usuario_id;
+			
+		  select valorstring2 into s_modelo
+	          from catalogodet c2
+	          inner join catalogocab c1 on c1.id = c2.catalogocab_id
+	          where c1.tabla='ROL-USER-CLIENT' and
+	                c2.valorstring='MODELO';
+		   insert into model_has_roles(role_id,model_type,model_id) values(_rolid,s_modelo,b_usuario_id); 
+		   select 0 into  _error;
+
+
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+set @_rolid =1;
+set @_userid =19;
+set @_name ="name 3 test ";
+set @_email ="mflores355@gmail.com";
+set @_clave ="2323asas";
+set @_active =0;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_users_admin_super(@_userid,@_rolid ,@_clave ,@_email,@_name ,@_active,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Update_users_admin_super;
+DELIMITER //
+create  PROCEDURE Update_users_admin_super(
+                                IN _userid bigint,
+								IN _rolid bigint,
+								IN _clave varchar(255),
+								IN _email varchar(255),
+                                IN _name varchar(255),
+                                IN _active tinyint,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+	   
+	   
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Update Users admin o super failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+	      if _userid is null  then
+	      		select 1 into _error;
+		        select 'Error, userid es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	      if not exists(select 1 from users u where u.id=_userid) then
+	      		select 1 into _error;
+		        select 'Error, no existe user con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if  _rolid = 3  then
+	      		select 1 into _error;
+		        select 'Error, el rol cliente no aplica para el registro.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	     end if; 
+	     if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
+	      		select 1 into _error;
+		        select 'Error, no existe el rol.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if exists(select 1 from users u where u.email = _email and u.id <> _userid) or _rolid is NULL  then
+	      		select 1 into _error;
+		        select 'Error, correo ya existe en otra cuenta de usuario.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	     if ifnull(_email,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, email es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      if ifnull(_name,'')= ''  then
+	      		select 1 into _error;
+		        select 'Error, Name es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+   	      update model_has_roles set role_id = _rolid where model_id = _userid; 
+   	      update users set email = _email, name= _name, updated_at = now(), status = _active where id = _userid;
+		  select 0 into  _error;
+
+
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+

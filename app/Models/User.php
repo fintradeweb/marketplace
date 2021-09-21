@@ -89,4 +89,48 @@ class User extends Authenticatable
         if (1 === count($results)) return $results[0];
         return $results;
     }
+
+    public static function create_user_admin_super($request) {
+        $error=0;
+        $msg= "";
+        $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
+        $clave = Hash::make($clave2);
+        $result = DB::select('call Create_users_admin_super(?,?,?,?,?,?)',
+                    [
+                        $request->input('rol_id'),
+                        $clave ,
+                        $request->input('email'),
+                        $request->input('name'),
+                        $msg,
+                        $error
+                    ]);
+        $result[1] =  $clave2;
+        return $result;
+      }
+
+      public static function update_user_admin_super($request,$id) {
+        $error=0;
+        $msg= "";
+        $status = 0;
+        if(!empty($request->input('status'))){
+            $status = 1;
+        }
+        $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
+        $clave = Hash::make($clave2);
+        $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,?,?)',
+                    [
+                        $id,
+                        $request->input('rol_id'),
+                        $clave ,
+                        $request->input('email'),
+                        $request->input('name'),
+                        $status,
+                        $msg,
+                        $error
+                    ]);
+        $result[1] =  $clave2;
+        return $result;
+      }
+
+
 }
