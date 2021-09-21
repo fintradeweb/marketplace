@@ -132,5 +132,11 @@ class User extends Authenticatable
         return $result;
       }
 
+      public static function credit_info($user_id) {
+
+         $params = [$user_id];
+         return User::CallRaw('Get_info_credit',$params );
+     }
+
 
 }
