@@ -2302,7 +2302,7 @@ END;
 DELIMITER ;
 
 /*
- SET @role = 0;
+ SET @role = 3;
  call Get_users_roles (@role);
  */
 
