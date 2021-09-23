@@ -50,15 +50,12 @@ class UsersController extends Controller{
   }
 
   public function show($id){
-    //$user = \App\Models\User::where('id',$id)->first();
-    $user = DB::table('users')->join('businessinformations', 'businessinformations.user_id', '=', 'users.id')
-                              //->join('managements', 'managements.user_id', '=', 'users.id')   
-                              //->join('certificationauthorizations', 'certificationauthorizations.user_id', '=', 'users.id')
-                              ->where('users.id',$id)
-                              ->first();  
-    var_dump($user);                               
+    $user = \App\Models\User::credit_info($id);                           
     return view('users.show', [
-      'user' => $user
+      'user' => $user[0][0],
+      'financial' => $user[2][0],
+      'bank' => $user[3][0],
+      'certification' => $user[4][0]
     ]);  
   }
 
