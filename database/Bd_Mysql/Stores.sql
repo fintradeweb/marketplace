@@ -629,6 +629,13 @@ sp:BEGIN
 		        LEAVE sp2;
 	      end if;
 
+	      if d_datecompany > now() then
+	      		select 1 into _error;
+		        select 'Error, la fecha de la compa��a es mayor a la fecha actual.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
+
 
 
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
@@ -970,6 +977,13 @@ sp:BEGIN
 		        LEAVE sp2;
 	      end if;
 
+	       if d_datecompany > now() is  NULL then
+	      		select 1 into _error;
+		        select 'Error, la fecha de la compa��a es mayor a la fecha actual.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
+
 
 
 
@@ -1221,6 +1235,15 @@ sp:BEGIN
 
 
 
+	      if timestampdiff(YEAR,d_datecompany,now())<18 then
+	      		select 1 into _error;
+		        select 'Error, el ownership debe tener la mayor�a de edad.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
+
+
+
 
 		   if not exists(select 1 from clients c  WHERE c.token = _token) then
 		        select 1 into _error;
@@ -1354,7 +1377,7 @@ sp:BEGIN
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
 	      if timestampdiff(YEAR,d_datecompany,now())<18 then
 	      		select 1 into _error;
-		        select 'Error, el ownership debe tener la mayor�a de edad.' into _msg;
+		        select 'Error, el ownership debe tener la mayoria de edad.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
@@ -2373,7 +2396,7 @@ BEGIN
 		       END type_user,
 		       ifnull(x.is_buyer,0) is_buyer,
 		       ifnull(x.is_seller,0) is_seller
-		       
+
 
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
