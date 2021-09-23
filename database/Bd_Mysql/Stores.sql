@@ -508,10 +508,10 @@ DELIMITER ;
 /*
 
 SET @name = '11user nuevo';
-SET @email = '2aa11nuevoa457812@aaa.com';
+SET @email = '452aa11nuevoa457812@aaa.com';
 SET @clave = '$2y$10$YSjPChBAf6yLym4aKhveQeYTxsbCuPuNS9nHu5aGYKcsSrkDHM3sy';
 SET @taxid = 'aa11a12311';
-SET @datecompany = '1982-06-28';
+SET @datecompany = '2021-10-28';
 SET @contactname = 'a';
 SET @zipcode = 'a';
 SET @typebusiness = 'a';
@@ -525,7 +525,7 @@ SET @website = 'http://www.aa.com';
 SET @secretary = 'a';
 SET @dba = 'a';
 SET @cellphone = 'a';
-SET @token = 'TdpbeSGg3g';
+SET @token = 'h5Vw5GRoyM';
 SET @msg = '';
 SET @is_buyer = 'true';
 SET @is_seller = 'false';
@@ -621,6 +621,13 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
+	     
+	      if d_datecompany > now() then
+	      		select 1 into _error;
+		        select 'Error, la fecha de la compañía es mayor a la fecha actual.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
 
 
 
@@ -955,6 +962,13 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
+	     
+	       if d_datecompany > now() is  NULL then
+	      		select 1 into _error;
+		        select 'Error, la fecha de la compañía es mayor a la fecha actual.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
 
 
 
@@ -1138,10 +1152,10 @@ DELIMITER ;
 /*
 
 SET @name = 'a';
-SET @email = 'mflores@fintradeweb.com';
+SET @email = 'a@aaa.com';
 SET @idno = '1234';
-SET @position = 'escala 1234';
-SET @birthday = '1982-06-28';
+SET @position = '2332 escala 1234';
+SET @birthday = '2010-06-28';
 SET @percentage = '45';
 SET @token = 'h5Vw5GRoyM';
 SET @msg = '';
@@ -1196,6 +1210,15 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
+	     
+	      
+	      if timestampdiff(YEAR,d_datecompany,now())<18 then
+	      		select 1 into _error;
+		        select 'Error, el ownership debe tener la mayoría de edad.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
+	     
 
 
 
@@ -1209,7 +1232,7 @@ sp:BEGIN
 
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
-		        select 'Error, Email no existe con ese mail.' into _msg;
+		        select 'Error, Usuario no existe con ese mail.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
@@ -1329,6 +1352,12 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
+	      if timestampdiff(YEAR,d_datecompany,now())<18 then
+	      		select 1 into _error;
+		        select 'Error, el ownership debe tener la mayoría de edad.' into _msg;
+		        select _error,_msg,_id;
+		        LEAVE sp2;
+	      end if;
 
 		  select _percentage into d_percentage;
 
@@ -1525,7 +1554,7 @@ sp:BEGIN
 
 		   if not exists(select 1 from users u  WHERE u.email = _email) then
 		     select 1 into _error;
-		        select 'Error, Email no existe con ese mail.' into _msg;
+		        select 'Error, Usuario no existe con ese mail.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
@@ -2684,14 +2713,9 @@ BEGIN
     from certificationauthorizations f
     inner join users u on u.id  = f.user_id
     inner join clients c2 on c2.id  = f.client_id
-    WHERE u.email = _mail
+    WHERE u.id = _userid;
 
 
 END;
 //
 DELIMITER ;
-
-
-
-
-
