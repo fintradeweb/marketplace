@@ -97,6 +97,17 @@
               @enderror
             </div>
           </div>
+          <div class="col-xs-12 col-sm-4 col-md-4">
+            <div class="form-group">
+              <strong>Adress:  <span class="text-danger">(*)</span></strong>
+              <input type="text" name="adress" id="adress" class="form-control" value="{{ $indiv->adress }}" placeholder="Adress">
+              @error('adress')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+              @enderror
+            </div>
+          </div>
         </div>
 
         <div class="row">

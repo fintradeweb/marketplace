@@ -1710,6 +1710,7 @@ BEGIN
           f.account_number,
           f.aba_routing,
           f.bank_adress,
+          f.adress,
           f.telephone,
           f.account_officer,
 
@@ -1755,6 +1756,7 @@ BEGIN
           f.account_number,
           f.aba_routing,
           f.bank_adress,
+          f.adress,
           f.telephone,
           f.account_officer,
 
@@ -1780,6 +1782,7 @@ set @account_same_swift =" name acconut2 ";
 set @account_number ="154564564654";
 set @aba_routing ="sddsdsd0";
 set @bank_adress ="adress bank1";
+set @adress ="adress bank1111";
 set @telephone ="54654654650";
 set @account_officer ="officer test0";
 SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
@@ -1787,7 +1790,7 @@ SET @msg = '';
 SET @error = '';
 SET @id = 0;
 CALL Insert_bankinformation(@email,@_bank_name, @account_same_swift,
-      @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,
+      @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,@adress,
       @token,@msg,@error,@id);
 SELECT @msg,@error,@id;
 
@@ -1804,6 +1807,7 @@ create  PROCEDURE Insert_bankinformation(
                                 IN _bank_adress varchar(255),
                                 IN _telephone varchar(255),
                                 IN _account_officer varchar(255),
+                                IN _adress varchar(255),
                                 IN _token varchar(255),
                                 OUT _msg varchar(255),
                                 OUT _error tinyint ,
@@ -1868,6 +1872,7 @@ sp:BEGIN
 		                bank_adress,
 		                telephone,
 		                account_officer,
+		                adress,
 		                user_id ,
 		                client_id)
 		       values(
@@ -1879,6 +1884,7 @@ sp:BEGIN
 		                _bank_adress,
 		                _telephone,
 		                _account_officer,
+		                _adress,
 		                b_usuario_id,
 		                b_client_id
 		            );
@@ -1905,13 +1911,14 @@ set @account_same_swift =" name acconut2 ";
 set @account_number ="154564564654";
 set @aba_routing ="sddsdsd0";
 set @bank_adress ="adress bank1";
+set @adress ="323  adress bank1";
 set @telephone ="54654654650";
 set @account_officer ="officer test0";
 SET @msg = '';
 SET @error = '';
 
 CALL Update_bankinformation(@id,@_bank_name, @account_same_swift,
-      @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,@msg,@error);
+      @account_number,@aba_routing , @bank_adress, @telephone, @account_officer,@adress,@msg,@error);
 SELECT @msg,@error;
 
  */
@@ -1927,6 +1934,7 @@ create  PROCEDURE Update_bankinformation(
                                 IN _bank_adress varchar(255),
                                 IN _telephone varchar(255),
                                 IN _account_officer varchar(255),
+                                IN _adress varchar(255),
                                 OUT _msg varchar(255),
                                 OUT _error tinyint
                                 )
@@ -1964,6 +1972,7 @@ sp:BEGIN
 		                account_number = _account_number,
 		                aba_routing = _aba_routing,
 		                bank_adress = _bank_adress,
+		                adress = _adress,
 		                telephone = _telephone,
 		                account_officer = _account_officer
 		    where id = _id;
@@ -2684,7 +2693,7 @@ BEGIN
     from certificationauthorizations f
     inner join users u on u.id  = f.user_id
     inner join clients c2 on c2.id  = f.client_id
-    WHERE u.email = _mail
+    WHERE u.id = _userid;
 
 
 END;
