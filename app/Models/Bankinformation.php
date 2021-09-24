@@ -25,7 +25,7 @@ class Bankinformation extends Model {
     $msg= "";
     $id = 0;
 
-    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('email'),
                     $request->input('bank_name'),
@@ -35,6 +35,7 @@ class Bankinformation extends Model {
                     $request->input('bank_adress'),
                     $request->input('telephone'),
                     $request->input('account_officer'),
+                    $request->input('adress'),
                     $request->input('token'),
                     $msg,
                     $error,
@@ -47,7 +48,7 @@ class Bankinformation extends Model {
       $error="0";
       $msg= "";
 
-      $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,?)',
+      $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,
                         $request->input('bank_name'),
@@ -57,6 +58,7 @@ class Bankinformation extends Model {
                         $request->input('bank_adress'),
                         $request->input('telephone'),
                         $request->input('account_officer'),
+                        $request->input('adress'),
                         $msg,
                         $error
                   ]);

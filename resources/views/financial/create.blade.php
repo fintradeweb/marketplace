@@ -102,7 +102,7 @@
             <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <strong>What type of documents are you looking to finance (PO- Invoice?  
+                <strong>What type of documents are you looking to finance (PO- Invoice)?  
                   <span class="text-danger">(*)</span>
                 </strong>
               </div>  

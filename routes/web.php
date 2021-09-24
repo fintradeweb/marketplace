@@ -43,13 +43,8 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['role:SuperAdmin']], function () {
-  //rutas accesibles solo para clientes
+//rutas accesibles para SuperAdmin y Admin
+Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {  
   Route::resource('clients', App\Http\Controllers\ClientsController::class);
+  Route::resource('users', App\Http\Controllers\UsersController::class);
 });
-
-Route::group(['middleware' => ['role:Admin']], function () {
-  //rutas accesibles solo para clientes
-  Route::resource('clients', App\Http\Controllers\ClientsController::class);
-});
-

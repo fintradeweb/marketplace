@@ -21,6 +21,7 @@ class BankinformationController extends Controller{
   public function store(Request $request){
     $validator = Validator::make($request->all(), [
         'bank_name' => 'required',
+        'adress' => 'required',
         'account_same_swift' => 'required',
         'account_number' => 'required',
         'aba_routing' => 'required',
@@ -31,6 +32,7 @@ class BankinformationController extends Controller{
 
     $indiv = new \App\Models\Bankinformation();
     $indiv->bank_name =  $request->input('bank_name');
+    $indiv->adress =  $request->input('adress');
     $indiv->account_same_swift =  $request->input('account_same_swift');
     $indiv->account_number =  $request->input('account_number');
     $indiv->aba_routing =  $request->input('aba_routing');
@@ -81,6 +83,7 @@ class BankinformationController extends Controller{
     {
         $validator = Validator::make($request->all(), [
             'bank_name' => 'required',
+            'adress' => 'required',
             'account_same_swift' => 'required',
             'account_number' => 'required',
             'aba_routing' => 'required',
@@ -95,6 +98,7 @@ class BankinformationController extends Controller{
         $indiv->account_number =  $request->input('account_number');
         $indiv->aba_routing =  $request->input('aba_routing');
         $indiv->bank_adress =  $request->input('bank_adress');
+        $indiv->adress =  $request->input('adress');
         $indiv->telephone =  $request->input('telephone');
         $indiv->account_officer = $request->input('account_officer');
 
