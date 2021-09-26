@@ -47,4 +47,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {  
   Route::resource('clients', App\Http\Controllers\ClientsController::class);
   Route::resource('users', App\Http\Controllers\UsersController::class);
+  Route::get('/users/{rol}/type', [App\Http\Controllers\UsersController::class, 'getRol'])->name('users.rol');
 });
+

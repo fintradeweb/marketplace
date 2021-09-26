@@ -14,7 +14,7 @@ class UsersController extends Controller{
 
   public function index(){
     if(@Auth::user()->hasRole('SuperAdmin')){
-      $users = \App\Models\User::getUsersByRol(0);
+      $users = \App\Models\User::getUsersByRol(3);
       $rol = "1";
     }
     else{
@@ -23,7 +23,25 @@ class UsersController extends Controller{
     }
     return view('users.index', [
       'users' => $users,
-      'rol' => $rol
+      'rol' => $rol,
+      'css_borrow' => 'primary',
+      'css_admin' => 'success',
+      'css_sadmin' => 'success'
+    ]);
+  }
+
+  public function getRol($type){
+    $users = \App\Models\User::getUsersByRol($type);
+    $rol = "1";
+    $css_borrow = ($type==3) ? "primary" : "success";
+    $css_admin = ($type==2) ? "primary" : "success";
+    $css_sadmin = ($type==1) ? "primary" : "success";
+    return view('users.index', [
+      'users' => $users,
+      'rol' => $rol,
+      'css_borrow' => $css_borrow,
+      'css_admin' => $css_admin,
+      'css_sadmin' => $css_sadmin
     ]);
   }
   
@@ -50,12 +68,15 @@ class UsersController extends Controller{
   }
 
   public function show($id){
-    $user = \App\Models\User::credit_info($id);                           
+    $user = \App\Models\User::credit_info($id); 
+    var_dump($user[0][0]);
+    //exit;                          
     return view('users.show', [
-      'user' => $user[0][0],
-      'financial' => $user[2][0],
-      'bank' => $user[3][0],
-      'certification' => $user[4][0]
+      'business' => $user[0][0],
+      //'management' => $user[1][0],
+      //'financial' => $user[2][0],
+      //'bank' => $user[3][0],
+      //'certification' => $user[4][0]
     ]);  
   }
 

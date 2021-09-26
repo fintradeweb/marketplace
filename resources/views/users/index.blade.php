@@ -13,7 +13,7 @@
 
   <div class="container">
     <div class="row justify-content-center">
-      <div class="row col-md-12 p-4">
+      <div class="row col-md-12 p-2">
         <div class="col-md-6"><h5>List of Users</h5></div>
         <div class="col-md-6 ml-auto text-right">
           @if ($rol == 1)
@@ -21,6 +21,21 @@
           @endif
         </div>
       </div>
+      
+      @if ($rol == 1)
+        <div class="row col-md-12 p-4">
+          <div class="col-md-4 col-sm-12 col-lg-4 text-center">
+            <a type="button" class="btn btn-{{$css_borrow}}" href="/users/3/type">Borrowers</a>
+          </div>
+          <div class="col-md-4 col-sm-12 col-lg-4 text-center">
+            <a type="button" class="btn btn-{{$css_admin}}" href="/users/2/type">Admin</a>
+          </div>
+          <div class="col-md-4 col-sm-12 col-lg-4 text-center">
+            <a type="button" class="btn btn-{{$css_sadmin}}" href="/users/1/type">SuperAdmin</a>
+          </div>
+        </div>
+      @endif
+
       <div class="col-md-12">
         <table class="table table-hover table-bordered">
           <thead>
@@ -29,7 +44,9 @@
               <th>Date created</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Credit Status</th>
+              @if ($css_borrow == 'primary')
+                <th>Credit Status</th>
+              @endif
               <th>Actions</th>
             </tr>        
           </thead>
@@ -40,11 +57,13 @@
                 <td>{{ $user->created_at }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                @if ($user->role_id == 3)
-                  <td>{{ $user->credit_status }}</td> 
-                @else
-                  <td>&nbsp;</td>
-                @endif
+                @if ($css_borrow == 'primary')
+                  @if ($user->role_id == 3)
+                    <td>{{ $user->credit_status }}</td> 
+                  @else
+                    <td>&nbsp;</td>
+                  @endif
+                @endif 
                 <td>
                   @if ($user->role_id == 3)
                     <a href="/users/{{$user->user_id}}">View Credit</a>
