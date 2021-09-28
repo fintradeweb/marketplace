@@ -69,14 +69,25 @@ class UsersController extends Controller{
 
   public function show($id){
     $user = \App\Models\User::credit_info($id); 
-    var_dump($user[0][0]);
-    //exit;                          
+    //$business = (isset($user[0][0]) && !empty($user[0][0])) ? $user[0][0] : '';   
+    //$management = (isset($user[1][0]) && !empty($user[1][0])) ? $user[1][0] : '';
+    //$financial = (isset($user[2][0]) && !empty($user[2][0])) ? $user[2][0] : '';   
+    //$bank = (isset($user[3][0]) && !empty($user[3][0])) ? $user[3][0] : ''; 
+    //$certification = (isset($user[4][0]) && !empty($user[4][0])) ? $user[4][0] : '';
+    $business = '';   
+    $management = '';
+    $financial = '';   
+    $bank = ''; 
+    $certification = '';
+    echo "<pre>";
+    var_dump($user);
+    echo "</pre>";                    
     return view('users.show', [
-      'business' => $user[0][0],
-      //'management' => $user[1][0],
-      //'financial' => $user[2][0],
-      //'bank' => $user[3][0],
-      //'certification' => $user[4][0]
+      'business' => $business,
+      'management' => $management,
+      'financial' => $financial,
+      'bank' => $bank,
+      'certification' => $certification
     ]);  
   }
 
