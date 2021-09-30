@@ -7,7 +7,7 @@
       <h5>Welcome Admin!</h5></br>
       <div class="list-group">
         <a href="/home" class="list-group-item list-group-item-action active">Home</a>
-        <a href="/users" class="list-group-item list-group-item-action">Users</a>
+        <a href="/users" class="list-group-item list-group-item-action">Borrower Users</a>
       </div> 
     </div>
   </div>

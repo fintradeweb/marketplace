@@ -76,8 +76,8 @@
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Bank Address:  <span class="text-danger">(*)</span></strong>
-              <input type="text" name="bank_adress" id="bank_adress" class="form-control @error('account_number') is-invalid @enderror" value="{{ $indiv->bank_adress }}" placeholder="Bank Address">
-              @error('account_number')
+              <input type="text" name="bank_adress" id="bank_adress" class="form-control @error('bank_adress') is-invalid @enderror" value="{{ $indiv->bank_adress }}" placeholder="Bank Address">
+              @error('bank_adress')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
                 </span>
@@ -98,7 +98,7 @@
           
         </div>
         <div class="row">
-        <div class="col-xs-12 col-sm-4 col-md-4">
+          <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Adress:  <span class="text-danger">(*)</span></strong>
               <input type="text" name="adress" id="adress" class="form-control @error('adress') is-invalid @enderror" value="{{ $indiv->adress }}" placeholder="Adress">

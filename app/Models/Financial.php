@@ -55,7 +55,7 @@ class Financial extends Model {
     }
     $rf_when_with_whom = (empty($request->input('rf_when_with_whom'))) ? 0 : $request->input('rf_when_with_whom');
     $cip_when_with_whom = (empty($request->input('cip_when_with_whom'))) ? 0 : $request->input('cip_when_with_whom');
-                
+          
     $result = DB::select('call Insert_financial(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('avg_montky_sales'),
@@ -73,8 +73,7 @@ class Financial extends Model {
                     $cip_when_with_whom,
                     $request->input('email'),
                     $request->input('token'),
-                    //$msg,
-                    "",
+                    $msg,                   
                     $error,
                     $id
                 ]);
@@ -113,7 +112,8 @@ class Financial extends Model {
         if(!empty($request->input('declared_bank_ruptcy'))){
             $declared_bank_ruptcy = 1;
         }
-
+        $rf_when_with_whom = (empty($request->input('rf_when_with_whom'))) ? 0 : $request->input('rf_when_with_whom');
+        $cip_when_with_whom = (empty($request->input('cip_when_with_whom'))) ? 0 : $request->input('cip_when_with_whom');        
          $result = DB::select('call Update_financial(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,
@@ -128,8 +128,8 @@ class Financial extends Model {
                         $declared_bank_ruptcy,
                         $request->input('estimated_montly_financing'),
                         $request->input('emf_number_clients'),
-                        $request->input('rf_when_with_whom'),
-                        $request->input('cip_when_with_whom'),
+                        $rf_when_with_whom,
+                        $cip_when_with_whom,
                         $msg,
                         $error
                   ]);

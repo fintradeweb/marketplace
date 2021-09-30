@@ -45,7 +45,15 @@
                 @else
                   <td>Inactive</td>
                 @endif                
-                <td><a href="/clients/{{$client->id}}">Ver</a> / <a href="clients/{{$client->id}}/edit">Editar</a></td>
+                <td align="center">
+                  <a href="/clients/{{$client->id}}" data-toggle="tooltip" data-placement="top" title="View">
+                    <i class="fa fa-search" aria-hidden="true" style="font-size:25px;"></i>
+                  </a> 
+                  &nbsp;
+                  <a href="clients/{{$client->id}}/edit" data-toggle="tooltip" data-placement="top" title="Edit">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i>
+                  </a>
+                </td>
               </tr>
             @endforeach
           </tbody>

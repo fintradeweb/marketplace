@@ -24,7 +24,7 @@ class Bankinformation extends Model {
     $error=0;
     $msg= "";
     $id = 0;
-
+    $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');  
     $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [
                     $request->input('email'),
@@ -34,7 +34,7 @@ class Bankinformation extends Model {
                     $request->input('aba_routing'),
                     $request->input('bank_adress'),
                     $request->input('telephone'),
-                    $request->input('account_officer'),
+                    $account_officer,
                     $request->input('adress'),
                     $request->input('token'),
                     $msg,
@@ -46,7 +46,8 @@ class Bankinformation extends Model {
 
   public static function actualizar($request,$codigo){
       $error="0";
-      $msg= "";      
+      $msg= "";    
+      $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');  
       $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,
@@ -56,7 +57,7 @@ class Bankinformation extends Model {
                         $request->input('aba_routing'),
                         $request->input('bank_adress'),
                         $request->input('telephone'),
-                        $request->input('account_officer'),
+                        $account_officer,
                         $request->input('adress'),
                         $msg,
                         $error

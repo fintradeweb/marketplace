@@ -95,8 +95,8 @@ class FinancialController extends Controller{
       if (isset($finaninfo[0][0]) && $finaninfo[0][0]->existe==0){        
         $result = \App\Models\Financial::registrar($request);        
       }
-      else{  
-        $result = \App\Models\Financial::actualizar($request, $finaninfo["id"]);          
+      else{          
+        $result = \App\Models\Financial::actualizar($request, $finaninfo[1][0]->id);         
       }
       if($result->_error==1){
         throw new \Exception($result->_msg);                

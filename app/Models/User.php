@@ -136,12 +136,7 @@ class User extends Authenticatable
                 ]);
     $result[1] =  $clave2;
     return $result;
-  }
-
-  public static function getCreditUser($id) {
-    $rs = DB::select("call Get_info_credit (?);",[ $id ]);  
-    return $rs;   
-  }  
+  } 
 
   public static function credit_info($user_id) {
     $params = [$user_id];

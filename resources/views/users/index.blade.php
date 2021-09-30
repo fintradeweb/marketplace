@@ -14,7 +14,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="row col-md-12 p-2">
-        <div class="col-md-6"><h5>List of Users</h5></div>
+        <div class="col-md-6"><h5>List of Borrower Users</h5></div>
         <div class="col-md-6 ml-auto text-right">
           @if ($rol == 1)
             <a type="button" class="btn btn-primary" href="/users/create">New User</a>
@@ -64,11 +64,15 @@
                     <td>&nbsp;</td>
                   @endif
                 @endif 
-                <td>
-                  @if ($user->role_id == 3)
-                    <a href="/users/{{$user->user_id}}">View Credit</a>
+                <td align="center">
+                  @if ($user->role_id == 3)                    
+                    <a href="/users/{{$user->user_id}}" data-toggle="tooltip" data-placement="top" title="View Credit">
+                      <i class="fa fa-address-book-o" aria-hidden="true" style="font-size:25px;"></i>
+                    </a>                                        
                   @else
-                    <a href="users/{{$user->user_id}}/edit">Edit</a>
+                    <a href="users/{{$user->user_id}}/edit" data-toggle="tooltip" data-placement="top" title="Edit">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i>
+                    </a>
                   @endif
                 </td>
               </tr>
