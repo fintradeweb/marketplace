@@ -41,8 +41,8 @@ class CertificationController extends Controller{
     try{
       $validator = Validator::make($request->all(), [
           'approved_agreed' => 'required',
-          'name' => 'required',
-          'title' => 'required',
+          'name' => 'required|max:255',
+          'title' => 'required|max:255',
           'emf_number_clients'
       ]);
       $approved_agreed="";
@@ -54,37 +54,23 @@ class CertificationController extends Controller{
       $indiv->name =  $request->input('name');
       $indiv->title =  $request->input('title');
       if ($validator->fails()) {
-        throw new \Exception($validator);
+        throw new \Exception("validator");
       }
       $result = \App\Models\Certification::registrar($request);
       if($result->_error==1){
-        throw new \Exception('There was an error saving the Certification information!');
+        throw new \Exception($result->_msg);
       }
       else{
-        $indiv = \App\Models\Certification::consulta_todos( $request->input('email'),  $request->input('token'));
-        $indiv_new = new \App\Models\Certification();
-        if($indiv[0][0]->existe==0){
-          return view('certification.create',[
-            'email' =>$request->input('email'),
-            'token' =>  $request->input('token'),
-            'indiv' =>  $indiv_new
-          ]);
-        }
-        else{
-          return view('certification.edit',[
-            'email' =>$request->input('email'),
-            'token' =>  $request->input('token'),
-            'indiv' =>  $indiv[1][0]
-          ]);
-        }
+        return view('certification.final');         
       }
     }
     catch(\Exception $e){   
+      $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();
       return view('certification.create',[
         'email' =>$request->input('email'),
         'token' =>  $request->input('token'),
         'indiv'=>$indiv
-      ])->withErrors($e->getMessage());
+      ])->withErrors($errors);
     }      
   }
 
@@ -92,8 +78,8 @@ class CertificationController extends Controller{
     try{
       $validator = Validator::make($request->all(), [
         'approved_agreed' => 'required',
-        'name' => 'required',
-        'title' => 'required',
+        'name' => 'required|max:255',
+        'title' => 'required|max:255',
         'emf_number_clients'
       ]);
       $approved_agreed="";
@@ -105,22 +91,23 @@ class CertificationController extends Controller{
       $indiv->name =  $request->input('name');
       $indiv->title =  $request->input('title');
       if ($validator->fails()) {
-        throw new \Exception($validator);
+        throw new \Exception("validator");
       }
       $result = \App\Models\Certification::actualizar($request, $codigo);
       if($result->_error==1){
-        throw new \Exception('There was an error creating the Certification!');        
+        throw new \Exception($result->_msg);        
       }
       else{
         return view('certification.final');     
       }
     }
     catch(\Exception $e){   
+      $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();
       return view('certification.create',[
         'email' =>$request->input('email'),
         'token' =>  $request->input('token'),
         'indiv'=>$indiv
-      ])->withErrors($e->getMessage());
+      ])->withErrors($errors);
     }
   }
 }

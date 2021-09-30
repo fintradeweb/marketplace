@@ -23,7 +23,7 @@ class CreateBankinformationTable extends Migration
             $table->string('aba_routing');
             $table->string('bank_adress');
             $table->string('telephone');
-            $table->string('account_officer');
+            $table->string('account_officer')->nullable();
             
 
             

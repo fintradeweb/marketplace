@@ -46,8 +46,7 @@ class Bankinformation extends Model {
 
   public static function actualizar($request,$codigo){
       $error="0";
-      $msg= "";
-
+      $msg= "";      
       $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,?,?)',
                   [
                         $codigo,

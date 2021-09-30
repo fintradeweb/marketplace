@@ -21,14 +21,14 @@ class BankinformationController extends Controller{
   public function store(Request $request){
     try{
       $validator = Validator::make($request->all(), [
-        'bank_name' => 'required',
-        'adress' => 'required',
-        'account_same_swift' => 'required',
-        'account_number' => 'required',
-        'aba_routing' => 'required',
-        'bank_adress' => 'required',
-        'telephone' => 'required',
-        'account_officer' => 'required'
+        'bank_name' => 'required|max:255',
+        'adress' => 'required|max:255',
+        'account_same_swift' => 'required|max:255',
+        'account_number' => 'required|max:255',
+        'aba_routing' => 'required|max:255',
+        'bank_adress' => 'required|max:255',
+        'telephone' => 'required|max:255',
+        'account_officer' => 'nullable|max:255'
       ]);
 
       $indiv = new \App\Models\Bankinformation();
@@ -42,51 +42,59 @@ class BankinformationController extends Controller{
       $indiv->account_officer = $request->input('account_officer');
 
       if ($validator->fails()) {
-        throw new \Exception($validator);
+        throw new \Exception("validator");
       }
-      $result = \App\Models\Bankinformation::registrar($request);
-      if($result->_error==1){
-        throw new \Exception('There was an error creating the Bank information!');                      
+      $bankinfo = \App\Models\Bankinformation::consulta_todos( $request->input('email'),  $request->input('token'));        
+      if (isset($bankinfo[0][0]) && $bankinfo[0][0]->existe==0){
+        $result = \App\Models\Bankinformation::registrar($request);        
       }
       else{
-        $indiv = \App\Models\Bankinformation::consulta_todos( $request->input('email'),  $request->input('token'));
-        $indiv_new = new \App\Models\Bankinformation();
+        $result = \App\Models\Bankinformation::actualizar($request, $bankinfo[1][0]->id);
+      }
+      
+      if($result->_error==1){
+        throw new \Exception($result->_msg);                      
+      }
+      else{        
+        $indiv = \App\Models\Certification::consulta_todos( $request->input('email'),  $request->input('token'));
+        $indiv_new = new \App\Models\Certification();
         if($indiv[0][0]->existe==0){
-          return view('bankinformation.create',[
+          return view('certification.create',[
             'email' =>$request->input('email'),
             'token' =>  $request->input('token'),
             'indiv' =>  $indiv_new
           ]);
         }
-        else{          
-          return view('bankinformation.edit',[
+        else{
+          return view('certification.edit',[
             'email' =>$request->input('email'),
             'token' =>  $request->input('token'),
             'indiv' =>  $indiv[1][0]
           ]);
-        }
+        }        
       }
     }
-    catch(\Exception $e){      
+    catch(\Exception $e){  
+      $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();    
       return view('bankinformation.create',[
         'email' =>$request->input('email'),
         'token' =>  $request->input('token'),
         'indiv'=>$indiv
-      ])->withErrors($e->getMessage());
+      ])->withErrors($errors);
     }
   }
 
   public function update(Request $request, $codigo){
     try{
       $validator = Validator::make($request->all(), [
-        'bank_name' => 'required',
-        'adress' => 'required',
-        'account_same_swift' => 'required',
-        'account_number' => 'required',
-        'aba_routing' => 'required',
-        'bank_adress' => 'required',
-        'telephone' => 'required',
-        'account_officer' => 'required'
+        'bank_name' => 'required|max:255',
+        'adress' => 'required|max:255',
+        'account_same_swift' => 'required|max:255',
+        'account_number' => 'required|max:255',
+        'aba_routing' => 'required|max:255',
+        'bank_adress' => 'required|max:255',
+        'telephone' => 'required|max:255',
+        'account_officer' => 'nullable|max:255'
       ]);
 
       $indiv = new \App\Models\Bankinformation();
@@ -100,11 +108,11 @@ class BankinformationController extends Controller{
       $indiv->account_officer = $request->input('account_officer');
 
       if ($validator->fails()) {
-        throw new \Exception($validator);  
+        throw new \Exception("validator");  
       }
       $result = \App\Models\Bankinformation::actualizar($request, $codigo);
       if($result->_error==1){
-        throw new \Exception('There was an error creating the bank information!');            
+        throw new \Exception($result->_msg);            
       }
       else{
         $indiv = \App\Models\Certification::consulta_todos( $request->input('email'),  $request->input('token'));
@@ -125,12 +133,13 @@ class BankinformationController extends Controller{
         }
       }
     }
-    catch(\Exception $e){      
+    catch(\Exception $e){     
+      $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage(); 
       return view('bankinformation.create',[
         'email' =>$request->input('email'),
         'token' =>  $request->input('token'),
         'indiv'=>$indiv
-      ])->withErrors($e->getMessage());
+      ])->withErrors($errors);
     }      
   }
 
