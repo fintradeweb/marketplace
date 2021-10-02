@@ -44,7 +44,7 @@ class ClientsController extends Controller
     if ($result->_error == 0 && $result->_msg == "ok"){
        return redirect('/clients')->with('status', 'The client was created succesfully!');
     }else{
-      return redirect('/clients/create')->withErrors('There was an error creating the client!');  
+      return redirect('/clients/create')->withErrors($result->_msg);  
     }
   }
 
@@ -58,7 +58,7 @@ class ClientsController extends Controller
       return redirect('/clients')->with('status', 'The client was edited succesfully!');
     }
     else{
-      return redirect('/clients/'.$codigo.'/edit')->withErrors('There was an error editing the client!');          
+      return redirect('/clients/'.$codigo.'/edit')->withErrors($result->_msg);          
     }  
   }
 }

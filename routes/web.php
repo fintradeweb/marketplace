@@ -46,7 +46,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //rutas accesibles para SuperAdmin y Admin
 Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {  
   Route::resource('clients', App\Http\Controllers\ClientsController::class);
+  
   Route::resource('users', App\Http\Controllers\UsersController::class);
   Route::get('/users/{rol}/type', [App\Http\Controllers\UsersController::class, 'getRol'])->name('users.rol');
+
+  Route::get('/credit/{user}/approve', [App\Http\Controllers\CreditController::class, 'approve'])->name('credit.approve');
+  Route::get('/credit/{user}/deny', [App\Http\Controllers\CreditController::class, 'deny'])->name('credit.deny');
+  Route::get('/credit/{user}/askmore', [App\Http\Controllers\CreditController::class, 'askmore'])->name('credit.askmore');
+  Route::post('/credit/approve', [App\Http\Controllers\CreditController::class, 'storeapprove'])->name('credit.storeapprove');
+  Route::post('/credit/deny', [App\Http\Controllers\CreditController::class, 'storedeny'])->name('credit.storedeny');
 });
 

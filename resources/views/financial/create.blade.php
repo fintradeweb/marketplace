@@ -19,7 +19,7 @@
   <div class="row justify-content-center">
     <div class="row col-md-10 p-4 text-center">
       <div class="col-md-12"><h5>Financial Request (Financial Information)</h5></div>
-     </div>
+    </div>
     <div class="col-xs-12 col-sm-12 col-md-12">
       <div class="row">
 

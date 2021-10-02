@@ -63,7 +63,7 @@ class UsersController extends Controller{
       Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
       return redirect('/users')->with('status', 'The user was created succesfully!');
     }else{
-      return redirect('/users/create')->withErrors('There was an error creating the user!');  
+      return redirect('/users/create')->withErrors($result->_msg);  
     }
   }
 
@@ -73,8 +73,9 @@ class UsersController extends Controller{
     $management = (isset($user[1]) && !empty($user[1])) ? $user[1] : '';
     $financial = (isset($user[2][0]) && !empty($user[2][0])) ? $user[2][0] : '';   
     $bank = (isset($user[3][0]) && !empty($user[3][0])) ? $user[3][0] : ''; 
-    $certification = (isset($user[4][0]) && !empty($user[4][0])) ? $user[4][0] : '';                   
+    $certification = (isset($user[4][0]) && !empty($user[4][0])) ? $user[4][0] : '';     
     return view('users.show', [
+      'iduser' => $id,      
       'business' => $business,
       'management' => $management,
       'financial' => $financial,
@@ -100,7 +101,7 @@ class UsersController extends Controller{
       return redirect('/users')->with('status', 'The user was edited succesfully!');
     }
     else{
-      return redirect('/users/'.$id.'/edit')->withErrors('There was an error editing the user!');
+      return redirect('/users/'.$id.'/edit')->withErrors($result->_msg);
     }  
   }
 
