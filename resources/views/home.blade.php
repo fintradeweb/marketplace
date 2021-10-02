@@ -4,19 +4,11 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-                
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
+            <h5>Welcome Admin!</h5></br>
+      <div class="list-group">
+        <a href="/home" class="list-group-item list-group-item-action active">Home</a>
+        <a href="/users" class="list-group-item list-group-item-action">Borrower Users</a>
+      </div> 
         </div>
     </div>
 </div>

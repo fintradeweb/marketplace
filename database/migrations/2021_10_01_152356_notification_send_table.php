@@ -10,6 +10,7 @@ class NotificationSendTable extends Migration{
       $table->id();
       $table->timestamps();
       $table->text('description');
+      $table->string('type_not');
       $table->unsignedBigInteger('user_id')->comment('user borrower');  
       $table->unsignedBigInteger('send_by')->comment('user lender');                                 
       $table->foreign('user_id')->references('id')->on('users');

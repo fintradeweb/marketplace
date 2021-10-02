@@ -13,14 +13,14 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
-          <form action="" method="POST" id="frm_askformore">
-            <input type="hidden" name="iduser" id="iduser" value="{{ $user->id }}">            
+          <form action="{{ route('credit.storeaskmore') }}" method="POST" id="frm_askformore">
+            <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">            
             @csrf
             <div class="card">
               <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
-                    <strong>Observation for more information:<span class="text-danger">(*)</span></strong>                              
+                    <strong>Observation for more information:<span class="text-danger">(*)</span></strong>       
                     <textarea class="form-control @error('observation') is-invalid @enderror" id="observation" name="observation" rows="3"></textarea>                     
                     @error('observation')
                       <span class="invalid-feedback" role="alert">

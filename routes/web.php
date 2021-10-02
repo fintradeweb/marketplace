@@ -55,5 +55,6 @@ Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {
   Route::get('/credit/{user}/askmore', [App\Http\Controllers\CreditController::class, 'askmore'])->name('credit.askmore');
   Route::post('/credit/approve', [App\Http\Controllers\CreditController::class, 'storeapprove'])->name('credit.storeapprove');
   Route::post('/credit/deny', [App\Http\Controllers\CreditController::class, 'storedeny'])->name('credit.storedeny');
+  Route::post('/credit/askmore', [App\Http\Controllers\CreditController::class, 'storeaskmore'])->name('credit.storeaskmore');
 });
 

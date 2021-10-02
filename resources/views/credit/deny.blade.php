@@ -14,7 +14,7 @@
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
           <form action="{{ route('credit.storedeny') }}" method="POST" id="frm_creditdeny">
-            <input type="hidden" name="iduser" id="iduser" value="{{ $user->id }}">             
+            <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">             
             @csrf
             <div class="card">
               <div class="card-body">

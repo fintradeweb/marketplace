@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('content')
 
+@if (session('status'))
+ <div class="row justify-content-center">
+   <div class="col-md-8 col-lg-8 col-sm-12">
+     <div class="alert alert-success">
+      {{ session('status') }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+     </div>
+   </div>
+ </div>    
+@endif
+
 <div class="container">
   <div class="row justify-content-center">  
     <div class="row col-md-12 p-4">
@@ -13,15 +26,19 @@
     @if (!empty($certification))
       <div class="row col-md-12 col-lg-12 col-sm-12 p-4">
         <div class="col-md-4 text-center">   
-          <a href="/credit/{{$iduser}}/approve" data-toggle="tooltip" data-placement="top" title="Approve Credit">
-            <i class="fa fa-check-square-o" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Approve Credit
-          </a>      
+          @if (empty($credit_approved) && empty($credit_denied))
+            <a href="/credit/{{$iduser}}/approve" data-toggle="tooltip" data-placement="top" title="Approve Credit">
+              <i class="fa fa-check-square-o" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Approve Credit
+            </a>      
+          @endif
         </div>
-        <div class="col-md-4 text-center">  
-          <a href="/credit/{{$iduser}}/deny" data-toggle="tooltip" data-placement="top" title="Deny Credit">
-            <i class="fa fa-window-close" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Deny Credit
-          </a>  
-        </div>    
+        <div class="col-md-4 text-center">
+          @if (empty($credit_approved) && empty($credit_denied))
+            <a href="/credit/{{$iduser}}/deny" data-toggle="tooltip" data-placement="top" title="Deny Credit">
+              <i class="fa fa-window-close" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Deny Credit
+            </a>  
+          @endif  
+        </div>  
         <div class="col-md-4 text-center">  
           <a href="/credit/{{$iduser}}/askmore/" data-toggle="tooltip" data-placement="top" title="Ask more information">
             <i class="fa fa-question" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Ask more information
