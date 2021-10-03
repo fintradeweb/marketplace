@@ -96,22 +96,7 @@ class User extends Authenticatable
     $arr_users = array();
     $users = array();
     $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]);
-    if (!empty($arr_users)){
-      foreach($arr_users as $key=>$user){
-        if ($user->credit_status == "Request received"){
-          $rsapp = DB::table("credit_approved")->where("user_id",$user->user_id)->first();
-          $rsden = DB::table("credit_denied")->where("user_id",$user->user_id)->first();
-          if (!empty($rsapp)){
-            $user->credit_status = "Credit Approved";
-          }
-          elseif(!empty($rsden)){
-            $user->credit_status = "Credit Denied";
-          }
-        }
-        $users[$key] = $user;
-      }
-    }
-    return $users;
+    return $arr_users;
   }
 
   public static function update_user_admin_super($request,$id) {

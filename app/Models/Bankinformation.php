@@ -13,9 +13,8 @@ class Bankinformation extends Model {
     $managments = DB::select("call Get_bankinformation(?)",[$id]);
     return $managments;
   }
+  
   public static function consulta_todos($email,$token) {
-    //$result = DB::select("call Get_bankinformation_client_user(?,?)",[$email,$token]);
-    //return $result;
     $params = [$email,$token];
     return  \App\Models\User::CallRaw('Get_bankinformation_client_user',$params );
   }

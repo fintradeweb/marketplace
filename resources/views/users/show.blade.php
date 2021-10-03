@@ -22,22 +22,17 @@
         <a href="/users"class="btn btn-primary">Return</a>
       </div>
     </div> 
-   
-    @if (!empty($certification))
+    @if ($credit_status == 'Request received')
       <div class="row col-md-12 col-lg-12 col-sm-12 p-4">
         <div class="col-md-4 text-center">   
-          @if (empty($credit_approved) && empty($credit_denied))
-            <a href="/credit/{{$iduser}}/approve" data-toggle="tooltip" data-placement="top" title="Approve Credit">
-              <i class="fa fa-check-square-o" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Approve Credit
-            </a>      
-          @endif
+          <a href="/credit/{{$iduser}}/approve" data-toggle="tooltip" data-placement="top" title="Approve Credit">
+            <i class="fa fa-check-square-o" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Approve Credit
+          </a>      
         </div>
         <div class="col-md-4 text-center">
-          @if (empty($credit_approved) && empty($credit_denied))
-            <a href="/credit/{{$iduser}}/deny" data-toggle="tooltip" data-placement="top" title="Deny Credit">
-              <i class="fa fa-window-close" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Deny Credit
-            </a>  
-          @endif  
+          <a href="/credit/{{$iduser}}/deny" data-toggle="tooltip" data-placement="top" title="Deny Credit">
+            <i class="fa fa-window-close" aria-hidden="true" style="font-size:25px;"></i>&nbsp;Deny Credit
+          </a>  
         </div>  
         <div class="col-md-4 text-center">  
           <a href="/credit/{{$iduser}}/askmore/" data-toggle="tooltip" data-placement="top" title="Ask more information">
