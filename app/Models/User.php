@@ -95,7 +95,7 @@ class User extends Authenticatable
   public static function getUsersByRol($rolid) {
     $arr_users = array();
     $users = array();
-    $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]); 
+    $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]);
     if (!empty($arr_users)){
       foreach($arr_users as $key=>$user){
         if ($user->credit_status == "Request received"){
@@ -105,13 +105,13 @@ class User extends Authenticatable
             $user->credit_status = "Credit Approved";
           }
           elseif(!empty($rsden)){
-            $user->credit_status = "Credit Denied"; 
+            $user->credit_status = "Credit Denied";
           }
         }
-        $users[$key] = $user; 
+        $users[$key] = $user;
       }
     }
-    return $users;    
+    return $users;
   }
 
   public static function update_user_admin_super($request,$id) {
@@ -154,11 +154,16 @@ class User extends Authenticatable
                 ]);
     $result[1] =  $clave2;
     return $result;
-  } 
+  }
 
   public static function credit_info($user_id) {
     $params = [$user_id];
     return User::CallRaw('Get_info_credit',$params );
-  } 
+  }
+
+  public static function notif_info($user_id) {
+    $params = [$user_id];
+    return User::CallRaw('Get_info_notifications',$params );
+  }
 
 }

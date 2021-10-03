@@ -2354,6 +2354,8 @@ BEGIN
 		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
 		       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
 		       CASE
+		         when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+		         when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
 		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
@@ -2370,6 +2372,8 @@ BEGIN
 	      select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
 	       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
 		    CASE
+		         when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+		         when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
 		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
@@ -2597,7 +2601,7 @@ DELIMITER ;
 
 /*
  SET @userid = 3;
- call Get_users_roles (@role);
+ call Get_info_credit (@userid);
  */
 
 DROP PROCEDURE IF EXISTS Get_info_credit;
@@ -2723,8 +2727,99 @@ BEGIN
     inner join users u on u.id  = f.user_id
     inner join clients c2 on c2.id  = f.client_id
     WHERE u.id = _userid;
+   
+    select 
+         CASE
+        	 when  exists(select 1 from credit_approved c where c.user_id = _userid) then 'Credit Approved'
+	         when  exists(select 1 from credit_denied c where c.user_id = _userid) then 'Credit Denied'
+	         when  exists(select 1 from certificationauthorizations c where c.user_id = _userid) then 'Request received'
+	         else 'Request incomplete'
+         
+        END credit_status;
 
 
 END;
 //
 DELIMITER ;
+
+/*
+ SET @userid = 3;
+ call Get_info_notifications (@userid);
+ */
+
+DROP PROCEDURE IF EXISTS Get_info_notifications;
+DELIMITER //
+create  PROCEDURE Get_info_notifications(IN _userid bigint)
+BEGIN
+  select 	
+	(
+	 select count(*) 
+	 from notification_send ns 
+	 where ns.send_by  = _userid
+	 ) as num_sent,
+	(
+	 select count(*) 
+	 from notification_send ns 
+	 where ns.user_id = _userid
+	 ) as num_received;
+  
+ select 
+   DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+   DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+   m.description ,
+   m.type_not ,
+   m.user_id ,
+   u.email ,
+   u.name 
+ from notification_send m
+ inner join users u on u.id = m.user_id 
+ where m.send_by = _userid;
+
+select 
+   DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+   DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+   m.description ,
+   m.type_not ,
+   m.user_id ,
+   u.email ,
+   u.name 
+ from notification_send m
+ inner join users u on u.id = m.user_id 
+ where m.user_id  = _userid;
+	 
+END;
+//
+DELIMITER ;
+
+
+/*
+ SET @_notificacionid = 3;
+ call Get_notification (@_notificacionid);
+ */
+
+DROP PROCEDURE IF EXISTS Get_notification;
+DELIMITER //
+create  PROCEDURE Get_notification(IN _notificacionid bigint)
+BEGIN
+ 
+  
+ select 
+   DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+   DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+   m.description ,
+   m.type_not ,
+   m.user_id ,
+   u.email ,
+   u.name 
+ from notification_send m
+ inner join users u on u.id = m.user_id 
+ where m.id = _notificacionid;
+
+END;
+//
+DELIMITER ;
+
+
+
+
+
