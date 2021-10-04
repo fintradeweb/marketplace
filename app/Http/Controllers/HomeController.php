@@ -10,20 +10,19 @@ class HomeController extends Controller{
     $this->middleware('auth');
   }
 
-  public function index(){
-    $tags = array();
-    if(@Auth::user()->hasRole('SuperAdmin')){
-      $view = "homesuperadmin";       
+  public function index(){    
+    if(@Auth::user()->hasRole('SuperAdmin')){      
+      return view("homesuperadmin",["creditapproved" => $creditapproved,
+                                    "name" => @Auth::user()->name]);
     }
-    elseif(@Auth::user()->hasRole('Admin')){
-      $view = "homeadmin";
+    elseif(@Auth::user()->hasRole('Admin')){      
+      return view("homeadmin",["creditapproved" => $creditapproved,
+                               "name" => @Auth::user()->name]);
     }
-    else{
-      $creditapproved = \App\Models\CreditApproved::where("user_id",@Auth::user()->id);
-      $tags["creditapproved"] = $creditapproved;
-      var_dump($tags);
-      $view = "home";  
-    }
-    return view($view,[$tags]);
+    else{      
+      $creditapproved = \App\Models\CreditApproved::where("user_id",@Auth::user()->id)->get();
+      return view("home",["creditapproved" => $creditapproved, 
+                          "name" => @Auth::user()->name]);
+    }    
   }
 }
