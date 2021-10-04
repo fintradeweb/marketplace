@@ -2736,6 +2736,33 @@ BEGIN
 	         else 'Request incomplete'
          
         END credit_status;
+     
+     select 
+     	DATE_FORMAT(ca.created_at , '%Y-%m-%d %T.%f') as created_at,
+	    DATE_FORMAT(ca.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	    ca.credit_line ,
+	    ca.advance ,
+	    ca.maximum_amount ,
+	    ca.deadline ,
+	    ca.interest_rate ,
+	    ca.type_document ,
+	    ca.approved_by ,
+	    u.email email_approved,
+	    u.name name_approved
+     from credit_approved ca 
+     inner join users u on u.id = ca.approved_by
+     where ca.user_id = _userid;
+    
+    select 
+     	DATE_FORMAT(ca.created_at , '%Y-%m-%d %T.%f') as created_at,
+	    DATE_FORMAT(ca.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	    ca.observation ,
+	    ca.denied_by ,
+	    u.email email_denied,
+	    u.name name_denied
+     from credit_denied ca 
+     inner join users u on u.id = ca.denied_by
+     where ca.user_id = _userid;
 
 
 END;
