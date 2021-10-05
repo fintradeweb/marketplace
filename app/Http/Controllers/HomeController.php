@@ -12,12 +12,10 @@ class HomeController extends Controller{
 
   public function index(){    
     if(@Auth::user()->hasRole('SuperAdmin')){      
-      return view("homesuperadmin",["creditapproved" => $creditapproved,
-                                    "name" => @Auth::user()->name]);
+      return view("homesuperadmin",["name" => @Auth::user()->name]);
     }
     elseif(@Auth::user()->hasRole('Admin')){      
-      return view("homeadmin",["creditapproved" => $creditapproved,
-                               "name" => @Auth::user()->name]);
+      return view("homeadmin",["name" => @Auth::user()->name]);
     }
     else{      
       $creditapproved = \App\Models\CreditApproved::where("user_id",@Auth::user()->id)->get();

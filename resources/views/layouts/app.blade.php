@@ -72,6 +72,8 @@
             @endguest
           </ul>          
           &nbsp;
+          
+          @if (isset(Auth::user()->name))
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
               <a id="notificationDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -84,7 +86,8 @@
               </div>  
             </li> 
           </ul>
-
+          @endif   
+          
         </div>
       </div>
     </nav>
