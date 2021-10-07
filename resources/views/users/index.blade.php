@@ -1,21 +1,32 @@
 @extends('layouts.app')
 @section('content')
 
-@if (session('status'))
- <div class="row justify-content-center">
-   <div class="col-md-8 col-lg-8 col-sm-12">
-     <div class="alert alert-success">
-      {{ session('status') }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+  @if (session('status'))
+   <div class="row justify-content-center">
+     <div class="col-md-8 col-lg-8 col-sm-12">
+       <div class="alert alert-success">
+        {{ session('status') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+       </div>
      </div>
-   </div>
- </div>    
-@endif
+   </div>    
+  @endif
 
   <div class="container">
     <div class="row justify-content-center">
+
+      <div class="row col-md-12 p-4">
+        <table width="25%">
+          <tr>
+            <td><strong>Legend:</strong></td>
+            <td style="background-color:#e7ebee;">Buyers</td>
+            <td style="background-color:#f9d9f1;">Sellers</td>
+          </tr>
+        </table>
+      </div>
+
       <div class="row col-md-12 p-2">
         <div class="col-md-6"><h5>List of Borrower Users</h5></div>
         <div class="col-md-6 ml-auto text-right">
@@ -55,7 +66,7 @@
           </thead>
           <tbody>
             @foreach ($users as $user)                   
-              <tr>
+              <tr style="background-color: @if ($user->is_buyer == 1) #e7ebee @elseif ($user->is_seller == 1) #f9d9f1 @endif">
                 <td>{{ $user->user_id }}</td>
                 <td>{{ $user->created_at }}</td>
                 <td>{{ $user->name }}</td>
@@ -73,7 +84,7 @@
                       <i class="fa fa-address-book-o" aria-hidden="true" style="font-size:25px;"></i>
                     </a>                                        
                   @else
-                    <a href="users/{{$user->user_id}}/edit" data-toggle="tooltip" data-placement="top" title="Edit">
+                    <a href="/users/{{$user->user_id}}/edit" data-toggle="tooltip" data-placement="top" title="Edit">
                       <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i>
                     </a>
                   @endif

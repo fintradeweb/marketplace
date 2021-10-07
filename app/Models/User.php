@@ -94,9 +94,16 @@ class User extends Authenticatable
 
   public static function getUsersByRol($rolid) {
     $arr_users = array();
+    $arr_users2 = array();
     $users = array();
     $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]);
-    return $arr_users;
+    foreach($arr_users as $key=>$user){
+      $buss = DB::table("businessinformations")->where("user_id",$user->user_id)->first();
+      $user->is_seller = $buss->is_seller;
+      $user->is_buyer = $buss->is_buyer;
+      $arr_users2[$key] = $user; 
+    }
+    return $arr_users2;
   }
 
   public static function update_user_admin_super($request,$id) {
