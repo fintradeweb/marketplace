@@ -370,8 +370,8 @@ BEGIN
            case c2.active when 1 then 'true' else 'false' end status_client,
            DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
-	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
-           case m.is_seller when 1 then 'true' else 'false' end is_seller
+	       m.is_buyer,
+           m.is_seller
 
     from businessinformations m
     inner join users u on u.id  = m.user_id
