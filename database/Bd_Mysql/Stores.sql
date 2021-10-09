@@ -2363,7 +2363,14 @@ BEGIN
 		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
-		       END credit_status
+		       END credit_status,
+		       
+		       CASE
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+		         else 'He is not client.'
+		       END type_user
 
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
@@ -2381,7 +2388,13 @@ BEGIN
 		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
-		       END credit_status
+		       END credit_status,
+	       CASE
+	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+	         else 'He is not client.'
+	       END type_user
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
@@ -2703,6 +2716,7 @@ BEGIN
           f.bank_adress,
           f.telephone,
           f.account_officer,
+          f.adress,
 
 
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
