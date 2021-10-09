@@ -232,6 +232,8 @@ class InformationController extends Controller{
       $business->website = $request->input('website');
       $business->dba = $request->input('dba');
       $business->secretary_name = $request->input('secretary_name');
+      $business->is_buyer = $request->input('is_buyer');
+      $business->is_seller = $request->input('is_seller');
 
       $validator = Validator::make($request->all(), [
         'name' => 'required|max:255',

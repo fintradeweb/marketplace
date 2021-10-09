@@ -9,15 +9,15 @@
   </head>
   <body>
     <div id="app" class="content">
-      <br>      
+      <br>
       @if ($error)
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-8 col-sm-12">
-            <div class="alert alert-danger" role="alert">                                      
-              {{ $error }}                              
+            <div class="alert alert-danger" role="alert">
+              {{ $error }}
             </div>
           </div>
-        </div>  
+        </div>
       @endif
 
       <!--La equita id debe ser app, como hemos visto en app.js-->

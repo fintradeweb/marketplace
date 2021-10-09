@@ -27,7 +27,7 @@
       <div class="row">
 
         <div class="col-xs-12 col-sm-12 col-md-12">
-          <form action="{{ route('financial.store') }}" method="POST" id="frm_updateifinancial">
+          <form action="{{ route('financial.store') }}" method="POST" id="frm_createfinancial">
             <input type="hidden" name="token" id="token" value="{{ $token }}">
             <input type="hidden" name="email" id="email" value="{{ $email }}">
             @csrf

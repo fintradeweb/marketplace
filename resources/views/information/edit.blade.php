@@ -4,7 +4,7 @@
 @if ($errors->any())
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-8 col-sm-12">
-      <div class="alert alert-danger" role="alert">        
+      <div class="alert alert-danger" role="alert">
         <ul>
           @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
@@ -15,26 +15,26 @@
         </button>
       </div>
     </div>
-  </div>  
+  </div>
 @endif
-   
-<div class="container">    
-  <div class="row justify-content-center"> 
+
+<div class="container">
+  <div class="row justify-content-center">
     <div class="row col-md-10 p-4 text-center">
       <div class="col-md-12"><h5>Business Information</h5></div>
-      <div class="col-md-12">Please complete your information, then click in Save button to continue</div>        
-    </div> 
+      <div class="col-md-12">Please complete your information, then click in Save button to continue</div>
+    </div>
     <div class="col-md-10 p-4 text-justify">
       <form action="{{ route('information.edit') }}" method="POST" id="frm_editinformation">
         @csrf
-        @method('PUT')    
+        @method('PUT')
         <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Name: <span class="text-danger">(*)</span></strong>
               <input type="text" name="name" id="name" class="form-control" value="{{ $user->name }}" placeholder="">
               <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
-              <input type="hidden" name="business_id" id="business_id" value="{{ $business->id }}">              
+              <input type="hidden" name="business_id" id="business_id" value="{{ $business->id }}">
             </div>
           </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
@@ -61,7 +61,7 @@
             </div>
           </div>
         </div>
-        <div class="row">          
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Date Company Was Established: <span class="text-danger">(*)</span></strong>
@@ -85,7 +85,7 @@
                 </span>
               @enderror
             </div>
-          </div>            
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>President Name: <span class="text-danger">(*)</span></strong>
@@ -97,8 +97,8 @@
               @enderror
             </div>
           </div>
-        </div>        
-        <div class="row">    
+        </div>
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Type Of Bussiness: <span class="text-danger">(*)</span></strong>
@@ -120,7 +120,7 @@
                 </span>
               @enderror
             </div>
-          </div>  
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Country: <span class="text-danger">(*)</span></strong>
@@ -131,9 +131,9 @@
                 </span>
               @enderror
             </div>
-          </div>        
-        </div>        
-        <div class="row">                        
+          </div>
+        </div>
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>State: <span class="text-danger">(*)</span></strong>
@@ -145,7 +145,7 @@
               @enderror
             </div>
           </div>
-          <div class="col-xs-12 col-sm-4 col-md-4">            
+          <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>City: <span class="text-danger">(*)</span></strong>
               <input type="text" name="city_id" id="city_id" class="form-control @error('city_id') is-invalid @enderror" value="{{ $business->city }}" placeholder="">
@@ -155,7 +155,7 @@
                 </span>
               @enderror
             </div>
-          </div> 
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Zip Code: <span class="text-danger">(*)</span></strong>
@@ -168,7 +168,7 @@
             </div>
           </div>
         </div>
-        <div class="row">                        
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Address: <span class="text-danger">(*)</span></strong>
@@ -203,8 +203,8 @@
               @enderror
             </div>
           </div>
-        </div>                        
-        <div class="row">                                  
+        </div>
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Dba:</strong>
@@ -226,16 +226,18 @@
                 </span>
               @enderror
             </div>
-          </div>           
+          </div>
         </div>
-        <div class="row">                                      
+        <div class="row">
           <input type="hidden" id="token" name="token" value="{{ $token }}">
+          <input type="hidden" name="is_buyer" id="is_buyer" value="{{ $business->is_buyer }}">
+          <input type="hidden" name="is_seller" id="is_seller" value="{{ $business->is_seller }}">
           <div class="col-xs-12 col-sm-12 col-md-12 text-center">
             <button type="submit" class="btn btn-primary" id="btn_edit">Save & Next</button>
           </div>
         </div>
       </form>
-    </div>  
+    </div>
   </div>
 </div>
 @endsection
