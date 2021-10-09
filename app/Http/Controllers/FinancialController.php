@@ -11,7 +11,7 @@ class FinancialController extends Controller{
 
   public function index(Request $request){
     $indiv = \App\Models\Financial::consulta_todos( $request->input('email'),  $request->input('token'));
-    $indiv_new = new \App\Models\Financial();    
+    $indiv_new = new \App\Models\Financial();
     if($indiv[0][0]->existe==0){
       return view('financial.create',[
         'email' =>$request->input('email'),
@@ -34,7 +34,29 @@ class FinancialController extends Controller{
   }
 
   public function store(Request $request){
-    try{      
+    $indiv = new \App\Models\Financial();
+    $po_finance = "";
+    $in_finance = "";
+    if(!empty($request->input('po_finance'))){
+    $po_finance =" checked";
+    }
+    if(!empty($request->input('in_finance'))){
+    $in_finance = " checked";
+    }
+    $indiv->avg_montky_sales =  $request->input('avg_montky_sales');
+    $indiv->ams_how_clients =  $request->input('ams_how_clients');
+    $indiv->estimated_montly_financing =  $request->input('estimated_montly_financing');
+    $indiv->emf_number_clients =  $request->input('emf_number_clients');
+    $indiv->rf_when_with_whom =  $request->input('rf_when_with_whom');
+    $indiv->cip_when_with_whom =  $request->input('cip_when_with_whom');
+    $indiv->has_applicant =  $request->input('has_applicant');
+    $indiv->po_finance =  $po_finance;
+    $indiv->in_finance = $in_finance;
+    $indiv->lawsuits_pending = $request->input('lawsuits_pending');
+    $indiv->receivable_finance = $request->input('receivable_finance');
+    $indiv->credit_insurance_policy = $request->input('credit_insurance_policy');
+    $indiv->declared_bank_ruptcy = $request->input('declared_bank_ruptcy');
+    try{
       $validator = Validator::make($request->all(), [
         'avg_montky_sales' => 'required',
         'ams_how_clients' => 'required',
@@ -45,7 +67,7 @@ class FinancialController extends Controller{
         'po_finance' => 'required_without:in_finance',
         'in_finance' => 'required_without:po_finance'
       ]);
-      $has_applicant = "";
+      /*$has_applicant = "";
       $po_finance = "";
       $in_finance = "";
       $lawsuits_pending = "";
@@ -73,33 +95,20 @@ class FinancialController extends Controller{
       }
       if(!empty($request->input('declared_bank_ruptcy'))){
         $declared_bank_ruptcy = " checked";
-      }      
-      $indiv = new \App\Models\Financial();
-      $indiv->avg_montky_sales =  $request->input('avg_montky_sales');
-      $indiv->ams_how_clients =  $request->input('ams_how_clients');
-      $indiv->estimated_montly_financing =  $request->input('estimated_montly_financing');
-      $indiv->emf_number_clients =  $request->input('emf_number_clients');
-      $indiv->rf_when_with_whom =  $request->input('rf_when_with_whom');
-      $indiv->cip_when_with_whom =  $request->input('cip_when_with_whom');
-      $indiv->has_applicant =  $has_applicant;
-      $indiv->po_finance =  $po_finance;
-      $indiv->in_finance = $in_finance;
-      $indiv->lawsuits_pending = $lawsuits_pending;
-      $indiv->receivable_finance = $receivable_finance;
-      $indiv->credit_insurance_policy = $credit_insurance_policy;
-      $indiv->declared_bank_ruptcy = $declared_bank_ruptcy;      
-      if ($validator->fails()) {        
-        throw new \Exception("validator");                
-      }      
-      $finaninfo = \App\Models\Financial::consulta_todos( $request->input('email'),  $request->input('token'));      
-      if (isset($finaninfo[0][0]) && $finaninfo[0][0]->existe==0){        
-        $result = \App\Models\Financial::registrar($request);        
+      }    */
+
+      if ($validator->fails()) {
+        throw new \Exception("validator");
       }
-      else{          
-        $result = \App\Models\Financial::actualizar($request, $finaninfo[1][0]->id);         
+      $finaninfo = \App\Models\Financial::consulta_todos( $request->input('email'),  $request->input('token'));
+      if (isset($finaninfo[0][0]) && $finaninfo[0][0]->existe==0){
+        $result = \App\Models\Financial::registrar($request);
+      }
+      else{
+        $result = \App\Models\Financial::actualizar($request, $finaninfo[1][0]->id);
       }
       if($result->_error==1){
-        throw new \Exception($result->_msg);                
+        throw new \Exception($result->_msg);
       }
       else{
         $indiv = \App\Models\Bankinformation::consulta_todos( $request->input('email'),  $request->input('token'));
@@ -120,7 +129,7 @@ class FinancialController extends Controller{
         }
       }
     }
-    catch(\Exception $e){  
+    catch(\Exception $e){
       $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();
       return view('financial.create',[
         'email' =>$request->input('email'),
@@ -131,7 +140,7 @@ class FinancialController extends Controller{
   }
 
   public function update(Request $request, $codigo){
-    try{  
+    try{
       $validator = Validator::make($request->all(), [
         'avg_montky_sales' => 'required|max:255',
         'ams_how_clients' => 'required|max:255',
@@ -142,7 +151,15 @@ class FinancialController extends Controller{
         'po_finance' => 'required_without:in_finance',
         'in_finance' => 'required_without:po_finance'
       ]);
-      $has_applicant = "";
+      $po_finance = "";
+      $in_finance = "";
+      if(!empty($request->input('po_finance'))){
+        $po_finance =" checked";
+      }
+      if(!empty($request->input('in_finance'))){
+        $in_finance = " checked";
+      }
+      /*$has_applicant = "";
       $po_finance = "";
       $in_finance = "";
       $lawsuits_pending = "";
@@ -170,7 +187,7 @@ class FinancialController extends Controller{
       }
       if(!empty($request->input('declared_bank_ruptcy'))){
         $declared_bank_ruptcy = " checked";
-      }
+      }*/
       $indiv = new \App\Models\Financial();
       $indiv->avg_montky_sales =  $request->input('avg_montky_sales');
       $indiv->ams_how_clients =  $request->input('ams_how_clients');
@@ -178,20 +195,21 @@ class FinancialController extends Controller{
       $indiv->emf_number_clients =  $request->input('emf_number_clients');
       $indiv->rf_when_with_whom =  $request->input('rf_when_with_whom');
       $indiv->cip_when_with_whom =  $request->input('cip_when_with_whom');
-      $indiv->has_applicant =  $has_applicant;
-      $indiv->po_finance =  $po_finance;
-      $indiv->in_finance = $in_finance;
-      $indiv->lawsuits_pending = $lawsuits_pending;
-      $indiv->receivable_finance = $receivable_finance;
-      $indiv->credit_insurance_policy = $credit_insurance_policy;
-      $indiv->declared_bank_ruptcy = $declared_bank_ruptcy;
+      $indiv->has_applicant =  $request->input('has_applicant');
+      $indiv->po_finance =  $request->input('po_finance');
+      $indiv->in_finance = $request->input('in_finance');
+      $indiv->lawsuits_pending = $request->input('lawsuits_pending');
+      $indiv->receivable_finance = $request->input('receivable_finance');
+      $indiv->credit_insurance_policy = $request->input('credit_insurance_policy');
+      $indiv->declared_bank_ruptcy = $request->input('declared_bank_ruptcy');
+
 
       if ($validator->fails()) {
-        throw new \Exception("validator");            
+        throw new \Exception("validator");
       }
       $result = \App\Models\Financial::actualizar($request, $codigo);
       if($result->_error==1){
-        throw new \Exception($result->_msg);           
+        throw new \Exception($result->_msg);
       }
       else{
         $indiv = \App\Models\Bankinformation::consulta_todos( $request->input('email'),  $request->input('token'));
@@ -212,14 +230,14 @@ class FinancialController extends Controller{
         }
       }
     }
-    catch(\Exception $e){  
+    catch(\Exception $e){
       $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();
       return view('financial.create',[
         'email' =>$request->input('email'),
         'token' =>  $request->input('token'),
         'indiv'=>$indiv
-      ])->withErrors($errors);  
-    }  
+      ])->withErrors($errors);
+    }
   }
 
 }

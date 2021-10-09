@@ -101,7 +101,7 @@ class User extends Authenticatable
       $buss = DB::table("businessinformations")->where("user_id",$user->user_id)->first();
       $user->is_seller = $buss->is_seller;
       $user->is_buyer = $buss->is_buyer;
-      $arr_users2[$key] = $user; 
+      $arr_users2[$key] = $user;
     }
     return $arr_users2;
   }
@@ -115,16 +115,16 @@ class User extends Authenticatable
     }
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);
-    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,@msg,@error)',
                 [
                     $id,
                     $request->input('rol_id'),
                     $clave ,
                     $request->input('email'),
                     $request->input('name'),
-                    $status,
+                    $status/*,
                     $msg,
-                    $error
+                    $error*/
                 ]);
     $result[1] =  $clave2;
     return $result[0];
@@ -135,14 +135,14 @@ class User extends Authenticatable
     $msg= "";
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);
-    $result = DB::select('call Create_users_admin_super(?,?,?,?,?,?)',
+    $result = DB::select('call Create_users_admin_super(?,?,?,?,@msg,@error)',
                 [
                     $request->input('rol_id'),
                     $clave ,
                     $request->input('email'),
-                    $request->input('name'),
+                    $request->input('name')/*,
                     $msg,
-                    $error
+                    $error*/
                 ]);
     $result[1] =  $clave2;
     return $result;

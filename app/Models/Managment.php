@@ -24,7 +24,7 @@ class Managment extends Model {
     $id = 0;
 
 
-    $result = DB::select('call Insert_managment(?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_managment(?,?,?,?,?,?,?,@msg,@error,@id)',
                 [
                     $request->input('name'),
                     $request->input('email'),
@@ -32,10 +32,10 @@ class Managment extends Model {
                     $request->input('position'),
                     $request->input('percentage'),
                     $request->input('birthdate'),
-                    $request->input('token'),
+                    $request->input('token')/*,
                     $msg,
                     $error,
-                    $id
+                    $id*/
                 ]);
       return $result[0];
   }
@@ -44,16 +44,16 @@ class Managment extends Model {
       $error="0";
       $msg= "";
 
-      $result = DB::select('call Update_managment(?,?,?,?,?,?,?,?)',
+      $result = DB::select('call Update_managment(?,?,?,?,?,?,@msg,@error)',
                   [
                         $codigo,
                         $request->input('name'),
                         $request->input('idno'),
                         $request->input('position'),
                         $request->input('percentage'),
-                        $request->input('birthday'),
+                        $request->input('birthday')/*,
                         $msg,
-                        $error
+                        $error*/
 
                   ]);
       return $result[0];

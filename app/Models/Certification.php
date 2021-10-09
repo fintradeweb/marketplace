@@ -28,16 +28,16 @@ class Certification extends Model {
         $approved_agreed = 1;
     }
 
-    $result = DB::select('call Insert_certification(?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_certification(?,?,?,?,?,@msg,@error,@id)',
                 [
                     $request->input('email'),
                     $approved_agreed,
                     $request->input('name'),
                     $request->input('title'),
-                    $request->input('token'),
+                    $request->input('token')/*,
                     $msg,
                     $error,
-                    $id
+                    $id*/
                 ]);
       return $result[0];
   }
@@ -49,14 +49,14 @@ class Certification extends Model {
         $approved_agreed = 1;
       }
 
-      $result = DB::select('call Update_certification(?,?,?,?,?,?)',
+      $result = DB::select('call Update_certification(?,?,?,?,@msg,@error)',
                   [
                         $codigo,
                         $approved_agreed,
                         $request->input('name'),
-                        $request->input('title'),
+                        $request->input('title')/*,
                         $msg,
-                        $error
+                        $error*/
                   ]);
       return $result[0];
   }

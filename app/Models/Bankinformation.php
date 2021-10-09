@@ -13,7 +13,7 @@ class Bankinformation extends Model {
     $managments = DB::select("call Get_bankinformation(?)",[$id]);
     return $managments;
   }
-  
+
   public static function consulta_todos($email,$token) {
     $params = [$email,$token];
     return  \App\Models\User::CallRaw('Get_bankinformation_client_user',$params );
@@ -23,8 +23,8 @@ class Bankinformation extends Model {
     $error=0;
     $msg= "";
     $id = 0;
-    $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');  
-    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');
+    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,@msg,@error,@id)',
                 [
                     $request->input('email'),
                     $request->input('bank_name'),
@@ -35,19 +35,19 @@ class Bankinformation extends Model {
                     $request->input('telephone'),
                     $account_officer,
                     $request->input('adress'),
-                    $request->input('token'),
+                    $request->input('token')/*,
                     $msg,
                     $error,
-                    $id
+                    $id*/
                 ]);
       return $result[0];
   }
 
   public static function actualizar($request,$codigo){
       $error="0";
-      $msg= "";    
-      $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');  
-      $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,?,?)',
+      $msg= "";
+      $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');
+      $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,@msg,@error)',
                   [
                         $codigo,
                         $request->input('bank_name'),
@@ -57,9 +57,9 @@ class Bankinformation extends Model {
                         $request->input('bank_adress'),
                         $request->input('telephone'),
                         $account_officer,
-                        $request->input('adress'),
+                        $request->input('adress')/*,
                         $msg,
-                        $error
+                        $error*/
                   ]);
       return $result[0];
   }

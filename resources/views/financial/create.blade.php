@@ -27,7 +27,7 @@
       <div class="row">
 
         <div class="col-xs-12 col-sm-12 col-md-12">
-          <form action="{{ route('financial.store') }}" method="POST" id="frm_createownership">
+          <form action="{{ route('financial.store') }}" method="POST" id="frm_updateifinancial">
             <input type="hidden" name="token" id="token" value="{{ $token }}">
             <input type="hidden" name="email" id="email" value="{{ $email }}">
             @csrf
@@ -60,14 +60,14 @@
             <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <div class="form-check-inline col-md-10">                  
+                <div class="form-check-inline col-md-10">
                   <strong>
                     Has applicant or any entity in which applicant is an owner / partner owe any taxes that are past due?: <span class="text-danger">(*)</span>
                   </strong>
                   &nbsp;&nbsp;&nbsp;
-                  <select name="has_applicant" id="has_applicant" class="form-control col-md-2 @error('has_applicant') is-invalid @enderror">                    
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>                    
+                  <select name="has_applicant" id="has_applicant" class="form-control col-md-2 @error('has_applicant') is-invalid @enderror" >
+                    <option value="0" {{ ($indiv->has_applicant=="0") ? " selected" : ""}} >No</option>
+                    <option value="1" {{ ($indiv->has_applicant=="1") ? " selected"  : ""}}>Yes</option>
                   </select>
                   <!--<input type="checkbox" name="has_applicant" id="has_applicant" class="form-check-input chk_lg" {{ $indiv->has_applicant }} >-->
                   @error('has_applicant')
@@ -78,9 +78,9 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="card">
-              <div class="card-body">  
+              <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
                     <strong>Estimated monthly financing volume: <span class="text-danger">(*)</span></strong>
@@ -108,10 +108,10 @@
             <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <strong>What type of documents are you looking to finance (PO- Invoice)?  
+                <strong>What type of documents are you looking to finance (PO- Invoice)?
                   <span class="text-danger">(*)</span>
                 </strong>
-              </div>  
+              </div>
               <div class="form-group">
                 <center>
                   <div class="form-check-inline">
@@ -135,16 +135,16 @@
                 </center>
               </div>
             </div>
-            <br> 
+            <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <div class="form-check-inline col-md-10">                   
+                <div class="form-check-inline col-md-10">
                   <strong>Has applicant or any entity in which applicant is an owner / partner has any lawsuits pending? <span class="text-danger">(*)</span>
-                  </strong>                  
+                  </strong>
                   &nbsp;&nbsp;&nbsp;
-                  <select name="lawsuits_pending" id="lawsuits_pending" class="form-control col-md-2 @error('lawsuits_pending') is-invalid @enderror">                    
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>                    
+                  <select name="lawsuits_pending" id="lawsuits_pending" class="form-control col-md-2 @error('lawsuits_pending') is-invalid @enderror" >
+                    <option value="0" {{ ($indiv->lawsuits_pending=="0") ? " selected" : ""}} >No</option>
+                    <option value="1" {{ ($indiv->lawsuits_pending=="1") ? " selected"  : ""}}>Yes</option>
                   </select>
                   <!--<input type="checkbox" name="lawsuits_pending" id="lawsuits_pending" class="form-check-input chk_lg"  {{ $indiv->lawsuits_pending }} >-->
                   @error('lawsuits_pending')
@@ -152,21 +152,21 @@
                       <strong>{{ $message }}</strong>
                     </span>
                   @enderror
-                </div> 
+                </div>
               </div>
             </div>
 
             <div class="card">
-              <div class="card-body">    
+              <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
-                    <div class="form-check-inline col-md-10">                       
-                      <strong>Have you ever factored your receivables? <span class="text-danger">(*)</span></strong>                      
+                    <div class="form-check-inline col-md-10">
+                      <strong>Have you ever factored your receivables? <span class="text-danger">(*)</span></strong>
                       &nbsp;&nbsp;&nbsp;
-                      <select name="receivable_finance" id="receivable_finance" class="form-control col-md-2 @error('receivable_finance') is-invalid @enderror">                    
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>                    
-                      </select>                      
+                      <select name="receivable_finance" id="receivable_finance" class="form-control col-md-2 @error('receivable_finance') is-invalid @enderror" value="{{ $indiv->receivable_finance }}" >
+                       <option value="0" {{ ($indiv->receivable_finance=="0") ? " selected" : ""}} >No</option>
+                       <option value="1" {{ ($indiv->receivable_finance=="1") ? " selected"  : ""}}>Yes</option>
+                      </select>
                       <!--<input type="checkbox" name="receivable_finance" id="receivable_finance" class="form-check-input chk_lg" {{ $indiv->receivable_finance }} >-->
                       @error('receivable_finance')
                         <span class="invalid-feedback" role="alert">
@@ -195,13 +195,13 @@
               <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
-                    <div class="form-check-inline col-md-10">                        
-                      <strong>Do you have a Credit Insurance policy? <span class="text-danger">(*)</span></strong>                      
-                      &nbsp;&nbsp;&nbsp; 
-                      <select name="credit_insurance_policy" id="credit_insurance_policy" class="form-control col-md-2 @error('credit_insurance_policy') is-invalid @enderror">                    
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>                    
-                      </select>                      
+                    <div class="form-check-inline col-md-10">
+                      <strong>Do you have a Credit Insurance policy? <span class="text-danger">(*)</span></strong>
+                      &nbsp;&nbsp;&nbsp;
+                      <select name="credit_insurance_policy" id="credit_insurance_policy" class="form-control col-md-2 @error('credit_insurance_policy') is-invalid @enderror" value="{{ $indiv->credit_insurance_policy }}" >
+                       <option value="0" {{ ($indiv->credit_insurance_policy=="0") ? " selected" : ""}} >No</option>
+                       <option value="1" {{ ($indiv->credit_insurance_policy=="1") ? " selected"  : ""}}>Yes</option>
+                      </select>
                       <!--<input type="checkbox" name="credit_insurance_policy" id="credit_insurance_policy" class="form-check-input chk_lg" {{ $indiv->credit_insurance_policy }} >-->
                       @error('credit_insurance_policy')
                         <span class="invalid-feedback" role="alert">
@@ -228,12 +228,12 @@
             <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <div class="form-check-inline col-md-10">                   
-                  <strong>Has applicant or any entity in which applicant is an owner / partner ever declared bankruptcy? <span class="text-danger">(*)</span></strong>                  
+                <div class="form-check-inline col-md-10">
+                  <strong>Has applicant or any entity in which applicant is an owner / partner ever declared bankruptcy? <span class="text-danger">(*)</span></strong>
                   &nbsp;&nbsp;&nbsp;
-                  <select name="declared_bank_ruptcy" id="declared_bank_ruptcy" class="form-control col-md-2 @error('declared_bank_ruptcy') is-invalid @enderror">                    
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>                    
+                  <select name="declared_bank_ruptcy" id="declared_bank_ruptcy" class="form-control col-md-2 @error('declared_bank_ruptcy') is-invalid @enderror" value="{{ $indiv->declared_bank_ruptcy }}" >
+                       <option value="0" {{ ($indiv->declared_bank_ruptcy=="0") ? " selected" : ""}} >No</option>
+                       <option value="1" {{ ($indiv->declared_bank_ruptcy=="1") ? " selected"  : ""}}>Yes</option>
                   </select>
                   <!--<input type="checkbox" name="declared_bank_ruptcy" id="declared_bank_ruptcy" class="form-check-input chk_lg" {{ $indiv->declared_bank_ruptcy }} >-->
                   @error('declared_bank_ruptcy')

@@ -1473,23 +1473,24 @@ DELIMITER ;
 
 /*
 
-SET @email = 'a4578@aaa.com';
-set @avg_montky_sales =15.9;
+
+SET @email = 'mm44@gmail.com';
+set @avg_montky_sales =1;
 set @ams_how_clients =2;
 set @has_applicant =1;
-set @po_finance =0;
+set @po_finance =1;
 set @in_finance =1;
-set @lawsuits_pending =0;
-set @receivable_finance =0;
+set @lawsuits_pending =1;
+set @receivable_finance =1;
 set @credit_insurance_policy =1;
-set @declared_bank_ruptcy =0;
-set @estimated_montly_financing =250;
+set @declared_bank_ruptcy =3;
+set @estimated_montly_financing =33;
 set @emf_number_clients =3;
-set @rf_when_with_whom =12;
-set @cip_when_with_whom =2;
-SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+set @rf_when_with_whom =11;
+set @cip_when_with_whom =22;
+SET @token = 'KUOMQ2w60A';
 SET @msg = '';
-SET @error = '';
+SET @error = 0;
 SET @id = 0;
 CALL Insert_financial(@avg_montky_sales,@ams_how_clients,@has_applicant,@po_finance,@in_finance,
        @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing,
@@ -1500,6 +1501,10 @@ SELECT @msg,@error,@id;
 
 DROP PROCEDURE IF EXISTS Insert_financial;
 DELIMITER //
+/*
+ (22,22,1,1,0,1,0,0,0,2,2,22,22,m11@gmai.com,KUOMQ2w60A,,0,0)
+ * */
+ 
 create  PROCEDURE Insert_financial(
                                 IN _avg_montky_sales double,
                                 IN _ams_how_clients int,
@@ -1514,7 +1519,6 @@ create  PROCEDURE Insert_financial(
                                 IN _emf_number_clients int,
                                 IN _rf_when_with_whom double,
                                 IN _cip_when_with_whom int,
-
                                 IN _email varchar(255),
                                 IN _token varchar(255),
                                 OUT _msg varchar(255),

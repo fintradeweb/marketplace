@@ -28,7 +28,7 @@
 
 
         <div class="col-xs-12 col-sm-12 col-md-12">
-          <form action="{{ route('financial.update',$indiv->id) }}" method="POST" id="frm_createownership">
+          <form action="{{ route('financial.update',$indiv->id) }}" method="POST" id="frm_createfinancial">
             <input type="hidden" name="token" id="token" value="{{ $token }}">
             <input type="hidden" name="email" id="email" value="{{ $email }}">
             @csrf
@@ -58,11 +58,11 @@
                   </div>
                 </div>
               </div>
-            </div>  
+            </div>
             <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <div class="form-check-inline"> 
+                <div class="form-check-inline">
                   <label class="form-check-label">
                     <strong>Has applicant or any entity in which applicant is an owner / partner owe any taxes that are past due?: <span class="text-danger">(*)</span></strong>
                   </label>
@@ -77,7 +77,7 @@
             </div>
 
             <div class="card">
-              <div class="card-body">  
+              <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
                     <strong>Estimated Monthly Financing Volume: <span class="text-danger">(*)</span></strong>
@@ -108,7 +108,7 @@
                 <strong>
                   What type of documents are you looking to finance (PO- Invoice?  <span class="text-danger">(*)</span>
                 </strong>
-              </div>  
+              </div>
               <div class="form-group">
                 <center>
                   <div class="form-check-inline">
@@ -135,7 +135,7 @@
             <br>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <div class="form-check-inline"> 
+                <div class="form-check-inline">
                   <label class="form-check-label">
                     <strong>
                       Has applicant or any entity in which applicant is an owner / partner has any lawsuits pending? <span class="text-danger">(*)</span>
@@ -152,10 +152,10 @@
             </div>
 
             <div class="card">
-              <div class="card-body">   
+              <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
-                    <div class="form-check-inline"> 
+                    <div class="form-check-inline">
                       <label class="form-check-label">
                         <strong>Have you ever factored your receivables? <span class="text-danger">(*)</span></strong>
                       </label>
@@ -187,7 +187,7 @@
               <div class="card-body">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                   <div class="form-group">
-                    <div class="form-check-inline"> 
+                    <div class="form-check-inline">
                       <label class="form-check-label">
                         <strong>Do you have a Credit Insurance policy? <span class="text-danger">(*)</span></strong>
                       </label>
@@ -212,11 +212,11 @@
                     @enderror
                   </div>
                 </div>
-              </div>  
+              </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
               <div class="form-group">
-                <div class="form-check-inline"> 
+                <div class="form-check-inline">
                   <label class="form-check-label">
                     <strong>Has applicant or any entity in which applicant is an owner / partner ever declared bankruptcy? <span class="text-danger">(*)</span>
                     </strong>
