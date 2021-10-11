@@ -9,15 +9,16 @@
   </head>
   <body>
     <div id="app" class="content">
-      <br>      
+      <br>
       <?php if($error): ?>
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-8 col-sm-12">
-            <div class="alert alert-danger" role="alert">                                      
-              <?php echo e($error); ?>                              
+            <div class="alert alert-danger" role="alert">
+              <?php echo e($error); ?>
+
             </div>
           </div>
-        </div>  
+        </div>
       <?php endif; ?>
 
       <!--La equita id debe ser app, como hemos visto en app.js-->
@@ -25,4 +26,5 @@
     </div>
     <script src="<?php echo e(asset('js/app.js')); ?>"></script> <!--Añadimos el js generado con webpack, donde se encuentra nuestro componente vuejs-->
   </body>
-</html><?php /**PATH C:\Miguel\Ac\laravel\marketplace\resources\views/information/index.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH C:\Miguel\Ac\laravel\marketplace\resources\views/information/index.blade.php ENDPATH**/ ?>

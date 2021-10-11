@@ -2865,6 +2865,29 @@ END;
 DELIMITER ;
 
 
+/*
+ call Get_api_nsa ();
+ */
+
+DROP PROCEDURE IF EXISTS Get_api_nsa;
+DELIMITER //
+create  PROCEDURE Get_api_nsa()
+BEGIN
+ 
+  
+ select 
+     c2.descripcion 
+ from catalogocab c 
+ inner join catalogodet c2 on c2.catalogocab_id = c.id 
+ where c.tabla ='URL-NSA' AND 
+       c2.valorstring = 'URL_NSA';
+
+END;
+//
+DELIMITER ;
+
+
+
 
 
 
