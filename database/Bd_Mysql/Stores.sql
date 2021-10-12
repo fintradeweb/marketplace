@@ -370,8 +370,8 @@ BEGIN
            case c2.active when 1 then 'true' else 'false' end status_client,
            DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
 	       DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
-	       case m.is_buyer when 1 then 'true' else 'false' end  is_buyer,
-           case m.is_seller when 1 then 'true' else 'false' end is_seller
+	       m.is_buyer,
+           m.is_seller
 
     from businessinformations m
     inner join users u on u.id  = m.user_id
@@ -1473,23 +1473,24 @@ DELIMITER ;
 
 /*
 
-SET @email = 'a4578@aaa.com';
-set @avg_montky_sales =15.9;
+
+SET @email = 'mm44@gmail.com';
+set @avg_montky_sales =1;
 set @ams_how_clients =2;
 set @has_applicant =1;
-set @po_finance =0;
+set @po_finance =1;
 set @in_finance =1;
-set @lawsuits_pending =0;
-set @receivable_finance =0;
+set @lawsuits_pending =1;
+set @receivable_finance =1;
 set @credit_insurance_policy =1;
-set @declared_bank_ruptcy =0;
-set @estimated_montly_financing =250;
+set @declared_bank_ruptcy =3;
+set @estimated_montly_financing =33;
 set @emf_number_clients =3;
-set @rf_when_with_whom =12;
-set @cip_when_with_whom =2;
-SET @token = 'CORREO3@GMAIL.COM054751f6d5f4cfa6213bCORREO3@GMAIL.COM';
+set @rf_when_with_whom =11;
+set @cip_when_with_whom =22;
+SET @token = 'KUOMQ2w60A';
 SET @msg = '';
-SET @error = '';
+SET @error = 0;
 SET @id = 0;
 CALL Insert_financial(@avg_montky_sales,@ams_how_clients,@has_applicant,@po_finance,@in_finance,
        @lawsuits_pending,@receivable_finance,@credit_insurance_policy, @declared_bank_ruptcy,@estimated_montly_financing,
@@ -1500,6 +1501,10 @@ SELECT @msg,@error,@id;
 
 DROP PROCEDURE IF EXISTS Insert_financial;
 DELIMITER //
+/*
+ (22,22,1,1,0,1,0,0,0,2,2,22,22,m11@gmai.com,KUOMQ2w60A,,0,0)
+ * */
+ 
 create  PROCEDURE Insert_financial(
                                 IN _avg_montky_sales double,
                                 IN _ams_how_clients int,
@@ -1514,7 +1519,6 @@ create  PROCEDURE Insert_financial(
                                 IN _emf_number_clients int,
                                 IN _rf_when_with_whom double,
                                 IN _cip_when_with_whom int,
-
                                 IN _email varchar(255),
                                 IN _token varchar(255),
                                 OUT _msg varchar(255),
@@ -2354,10 +2358,19 @@ BEGIN
 		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
 		       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
 		       CASE
+		         when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+		         when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
 		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
-		       END credit_status
+		       END credit_status,
+		       
+		       CASE
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+		         else 'He is not client.'
+		       END type_user
 
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
@@ -2370,10 +2383,18 @@ BEGIN
 	      select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
 	       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
 		    CASE
+		         when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+		         when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
 		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
-		       END credit_status
+		       END credit_status,
+	       CASE
+	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+	         else 'He is not client.'
+	       END type_user
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
@@ -2597,7 +2618,7 @@ DELIMITER ;
 
 /*
  SET @userid = 3;
- call Get_users_roles (@role);
+ call Get_info_credit (@userid);
  */
 
 DROP PROCEDURE IF EXISTS Get_info_credit;
@@ -2695,6 +2716,7 @@ BEGIN
           f.bank_adress,
           f.telephone,
           f.account_officer,
+          f.adress,
 
 
 	       DATE_FORMAT(f.created_at , '%Y-%m-%d %T.%f') as created_at,
@@ -2723,8 +2745,149 @@ BEGIN
     inner join users u on u.id  = f.user_id
     inner join clients c2 on c2.id  = f.client_id
     WHERE u.id = _userid;
+   
+    select 
+         CASE
+        	 when  exists(select 1 from credit_approved c where c.user_id = _userid) then 'Credit Approved'
+	         when  exists(select 1 from credit_denied c where c.user_id = _userid) then 'Credit Denied'
+	         when  exists(select 1 from certificationauthorizations c where c.user_id = _userid) then 'Request received'
+	         else 'Request incomplete'
+         
+        END credit_status;
+     
+     select 
+     	DATE_FORMAT(ca.created_at , '%Y-%m-%d %T.%f') as created_at,
+	    DATE_FORMAT(ca.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	    ca.credit_line ,
+	    ca.advance ,
+	    ca.maximum_amount ,
+	    ca.deadline ,
+	    ca.interest_rate ,
+	    ca.type_document ,
+	    ca.approved_by ,
+	    u.email email_approved,
+	    u.name name_approved
+     from credit_approved ca 
+     inner join users u on u.id = ca.approved_by
+     where ca.user_id = _userid;
+    
+    select 
+     	DATE_FORMAT(ca.created_at , '%Y-%m-%d %T.%f') as created_at,
+	    DATE_FORMAT(ca.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+	    ca.observation ,
+	    ca.denied_by ,
+	    u.email email_denied,
+	    u.name name_denied
+     from credit_denied ca 
+     inner join users u on u.id = ca.denied_by
+     where ca.user_id = _userid;
 
 
 END;
 //
 DELIMITER ;
+
+/*
+ SET @userid = 3;
+ call Get_info_notifications (@userid);
+ */
+
+DROP PROCEDURE IF EXISTS Get_info_notifications;
+DELIMITER //
+create  PROCEDURE Get_info_notifications(IN _userid bigint)
+BEGIN
+  select 	
+	(
+	 select count(*) 
+	 from notification_send ns 
+	 where ns.send_by  = _userid
+	 ) as num_sent,
+	(
+	 select count(*) 
+	 from notification_send ns 
+	 where ns.user_id = _userid
+	 ) as num_received;
+  
+ select 
+   DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+   DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+   m.description ,
+   m.type_not ,
+   m.user_id ,
+   u.email ,
+   u.name 
+ from notification_send m
+ inner join users u on u.id = m.user_id 
+ where m.send_by = _userid;
+
+select 
+   DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+   DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+   m.description ,
+   m.type_not ,
+   m.user_id ,
+   u.email ,
+   u.name 
+ from notification_send m
+ inner join users u on u.id = m.user_id 
+ where m.user_id  = _userid;
+	 
+END;
+//
+DELIMITER ;
+
+
+/*
+ SET @_notificacionid = 3;
+ call Get_notification (@_notificacionid);
+ */
+
+DROP PROCEDURE IF EXISTS Get_notification;
+DELIMITER //
+create  PROCEDURE Get_notification(IN _notificacionid bigint)
+BEGIN
+ 
+  
+ select 
+   DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
+   DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
+   m.description ,
+   m.type_not ,
+   m.user_id ,
+   u.email ,
+   u.name 
+ from notification_send m
+ inner join users u on u.id = m.user_id 
+ where m.id = _notificacionid;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+ call Get_api_nsa ();
+ */
+
+DROP PROCEDURE IF EXISTS Get_api_nsa;
+DELIMITER //
+create  PROCEDURE Get_api_nsa()
+BEGIN
+ 
+  
+ select 
+     c2.descripcion 
+ from catalogocab c 
+ inner join catalogodet c2 on c2.catalogocab_id = c.id 
+ where c.tabla ='URL-NSA' AND 
+       c2.valorstring = 'URL_NSA';
+
+END;
+//
+DELIMITER ;
+
+
+
+
+
+

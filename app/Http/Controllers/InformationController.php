@@ -40,6 +40,8 @@ class InformationController extends Controller{
       else{
         $is_buyer = ($request->input('txt_typeuser') == "Buyer") ? 1 : 0;
         $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;
+        $resp_apiNsa = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com");
+        var_dump($resp_apiNsa);
         return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
                                          ->with('email',$request->input('txt_email'))
@@ -149,7 +151,7 @@ class InformationController extends Controller{
 
         }
         else{
-          throw new \Exception("There was an error creating the user!");
+          throw new \Exception($result[0]->_msg);
         }
       }
     }
@@ -162,7 +164,7 @@ class InformationController extends Controller{
                                         ->with('date_company',$request->input('date_company'))
                                         ->with('contact_name',$request->input('contact_name'))
                                         ->with('zip',$request->input('zip'))
-                                        ->with('type_business',$request->input('type_bussiness'))
+                                        ->with('type_business',$request->input('type_business'))
                                         ->with('country_id',$request->input('country_id'))
                                         ->with('state_id',$request->input('state_id'))
                                         ->with('address',$request->input('address'))
@@ -232,6 +234,8 @@ class InformationController extends Controller{
       $business->website = $request->input('website');
       $business->dba = $request->input('dba');
       $business->secretary_name = $request->input('secretary_name');
+      $business->is_buyer = $request->input('is_buyer');
+      $business->is_seller = $request->input('is_seller');
 
       $validator = Validator::make($request->all(), [
         'name' => 'required|max:255',

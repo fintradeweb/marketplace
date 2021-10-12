@@ -10,6 +10,9 @@
             <li>{{ $error }}</li>
           @endforeach
         </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
     </div>
   </div>
@@ -48,7 +51,7 @@
                 <form action="{{ route('managment.destroy',$record->id) }}" method="POST">
                      @csrf
 
-                    <button onclick="return confirm('Are you sure?')" type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+                    <button onclick="return confirm('Are you sure?')" type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
                 </form>
                 <!--<a href="" id="btn_delete"><i class='fa fa-trash-o'></i></a> </td>-->
               </tr>

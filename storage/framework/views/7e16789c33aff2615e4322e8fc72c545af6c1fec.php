@@ -10,6 +10,9 @@
             <li><?php echo e($error); ?></li>
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
     </div>
   </div>
@@ -48,7 +51,7 @@
                 <form action="<?php echo e(route('managment.destroy',$record->id)); ?>" method="POST">
                      <?php echo csrf_field(); ?>
 
-                    <button onclick="return confirm('Are you sure?')" type="submit" class="btn btn-danger"><i class='fa fa-trash-o'></i></button>
+                    <button onclick="return confirm('Are you sure?')" type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
                 </form>
                 <!--<a href="" id="btn_delete"><i class='fa fa-trash-o'></i></a> </td>-->
               </tr>

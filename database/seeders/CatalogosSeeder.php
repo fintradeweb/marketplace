@@ -197,5 +197,17 @@ class CatalogosSeeder extends Seeder
             'valorstring2' => 'App\Models\User',
             'estado' => 1
         ]);
+
+        DB::table('catalogocab')->insert([
+            'id' => 6,
+            'tabla' => 'URL-NSA'
+        ]);
+        DB::table('catalogodet')->insert([
+            'id' => 21,
+            'catalogocab_id' => 6,
+            'descripcion' => 'https://b2b.nsa-exchange.com/apifacturas?api_key=key_cur_prod_fnPqT5xQEi5Vcb9wKwbCf65c3BjVGyBB&email=',
+            'valorstring' => 'URL_NSA',
+            'estado' => 1
+        ]);
     }
 }

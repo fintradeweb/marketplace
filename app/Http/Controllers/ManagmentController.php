@@ -54,7 +54,7 @@ class ManagmentController extends Controller{
                'name' => $request->input('name'),
                'position' => $request->input('position'),
                'birthdate' => $request->input('birthdate')
-             ])->withErrors('There was an error creating the ownership!');
+             ])->withErrors($result->_msg);
     }
   }
    public function destroy($id)

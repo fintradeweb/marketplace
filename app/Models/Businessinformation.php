@@ -36,7 +36,7 @@ class Businessinformation extends Model {
     //  $is_seller = $request->input('is_seller');
     //}
 
-    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Insert_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,@msg,@error,@id)',
                 [
                     $request->input('name'),
                     $request->input('email'),
@@ -58,10 +58,10 @@ class Businessinformation extends Model {
                     $request->input('cell_phone'),
                     $request->input('token'),
                     $request->input('is_buyer'),
-                    $request->input('is_seller'),
+                    $request->input('is_seller')/*,
                     $msg,
                     $error,
-                    $id
+                    $id*/
                 ]);
     $result[1] =  $clave2;
     return $result;
@@ -82,7 +82,7 @@ class Businessinformation extends Model {
 
 
 
-      $result = DB::select('call Update_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      $result = DB::select('call Update_businessinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,@msg,@error)',
                   [
                         $codigo,
                         $request->input('name'),
@@ -103,9 +103,9 @@ class Businessinformation extends Model {
                         $request->input('dba'),
                         $request->input('cell_phone'),
                         $is_buyer,
-                        $is_seller,
+                        $is_seller/*,
                         $msg,
-                        $error
+                        $error*/
 
                   ]);
       return $result[0];

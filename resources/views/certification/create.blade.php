@@ -10,6 +10,9 @@
             <li>{{ $error }}</li>
           @endforeach
         </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
     </div>
   </div>
@@ -38,7 +41,7 @@
               <label class="form-check-label">
                 <strong>Approved and Agreed : <span class="text-danger">(*)</span></strong>
               </label>
-              <input type="checkbox" name="approved_agreed" id="approved_agreed" class="form-check-input chk_lg" {{ $indiv->approved_agreed }}>
+              <input type="checkbox" name="approved_agreed" id="approved_agreed" class="form-check-input chk_lg @error('approved_agreed') is-invalid @enderror" {{ $indiv->approved_agreed }}>
               @error('approved_agreed')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
@@ -52,8 +55,8 @@
           <div class="col-xs-12 col-sm-1 col-md-1"></div>
           <div class="col-xs-12 col-sm-5 col-md-5">
             <div class="form-group">
-              <strong>Name: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="name" id="name" class="form-control" value="{{ $indiv->name }}" placeholder="Name">
+              <strong>Signer Name: <span class="text-danger">(*)</span></strong>
+              <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ $indiv->name }}" placeholder="Name">
               @error('name')
                   <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
@@ -64,8 +67,8 @@
           <div class="col-xs-12 col-sm-5 col-md-5">
             <div class="form-group">
               <strong>Title: <span class="text-danger">(*)</span></strong>
-              <input type="text" name="title" id="title" class="form-control" value="{{ $indiv->title }}" placeholder="Title">
-              @error('has_applicant')
+              <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" value="{{ $indiv->title }}" placeholder="Title">
+              @error('title')
                   <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
                   </span>

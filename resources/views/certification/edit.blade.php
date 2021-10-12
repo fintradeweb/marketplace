@@ -10,6 +10,9 @@
             <li>{{ $error }}</li>
           @endforeach
         </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
     </div>
   </div>
@@ -51,7 +54,7 @@
           <div class="col-xs-12 col-sm-1 col-md-1"></div>
           <div class="col-xs-12 col-sm-5 col-md-5">
             <div class="form-group">
-              <strong>Name: <span class="text-danger">(*)</span></strong>
+              <strong>Signer Name: <span class="text-danger">(*)</span></strong>
               <input type="text" name="name" id="name" class="form-control" value="{{ $indiv->name }}" placeholder="Name">
               @error('name')
                   <span class="invalid-feedback" role="alert">

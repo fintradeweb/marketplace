@@ -4,7 +4,7 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <h5>Welcome Super Admin!</h5></br>
+      <h5>Welcome {{$name}}!</h5></br>
       <div class="list-group">
         <a href="/home" class="list-group-item list-group-item-action active">Home</a>
         <a href="/clients" class="list-group-item list-group-item-action">Clients</a>

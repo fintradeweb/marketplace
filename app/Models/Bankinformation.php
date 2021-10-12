@@ -13,9 +13,8 @@ class Bankinformation extends Model {
     $managments = DB::select("call Get_bankinformation(?)",[$id]);
     return $managments;
   }
+
   public static function consulta_todos($email,$token) {
-    //$result = DB::select("call Get_bankinformation_client_user(?,?)",[$email,$token]);
-    //return $result;
     $params = [$email,$token];
     return  \App\Models\User::CallRaw('Get_bankinformation_client_user',$params );
   }
@@ -24,8 +23,8 @@ class Bankinformation extends Model {
     $error=0;
     $msg= "";
     $id = 0;
-
-    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');
+    $result = DB::select('call Insert_bankinformation(?,?,?,?,?,?,?,?,?,?,@msg,@error,@id)',
                 [
                     $request->input('email'),
                     $request->input('bank_name'),
@@ -34,12 +33,12 @@ class Bankinformation extends Model {
                     $request->input('aba_routing'),
                     $request->input('bank_adress'),
                     $request->input('telephone'),
-                    $request->input('account_officer'),
+                    $account_officer,
                     $request->input('adress'),
-                    $request->input('token'),
+                    $request->input('token')/*,
                     $msg,
                     $error,
-                    $id
+                    $id*/
                 ]);
       return $result[0];
   }
@@ -47,8 +46,8 @@ class Bankinformation extends Model {
   public static function actualizar($request,$codigo){
       $error="0";
       $msg= "";
-
-      $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,?,?)',
+      $account_officer = (empty($request->input('account_officer'))) ? 0 : $request->input('account_officer');
+      $result = DB::select('call Update_bankinformation(?,?,?,?,?,?,?,?,?,@msg,@error)',
                   [
                         $codigo,
                         $request->input('bank_name'),
@@ -57,10 +56,10 @@ class Bankinformation extends Model {
                         $request->input('aba_routing'),
                         $request->input('bank_adress'),
                         $request->input('telephone'),
-                        $request->input('account_officer'),
-                        $request->input('adress'),
+                        $account_officer,
+                        $request->input('adress')/*,
                         $msg,
-                        $error
+                        $error*/
                   ]);
       return $result[0];
   }

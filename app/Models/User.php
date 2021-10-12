@@ -93,7 +93,17 @@ class User extends Authenticatable
 
 
   public static function getUsersByRol($rolid) {
-    return DB::select("call Get_users_roles (?);",[ $rolid ]);     
+    $arr_users = array();
+    $arr_users2 = array();
+    $users = array();
+    $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]);
+    foreach($arr_users as $key=>$user){
+      $buss = DB::table("businessinformations")->where("user_id",$user->user_id)->first();
+      $user->is_seller = $buss->is_seller;
+      $user->is_buyer = $buss->is_buyer;
+      $arr_users2[$key] = $user;
+    }
+    return $arr_users2;
   }
 
   public static function update_user_admin_super($request,$id) {
@@ -105,16 +115,16 @@ class User extends Authenticatable
     }
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);
-    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,?,?)',
+    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,@msg,@error)',
                 [
                     $id,
                     $request->input('rol_id'),
                     $clave ,
                     $request->input('email'),
                     $request->input('name'),
-                    $status,
+                    $status/*,
                     $msg,
-                    $error
+                    $error*/
                 ]);
     $result[1] =  $clave2;
     return $result[0];
@@ -125,28 +135,27 @@ class User extends Authenticatable
     $msg= "";
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);
-    $result = DB::select('call Create_users_admin_super(?,?,?,?,?,?)',
+    $result = DB::select('call Create_users_admin_super(?,?,?,?,@msg,@error)',
                 [
                     $request->input('rol_id'),
                     $clave ,
                     $request->input('email'),
-                    $request->input('name'),
+                    $request->input('name')/*,
                     $msg,
-                    $error
+                    $error*/
                 ]);
     $result[1] =  $clave2;
     return $result;
   }
 
-  public static function getCreditUser($id) {
-    $rs = DB::select("call Get_info_credit (?);",[ $id ]);  
-    return $rs;   
-  }  
-
   public static function credit_info($user_id) {
+    $params = [$user_id];
+    return User::CallRaw('Get_info_credit',$params );
+  }
 
-         $params = [$user_id];
-         return User::CallRaw('Get_info_credit',$params );
-     } 
+  public static function notif_info($user_id) {
+    $params = [$user_id];
+    return User::CallRaw('Get_info_notifications',$params );
+  }
 
 }

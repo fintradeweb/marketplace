@@ -37,12 +37,12 @@ class Client extends Model
   public static function registrar($request) {
     $error="0";
     $msg= "";
-    $result = DB::select('call Insert_client(?,?,?,?)',
+    $result = DB::select('call Insert_client(?,?,@error,@msg)',
                 [
                     $request->input('name'),
-                    $request->input('email'),
+                    $request->input('email')/*,
                     $error,
-                    $msg
+                    $msg*/
                 ]);
       return $result[0];
   }
@@ -54,14 +54,14 @@ class Client extends Model
           $active = 1;
       }
 
-      $result = DB::select('call Update_client(?,?,?,?,?,?)',
+      $result = DB::select('call Update_client(?,?,?,?,@error,@msg)',
                   [
                       $codigo,
                       $request->input('name'),
                       $request->input('email'),
-                      $active,
+                      $active/*,
                       $error,
-                      $msg
+                      $msg*/
                   ]);
       return $result[0];
     }

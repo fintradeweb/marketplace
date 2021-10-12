@@ -14,7 +14,7 @@ class UsersController extends Controller{
 
   public function index(){
     if(@Auth::user()->hasRole('SuperAdmin')){
-      $users = \App\Models\User::getUsersByRol(0);
+      $users = \App\Models\User::getUsersByRol(3);
       $rol = "1";
     }
     else{
@@ -23,7 +23,25 @@ class UsersController extends Controller{
     }
     return view('users.index', [
       'users' => $users,
-      'rol' => $rol
+      'rol' => $rol,
+      'css_borrow' => 'primary',
+      'css_admin' => 'success',
+      'css_sadmin' => 'success'
+    ]);
+  }
+
+  public function getRol($type){
+    $users = \App\Models\User::getUsersByRol($type);
+    $rol = "1";
+    $css_borrow = ($type==3) ? "primary" : "success";
+    $css_admin = ($type==2) ? "primary" : "success";
+    $css_sadmin = ($type==1) ? "primary" : "success";
+    return view('users.index', [
+      'users' => $users,
+      'rol' => $rol,
+      'css_borrow' => $css_borrow,
+      'css_admin' => $css_admin,
+      'css_sadmin' => $css_sadmin
     ]);
   }
   
@@ -45,17 +63,26 @@ class UsersController extends Controller{
       Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
       return redirect('/users')->with('status', 'The user was created succesfully!');
     }else{
-      return redirect('/users/create')->withErrors('There was an error creating the user!');  
+      return redirect('/users/create')->withErrors($result->_msg);  
     }
   }
 
-  public function show($id){
-    $user = \App\Models\User::credit_info($id);                           
+  public function show($id){    
+    $user = \App\Models\User::credit_info($id); 
+    $business = (isset($user[0][0]) && !empty($user[0][0])) ? $user[0][0] : '';   
+    $management = (isset($user[1]) && !empty($user[1])) ? $user[1] : '';
+    $financial = (isset($user[2][0]) && !empty($user[2][0])) ? $user[2][0] : '';   
+    $bank = (isset($user[3][0]) && !empty($user[3][0])) ? $user[3][0] : ''; 
+    $certification = (isset($user[4][0]) && !empty($user[4][0])) ? $user[4][0] : ''; 
+    $credit_status = $user[5][0]->credit_status; 
     return view('users.show', [
-      'user' => $user[0][0],
-      'financial' => $user[2][0],
-      'bank' => $user[3][0],
-      'certification' => $user[4][0]
+      'iduser' => $id,      
+      'business' => $business,
+      'management' => $management,
+      'financial' => $financial,
+      'bank' => $bank,
+      'certification' => $certification,
+      'credit_status' => $credit_status
     ]);  
   }
 
@@ -76,7 +103,7 @@ class UsersController extends Controller{
       return redirect('/users')->with('status', 'The user was edited succesfully!');
     }
     else{
-      return redirect('/users/'.$id.'/edit')->withErrors('There was an error editing the user!');
+      return redirect('/users/'.$id.'/edit')->withErrors($result->_msg);
     }  
   }
 
