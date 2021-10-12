@@ -2370,11 +2370,15 @@ BEGIN
 		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
 		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
 		         else 'He is not client.'
-		       END type_user
+		       END type_user,
+		       ifnull(x.is_buyer,0) is_buyer,
+		       ifnull(x.is_seller,0) is_seller
+		       
 
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
+		   left outer join businessinformations x on x.user_id = u.id
 		   where r.id = _roleid
 		   order by 2;
 	   end;
@@ -2394,10 +2398,13 @@ BEGIN
 	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
 	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
 	         else 'He is not client.'
-	       END type_user
+	       END type_user,
+	       ifnull(x.is_buyer,0) is_buyer,
+		   ifnull(x.is_seller,0) is_seller
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
+		   left outer join businessinformations x on x.user_id = u.id
 		   order by 2;
 	   end;
 	   end if;
