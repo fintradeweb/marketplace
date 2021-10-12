@@ -2397,7 +2397,6 @@ BEGIN
 		       ifnull(x.is_buyer,0) is_buyer,
 		       ifnull(x.is_seller,0) is_seller
 
-
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
