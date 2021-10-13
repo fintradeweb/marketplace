@@ -286,8 +286,8 @@
                   <span class="card-text">{{$bank->telephone}}</span>  
                 </li> 
                 <li class="list-group-item">
-                  <span class="card-title"><b>Adress:</b></span>
-                  <span class="card-text">****Falta el address****</span>  
+                  <span class="card-title"><b>Address:</b></span>
+                  <span class="card-text">{{$bank->adress}}</span>  
                 </li> 
                 <li class="list-group-item">
                   <span class="card-title"><b>Account Officer:</b></span>

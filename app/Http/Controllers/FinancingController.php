@@ -5,8 +5,14 @@ use Illuminate\Http\Request;
 
 class FinancingController extends Controller{
     
+  public function __construct(){
+    $this->middleware('auth');
+  }
+
   public function index(){
-    return view("financing.index");
+    $documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com"); 
+    var_dump($documents);   
+    return view("financing.index",["documents"=>$documents->documents]);
   }
 
   public function create(){

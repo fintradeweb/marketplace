@@ -18,7 +18,7 @@ class UsersController extends Controller{
       $rol = "1";
     }
     else{
-      $users = \App\Models\User::getUsersByRol(3);
+      $users = \App\Models\User::getUsersByRol(3);     
       $rol = "3";
     }
     return view('users.index', [
@@ -31,7 +31,7 @@ class UsersController extends Controller{
   }
 
   public function getRol($type){
-    $users = \App\Models\User::getUsersByRol($type);
+    $users = \App\Models\User::getUsersByRol($type);    
     $rol = "1";
     $css_borrow = ($type==3) ? "primary" : "success";
     $css_admin = ($type==2) ? "primary" : "success";
@@ -74,7 +74,7 @@ class UsersController extends Controller{
     $financial = (isset($user[2][0]) && !empty($user[2][0])) ? $user[2][0] : '';   
     $bank = (isset($user[3][0]) && !empty($user[3][0])) ? $user[3][0] : ''; 
     $certification = (isset($user[4][0]) && !empty($user[4][0])) ? $user[4][0] : ''; 
-    $credit_status = $user[5][0]->credit_status; 
+    $credit_status = $user[5][0]->credit_status;     
     return view('users.show', [
       'iduser' => $id,      
       'business' => $business,

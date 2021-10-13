@@ -23,6 +23,20 @@
                   <th>Amount</th>
                   <th>Select</th>
                 </thead>
+                <tbody>
+                  @foreach ($documents as $key=>$document)                  
+                    <tr>
+                      <td>{{$document->documento}}</td>
+                      <td>{{$document->url}}</td>
+                      <td>{{$document->amount}}</td>
+                      <td>
+                        <div class="form-check-inline">
+                        <input type="checkbox" name="chk_select[]" id="chk_select_{{$key}}" class="form-check-input chk_lg">
+                        </div>
+                      </td>
+                    </tr>
+                  @endforeach 
+                </tbody>
               </table>                               
             </div>
             <br>

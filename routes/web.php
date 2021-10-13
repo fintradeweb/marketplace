@@ -61,3 +61,6 @@ Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {
 Route::group(['middleware' => ['role:Client']], function () {  
   Route::resource('financing', App\Http\Controllers\FinancingController::class);
 });
+
+Route::get('/notification/{type}', [App\Http\Controllers\NotificationController::class, 'index'])->name('notification.index');
+Route::get('/notification/view/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('notification.show');
