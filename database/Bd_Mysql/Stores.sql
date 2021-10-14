@@ -2845,9 +2845,13 @@ BEGIN
    m.type_not ,
    m.user_id ,
    u.email ,
-   u.name
+   u.name,
+   m.send_by send_by_userid,
+   u.email send_by_email,
+   u.name send_by_name
  from notification_send m
  inner join users u on u.id = m.user_id
+ inner join users u2 on u2.id = m.send_by 
  where m.send_by = _userid;
 
 select
@@ -2858,9 +2862,13 @@ select
    m.type_not ,
    m.user_id ,
    u.email ,
-   u.name
+   u.name,
+   m.send_by send_by_userid,
+   u.email send_by_email,
+   u.name send_by_name
  from notification_send m
  inner join users u on u.id = m.user_id
+ inner join users u2 on u2.id = m.send_by 
  where m.user_id  = _userid;
 
 END;
@@ -2880,15 +2888,20 @@ BEGIN
 
 
  select
+   m.id,
    DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
    DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
    m.description ,
    m.type_not ,
    m.user_id ,
    u.email ,
-   u.name
+   u.name,
+   m.send_by send_by_userid,
+   u.email send_by_email,
+   u.name send_by_name
  from notification_send m
  inner join users u on u.id = m.user_id
+ inner join users u2 on u2.id = m.send_by 
  where m.id = _notificacionid;
 
 END;
@@ -2916,6 +2929,155 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+
+/*
+set @_id =1;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_read_notification(@_id,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Update_read_notification;
+DELIMITER //
+create  PROCEDURE Update_read_notification(
+                                IN _id bigint,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+
+
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Update read notification_send failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+	      if _id is null  then
+	      		select 1 into _error;
+		        select 'Error, notification id es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	      if not exists(select 1 from notification_send u where u.id=_id) then
+	      		select 1 into _error;
+		        select 'Error, no existe notification_send con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      if exists(select 1 from notification_send u where u.id=_id and u.is_read=1) then
+	      		select 1 into _error;
+		        select 'Error, la notification_send esta leida.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	     
+   	      update notification_send  set date_read=now(),is_read =1 where id = _id;
+   	      
+		  select 0 into  _error;
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+set @_id =1;
+set @_credit_line = 2;
+set @_advance=4;
+set @_maximum_amount=5;
+set @_deadline=3;
+set @_interest_rate=7;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_approved_values(@_id,@_credit_line,@_advance,@_maximum_amount, @_deadline,@_interest_rate,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Update_approved_values;
+DELIMITER //
+create  PROCEDURE Update_approved_values(
+                                IN _id bigint,
+                                IN _credit_line double,
+                                IN _advance double,
+                                IN _maximum_amount double,
+                                IN _deadline int,
+                                IN _interest_rate double,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Update approved_values failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+	      if _id is null  then
+	      		select 1 into _error;
+		        select 'Error, approved_values id es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	      if not exists(select 1 from credit_approved u where u.id=_id) then
+	      		select 1 into _error;
+		        select 'Error, no existe credit_approved con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      update credit_approved  
+	         set
+	           credit_line = _credit_line,
+	           advance  = _advance,
+	           maximum_amount  = _maximum_amount,
+	           deadline = _deadline,
+	           interest_rate  = _interest_rate,
+	           updated_at = NOW() 
+	        where id = _id;
+   	      
+		  select 0 into  _error;
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
 
 
 
