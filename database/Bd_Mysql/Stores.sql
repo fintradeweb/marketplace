@@ -2826,7 +2826,9 @@ BEGIN
    u.name,
    m.send_by send_by_userid,
    u.email send_by_email,
-   u.name send_by_name
+   u.name send_by_name,
+   m.is_read ,
+   DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
  inner join users u on u.id = m.user_id
  inner join users u2 on u2.id = m.send_by 
@@ -2843,7 +2845,9 @@ select
    u.name,
    m.send_by send_by_userid,
    u.email send_by_email,
-   u.name send_by_name
+   u.name send_by_name,
+   m.is_read ,
+   DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
  inner join users u on u.id = m.user_id
  inner join users u2 on u2.id = m.send_by 
@@ -2876,7 +2880,9 @@ BEGIN
    u.name,
    m.send_by send_by_userid,
    u.email send_by_email,
-   u.name send_by_name
+   u.name send_by_name,
+   m.is_read ,
+   DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
  inner join users u on u.id = m.user_id
  inner join users u2 on u2.id = m.send_by 
