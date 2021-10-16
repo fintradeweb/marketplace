@@ -12,9 +12,10 @@ class NotificationController extends Controller{
 
   public function index($type){
     $notifications = \App\Models\Notificationsend::notif_info(@Auth::user()->id);
-    $arr_notification = ($type == "sent") ? $notifications[1] : $notifications[2];
+    $arr_notification = ($type == "sent") ? $notifications[1] : $notifications[2];        
     return view('notification.index', [
-      'notifications' => $arr_notification
+      'notifications' => $arr_notification,
+      'type' => $type
     ]);
   }
 
@@ -26,10 +27,14 @@ class NotificationController extends Controller{
         //
   }
 
-  public function show($id){
-    $notification = \App\Models\Notificationsend::notif_id($id);
+  public function show($type,$id){
+    $notification = \App\Models\Notificationsend::notif_id($id);    
+    if ($type == "received"){      
+      $read = \App\Models\Notificationsend::read_notif($id);      
+    }
     return view('notification.show', [
-      'notification' => $notification[0]
+      'notification' => $notification[0],
+      'type' => $type
     ]); 
   }
 

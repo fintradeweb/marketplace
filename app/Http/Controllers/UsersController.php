@@ -20,7 +20,7 @@ class UsersController extends Controller{
     else{
       $users = \App\Models\User::getUsersByRol(3);     
       $rol = "3";
-    }
+    }    
     return view('users.index', [
       'users' => $users,
       'rol' => $rol,

@@ -17,16 +17,14 @@ class CreditController extends Controller{
   public function approve($userid){
     $userinfo = \App\Models\User::where("id",$userid)->first();   
     return view('credit.approve',[
-      'user' => $userinfo,
-      
+      'user' => $userinfo,      
     ]);  
   }
 
   public function deny($userid){
     $userinfo = \App\Models\User::where("id",$userid)->first();   
     return view('credit.deny',[
-      'user' => $userinfo,
-     
+      'user' => $userinfo,     
     ]);    
   }
 
@@ -139,11 +137,58 @@ class CreditController extends Controller{
   }
 
   public function edit($id){
-        //
+    $credit_po = CreditApproved::where("user_id",$id)->where("type_document",1)->first();
+    $credit_iv = CreditApproved::where("user_id",$id)->where("type_document",2)->first();    
+    $user = \App\Models\User::where("id",$id)->first();
+    return view('credit.edit',[
+      'credit_po' => $credit_po,
+      'credit_iv' => $credit_iv,
+      'user' => $user
+    ]);
   }
 
   public function update(Request $request, $id){
-        //
+    $validatedData = $request->validate([
+      'credit_line_po' => 'required|numeric',
+      'advance_po' => 'required|numeric',
+      'maximum_amount_po' => 'required|numeric',
+      'deadline_po' => 'required|numeric',
+      'interest_rate_po' => 'required|numeric',
+      'credit_line_invoice' => 'required|numeric',
+      'advance_invoice' => 'required|numeric',
+      'maximum_amount_invoice' => 'required|numeric',
+      'deadline_invoice' => 'required|numeric',
+      'interest_rate_invoice' => 'required|numeric',
+    ]);
+    $creditapprovedpo = new CreditApproved;
+    $creditapprovedpo->credit_line = $request->credit_line_po;
+    $creditapprovedpo->advance = $request->advance_po;
+    $creditapprovedpo->maximum_amount = $request->maximum_amount_po;
+    $creditapprovedpo->deadline = $request->deadline_po;
+    $creditapprovedpo->interest_rate = $request->interest_rate_po;
+    $creditapprovedpo->type_document = "1";
+    $creditapprovedpo->user_id = $request->user_id;
+    $creditapprovedpo->approved_by = @Auth::user()->id;
+    $rs1 = $creditapprovedpo->save();  
+
+    $creditapprovedin = new CreditApproved;
+    $creditapprovedin->credit_line = $request->credit_line_invoice;
+    $creditapprovedin->advance = $request->advance_invoice;
+    $creditapprovedin->maximum_amount = $request->maximum_amount_invoice;
+    $creditapprovedin->deadline = $request->deadline_invoice;
+    $creditapprovedin->interest_rate = $request->interest_rate_invoice;
+    $creditapprovedin->type_document = "2";
+    $creditapprovedin->user_id = $request->user_id;
+    $creditapprovedin->approved_by = @Auth::user()->id;
+    $rs2 = $creditapprovedin->save(); 
+
+    if ($rs1 && $rs2){
+      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditEdited($creditapprovedpo,$creditapprovedin));
+      return redirect('/users')->with('status', 'The credit was modified succesfully!');
+    }
+    else{
+      return redirect('/users')->withErrors('There was an error!');  
+    }
   }
 
   public function destroy($id){

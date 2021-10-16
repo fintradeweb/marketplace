@@ -18,4 +18,9 @@ class NotificationSend extends Model{
     $notification = DB::select("call Get_notification(?)",[$id]);
     return $notification;
   }
+
+  public static function read_notif($notif_id) {
+    $result = DB::select('call Update_read_notification(?,@error,@msg)',[$notif_id]);
+    return $result[0];
+  }
 }
