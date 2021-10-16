@@ -621,10 +621,10 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
-	     
+
 	      if d_datecompany > now() then
 	      		select 1 into _error;
-		        select 'Error, la fecha de la compañía es mayor a la fecha actual.' into _msg;
+		        select 'Error, la fecha de la compaï¿½ï¿½a es mayor a la fecha actual.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
@@ -962,10 +962,10 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_datecompany,'%Y-%m-%d') into d_datecompany;
-	     
+
 	       if d_datecompany > now() is  NULL then
 	      		select 1 into _error;
-		        select 'Error, la fecha de la compañía es mayor a la fecha actual.' into _msg;
+		        select 'Error, la fecha de la compaï¿½ï¿½a es mayor a la fecha actual.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
@@ -1210,15 +1210,15 @@ sp:BEGIN
 	      end if;
 
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
-	     
-	      
+
+
 	      if timestampdiff(YEAR,d_datecompany,now())<18 then
 	      		select 1 into _error;
-		        select 'Error, el ownership debe tener la mayoría de edad.' into _msg;
+		        select 'Error, el ownership debe tener la mayorï¿½a de edad.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
-	     
+
 
 
 
@@ -1354,7 +1354,7 @@ sp:BEGIN
 	      select STR_TO_DATE(_birthday,'%Y-%m-%d') into d_datecompany;
 	      if timestampdiff(YEAR,d_datecompany,now())<18 then
 	      		select 1 into _error;
-		        select 'Error, el ownership debe tener la mayoría de edad.' into _msg;
+		        select 'Error, el ownership debe tener la mayorï¿½a de edad.' into _msg;
 		        select _error,_msg,_id;
 		        LEAVE sp2;
 	      end if;
@@ -1504,7 +1504,7 @@ DELIMITER //
 /*
  (22,22,1,1,0,1,0,0,0,2,2,22,22,m11@gmai.com,KUOMQ2w60A,,0,0)
  * */
- 
+
 create  PROCEDURE Insert_financial(
                                 IN _avg_montky_sales double,
                                 IN _ams_how_clients int,
@@ -2364,17 +2364,21 @@ BEGIN
 		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
 		         else 'He is not client.'
 		       END credit_status,
-		       
+
 		       CASE
 		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
 		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
 		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
 		         else 'He is not client.'
-		       END type_user
+		       END type_user,
+		       ifnull(x.is_buyer,0) is_buyer,
+		       ifnull(x.is_seller,0) is_seller
+		       
 
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
+		   left outer join businessinformations x on x.user_id = u.id
 		   where r.id = _roleid
 		   order by 2;
 	   end;
@@ -2394,10 +2398,13 @@ BEGIN
 	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
 	         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
 	         else 'He is not client.'
-	       END type_user
+	       END type_user,
+	       ifnull(x.is_buyer,0) is_buyer,
+		   ifnull(x.is_seller,0) is_seller
 		   FROM model_has_roles mhr
 		   INNER JOIN users u ON u.id = mhr.model_id
 		   inner join roles r on r.id = mhr.role_id
+		   left outer join businessinformations x on x.user_id = u.id
 		   order by 2;
 	   end;
 	   end if;
@@ -2435,8 +2442,8 @@ sp:BEGIN
 	   Declare MSG text;
 	   declare b_usuario_id bigint;
 	   declare s_modelo varchar(200);
-	   
-	   
+
+
 
 	   DECLARE exit HANDLER FOR SQLEXCEPTION
 
@@ -2458,27 +2465,27 @@ sp:BEGIN
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	     if  _rolid = 3  then
 	      		select 1 into _error;
 		        select 'Error, el rol cliente no aplica para el registro.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
-	     end if; 
+	     end if;
 	     if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
 	      		select 1 into _error;
 		        select 'Error, no existe el rol.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	     if ifnull(_email,'')= ''  then
 	      		select 1 into _error;
 		        select 'Error, email es obligatorio.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	      if ifnull(_name,'')= ''  then
 	      		select 1 into _error;
 		        select 'Error, Name es obligatorio.' into _msg;
@@ -2489,13 +2496,13 @@ sp:BEGIN
 
 		  insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
 		  select  LAST_INSERT_ID() into b_usuario_id;
-			
+
 		  select valorstring2 into s_modelo
 	          from catalogodet c2
 	          inner join catalogocab c1 on c1.id = c2.catalogocab_id
 	          where c1.tabla='ROL-USER-CLIENT' and
 	                c2.valorstring='MODELO';
-		   insert into model_has_roles(role_id,model_type,model_id) values(_rolid,s_modelo,b_usuario_id); 
+		   insert into model_has_roles(role_id,model_type,model_id) values(_rolid,s_modelo,b_usuario_id);
 		   select 0 into  _error;
 
 
@@ -2538,8 +2545,8 @@ create  PROCEDURE Update_users_admin_super(
 sp:BEGIN
 	   Declare code varchar(5);
 	   Declare MSG text;
-	   
-	   
+
+
 
 	   DECLARE exit HANDLER FOR SQLEXCEPTION
 
@@ -2567,34 +2574,34 @@ sp:BEGIN
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	     if  _rolid = 3  then
 	      		select 1 into _error;
 		        select 'Error, el rol cliente no aplica para el registro.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
-	     end if; 
+	     end if;
 	     if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
 	      		select 1 into _error;
 		        select 'Error, no existe el rol.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	     if exists(select 1 from users u where u.email = _email and u.id <> _userid) or _rolid is NULL  then
 	      		select 1 into _error;
 		        select 'Error, correo ya existe en otra cuenta de usuario.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	     if ifnull(_email,'')= ''  then
 	      		select 1 into _error;
 		        select 'Error, email es obligatorio.' into _msg;
 		        select _error,_msg;
 		        LEAVE sp2;
 	      end if;
-	     
+
 	      if ifnull(_name,'')= ''  then
 	      		select 1 into _error;
 		        select 'Error, Name es obligatorio.' into _msg;
@@ -2602,7 +2609,7 @@ sp:BEGIN
 		        LEAVE sp2;
 	      end if;
 
-   	      update model_has_roles set role_id = _rolid where model_id = _userid; 
+   	      update model_has_roles set role_id = _rolid where model_id = _userid;
    	      update users set email = _email, name= _name, updated_at = now(), status = _active where id = _userid;
 		  select 0 into  _error;
 
@@ -2745,17 +2752,17 @@ BEGIN
     inner join users u on u.id  = f.user_id
     inner join clients c2 on c2.id  = f.client_id
     WHERE u.id = _userid;
-   
-    select 
+
+    select
          CASE
         	 when  exists(select 1 from credit_approved c where c.user_id = _userid) then 'Credit Approved'
 	         when  exists(select 1 from credit_denied c where c.user_id = _userid) then 'Credit Denied'
 	         when  exists(select 1 from certificationauthorizations c where c.user_id = _userid) then 'Request received'
 	         else 'Request incomplete'
-         
+
         END credit_status;
-     
-     select 
+
+     select
      	DATE_FORMAT(ca.created_at , '%Y-%m-%d %T.%f') as created_at,
 	    DATE_FORMAT(ca.updated_at , '%Y-%m-%d %T.%f') as updated_at,
 	    ca.credit_line ,
@@ -2767,18 +2774,18 @@ BEGIN
 	    ca.approved_by ,
 	    u.email email_approved,
 	    u.name name_approved
-     from credit_approved ca 
+     from credit_approved ca
      inner join users u on u.id = ca.approved_by
      where ca.user_id = _userid;
-    
-    select 
+
+    select
      	DATE_FORMAT(ca.created_at , '%Y-%m-%d %T.%f') as created_at,
 	    DATE_FORMAT(ca.updated_at , '%Y-%m-%d %T.%f') as updated_at,
 	    ca.observation ,
 	    ca.denied_by ,
 	    u.email email_denied,
 	    u.name name_denied
-     from credit_denied ca 
+     from credit_denied ca
      inner join users u on u.id = ca.denied_by
      where ca.user_id = _userid;
 
@@ -2796,19 +2803,19 @@ DROP PROCEDURE IF EXISTS Get_info_notifications;
 DELIMITER //
 create  PROCEDURE Get_info_notifications(IN _userid bigint)
 BEGIN
-  select 	
+  select
 	(
-	 select count(*) 
-	 from notification_send ns 
+	 select count(*)
+	 from notification_send ns
 	 where ns.send_by  = _userid
 	 ) as num_sent,
 	(
-	 select count(*) 
-	 from notification_send ns 
+	 select count(*)
+	 from notification_send ns
 	 where ns.user_id = _userid
 	 ) as num_received;
-  
- select 
+
+ select
    m.id,
    DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
    DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
@@ -2816,12 +2823,18 @@ BEGIN
    m.type_not ,
    m.user_id ,
    u.email ,
-   u.name 
+   u.name,
+   m.send_by send_by_userid,
+   u.email send_by_email,
+   u.name send_by_name,
+   m.is_read ,
+   DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
- inner join users u on u.id = m.user_id 
+ inner join users u on u.id = m.user_id
+ inner join users u2 on u2.id = m.send_by 
  where m.send_by = _userid;
 
-select 
+select
    m.id,
    DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
    DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
@@ -2829,11 +2842,17 @@ select
    m.type_not ,
    m.user_id ,
    u.email ,
-   u.name 
+   u.name,
+   m.send_by send_by_userid,
+   u.email send_by_email,
+   u.name send_by_name,
+   m.is_read ,
+   DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
- inner join users u on u.id = m.user_id 
+ inner join users u on u.id = m.user_id
+ inner join users u2 on u2.id = m.send_by 
  where m.user_id  = _userid;
-	 
+
 END;
 //
 DELIMITER ;
@@ -2848,18 +2867,25 @@ DROP PROCEDURE IF EXISTS Get_notification;
 DELIMITER //
 create  PROCEDURE Get_notification(IN _notificacionid bigint)
 BEGIN
- 
-  
- select 
+
+
+ select
+   m.id,
    DATE_FORMAT(m.created_at , '%Y-%m-%d %T.%f') as created_at,
    DATE_FORMAT(m.updated_at , '%Y-%m-%d %T.%f') as updated_at,
    m.description ,
    m.type_not ,
    m.user_id ,
    u.email ,
-   u.name 
+   u.name,
+   m.send_by send_by_userid,
+   u.email send_by_email,
+   u.name send_by_name,
+   m.is_read ,
+   DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
- inner join users u on u.id = m.user_id 
+ inner join users u on u.id = m.user_id
+ inner join users u2 on u2.id = m.send_by 
  where m.id = _notificacionid;
 
 END;
@@ -2875,18 +2901,167 @@ DROP PROCEDURE IF EXISTS Get_api_nsa;
 DELIMITER //
 create  PROCEDURE Get_api_nsa()
 BEGIN
- 
-  
- select 
-     c2.descripcion 
- from catalogocab c 
- inner join catalogodet c2 on c2.catalogocab_id = c.id 
- where c.tabla ='URL-NSA' AND 
+
+
+ select
+     c2.descripcion
+ from catalogocab c
+ inner join catalogodet c2 on c2.catalogocab_id = c.id
+ where c.tabla ='URL-NSA' AND
        c2.valorstring = 'URL_NSA';
 
 END;
 //
 DELIMITER ;
+
+
+/*
+set @_id =1;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_read_notification(@_id,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Update_read_notification;
+DELIMITER //
+create  PROCEDURE Update_read_notification(
+                                IN _id bigint,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+
+
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Update read notification_send failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+	      if _id is null  then
+	      		select 1 into _error;
+		        select 'Error, notification id es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	      if not exists(select 1 from notification_send u where u.id=_id) then
+	      		select 1 into _error;
+		        select 'Error, no existe notification_send con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      if exists(select 1 from notification_send u where u.id=_id and u.is_read=1) then
+	      		select 1 into _error;
+		        select 'Error, la notification_send esta leida.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	     
+   	      update notification_send  set date_read=now(),is_read =1 where id = _id;
+   	      
+		  select 0 into  _error;
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
+
+/*
+set @_id =1;
+set @_credit_line = 2;
+set @_advance=4;
+set @_maximum_amount=5;
+set @_deadline=3;
+set @_interest_rate=7;
+SET @msg = '';
+SET @error = '';
+
+CALL Update_approved_values(@_id,@_credit_line,@_advance,@_maximum_amount, @_deadline,@_interest_rate,@msg,@error);
+SELECT @msg,@error;
+
+ */
+
+DROP PROCEDURE IF EXISTS Update_approved_values;
+DELIMITER //
+create  PROCEDURE Update_approved_values(
+                                IN _id bigint,
+                                IN _credit_line double,
+                                IN _advance double,
+                                IN _maximum_amount double,
+                                IN _deadline int,
+                                IN _interest_rate double,
+                                OUT _msg varchar(255),
+                                OUT _error tinyint
+                                )
+sp:BEGIN
+	   Declare code varchar(5);
+	   Declare MSG text;
+
+	   DECLARE exit HANDLER FOR SQLEXCEPTION
+
+	   sp1:begin
+		   select 1 into _error;
+
+		   Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+		   select CONCAT('Update approved_values failed, error = ',code,', message = ',MSG) into _msg;
+		   select _error,_msg;
+		   LEAVE sp1;
+
+       end;
+
+      sp2:begin
+	      if _id is null  then
+	      		select 1 into _error;
+		        select 'Error, approved_values id es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+
+	      if not exists(select 1 from credit_approved u where u.id=_id) then
+	      		select 1 into _error;
+		        select 'Error, no existe credit_approved con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
+	     
+	      update credit_approved  
+	         set
+	           credit_line = _credit_line,
+	           advance  = _advance,
+	           maximum_amount  = _maximum_amount,
+	           deadline = _deadline,
+	           interest_rate  = _interest_rate,
+	           updated_at = NOW() 
+	        where id = _id;
+   	      
+		  select 0 into  _error;
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
+
+END;
+//
+DELIMITER ;
+
 
 
 

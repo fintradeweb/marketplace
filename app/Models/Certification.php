@@ -24,6 +24,7 @@ class Certification extends Model {
     $error=0;
     $msg= "";
     $id = 0;
+    $approved_agreed=0;
     if(!empty($request->input('approved_agreed'))){
         $approved_agreed = 1;
     }
