@@ -6,7 +6,7 @@
     <div class="row col-md-10 p-4">
       <div class="col-md-6"><h5>Consult Notification</h5></div>
       <div class="col-md-6 ml-auto text-right">
-        <a href="/notification/sent"class="btn btn-primary">Return</a>
+        <a href="/notification/{{$type}}"class="btn btn-primary">Return</a>
       </div>
     </div> 
     <div class="col-md-10">                 
@@ -14,12 +14,34 @@
         <div class="card-body">
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
-              <h5 class="card-title">From:</h5>
-              <p class="card-text">User</p>  
+              <h5 class="card-title">
+              @if ($type == "sent")
+                From
+              @else 
+                To 
+              @endif
+              :</h5>
+              <p class="card-text">{{$notification->name}} - {{$notification->email}}</p>  
             </li>
             <li class="list-group-item">
               <h5 class="card-title">Date:</h5>
-              <p class="card-text">{{$notification->name}}</p>  
+              <p class="card-text">
+                @php
+                $timestamp = strtotime($notification->created_at);  
+                $date = date('H:i:s (d M, Y)', $timestamp);
+                @endphp
+                {{$date}}
+              </p>  
+            </li>
+            <li class="list-group-item">
+              <h5 class="card-title">Type Notification:</h5>
+              <p class="card-text">
+                @switch($notification->type_not)
+                  @case("askmoreinformation")
+                    Ask for more information
+                    @break                
+                @endswitch
+              </p>  
             </li>
             <li class="list-group-item">
               <h5 class="card-title">Description:</h5>

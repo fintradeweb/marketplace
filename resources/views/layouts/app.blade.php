@@ -51,7 +51,7 @@
                   <i class="fa fa-bell" aria-hidden="true" style="font-size:20px;"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
-                  <a class="dropdown-item" href="/notification/received">
+                  <a class="dropdown-item" href="/notification/sent">
                     Sent <span class="badge badge-secondary">{{$notnoread}}</span>             
                   </a>
                   <a class="dropdown-item" href="/notification/received">

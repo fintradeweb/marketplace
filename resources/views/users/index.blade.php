@@ -81,8 +81,14 @@
                 <td align="center">
                   @if ($user->role_id == 3)                    
                     <a href="/users/{{$user->user_id}}" data-toggle="tooltip" data-placement="top" title="View Credit">
-                      <i class="fa fa-address-book-o" aria-hidden="true" style="font-size:25px;"></i>
-                    </a>                                        
+                      <i class="fa fa-address-book-o" aria-hidden="true" style="font-size:25px;"></i>                      
+                    </a>
+                    @if ($user->credit_status == "Credit Approved")
+                      &nbsp;
+                      <a href="/credit/{{$user->user_id}}/edit" data-toggle="tooltip" data-placement="top" title="Edit Credit">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i>                      
+                      </a>
+                    @endif
                   @else
                     <a href="/users/{{$user->user_id}}/edit" data-toggle="tooltip" data-placement="top" title="Edit">
                       <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i>

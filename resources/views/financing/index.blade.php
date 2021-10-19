@@ -16,7 +16,7 @@
           <form action="" method="POST" id="frm_creditapproved">                                        
             @csrf       
             <div class="col-xs-12 col-sm-12 col-md-12 text-center"> 
-              <table width="100%" border="1">
+              <table class="table table-hover table-bordered">
                 <thead>
                   <th>Type Document</th>
                   <th>File</th>
@@ -24,18 +24,22 @@
                   <th>Select</th>
                 </thead>
                 <tbody>
-                  @foreach ($documents as $key=>$document)                  
-                    <tr>
-                      <td>{{$document->documento}}</td>
-                      <td>{{$document->url}}</td>
-                      <td>{{$document->amount}}</td>
-                      <td>
-                        <div class="form-check-inline">
-                        <input type="checkbox" name="chk_select[]" id="chk_select_{{$key}}" class="form-check-input chk_lg">
-                        </div>
-                      </td>
-                    </tr>
-                  @endforeach 
+                  @if (count($documents) > 0)                
+                    @foreach ($documents as $key=>$document)                  
+                      <tr>
+                        <td>{{$document->documento}}</td>
+                        <td>{{$document->url}}</td>
+                        <td>{{$document->amount}}</td>
+                        <td>
+                          <div class="form-check-inline">
+                          <input type="checkbox" name="chk_select[]" id="chk_select_{{$key}}" class="form-check-input chk_lg">
+                          </div>
+                        </td>
+                      </tr>
+                    @endforeach 
+                  @else 
+                    There is not information 
+                  @endif
                 </tbody>
               </table>                               
             </div>

@@ -147,43 +147,53 @@ class CreditController extends Controller{
     ]);
   }
 
-  public function update(Request $request, $id){
+  public function update(Request $request){
     $validatedData = $request->validate([
+      'id_po' => 'required|numeric',
       'credit_line_po' => 'required|numeric',
       'advance_po' => 'required|numeric',
       'maximum_amount_po' => 'required|numeric',
       'deadline_po' => 'required|numeric',
       'interest_rate_po' => 'required|numeric',
+      'id_invoice' => 'required|numeric',
       'credit_line_invoice' => 'required|numeric',
       'advance_invoice' => 'required|numeric',
       'maximum_amount_invoice' => 'required|numeric',
       'deadline_invoice' => 'required|numeric',
       'interest_rate_invoice' => 'required|numeric',
     ]);
-    $creditapprovedpo = new CreditApproved;
-    $creditapprovedpo->credit_line = $request->credit_line_po;
-    $creditapprovedpo->advance = $request->advance_po;
-    $creditapprovedpo->maximum_amount = $request->maximum_amount_po;
-    $creditapprovedpo->deadline = $request->deadline_po;
-    $creditapprovedpo->interest_rate = $request->interest_rate_po;
-    $creditapprovedpo->type_document = "1";
-    $creditapprovedpo->user_id = $request->user_id;
-    $creditapprovedpo->approved_by = @Auth::user()->id;
-    $rs1 = $creditapprovedpo->save();  
+    
+    /*$values_po = array("credit_line" => $request->input("credit_line_po"),
+                       "advance" => $request->input("advance_po"),     
+                       "maximum_amount" => $request->input("maximum_amount_po"),     
+                       "deadline" => $request->input("deadline_po"),
+                       "interest_rate" => $request->input("interest_rate_po"),     
+                      );*/
+    $values_po = new CreditApproved;
+    $values_po->credit_line = $request->input("credit_line_po");
+    $values_po->advance = $request->input("advance_po");
+    $values_po->maximum_amount = $request->input("maximum_amount_po");
+    $values_po->deadline = $request->input("deadline_po");
+    $values_po->interest_rate = $request->input("interest_rate_po");
 
-    $creditapprovedin = new CreditApproved;
-    $creditapprovedin->credit_line = $request->credit_line_invoice;
-    $creditapprovedin->advance = $request->advance_invoice;
-    $creditapprovedin->maximum_amount = $request->maximum_amount_invoice;
-    $creditapprovedin->deadline = $request->deadline_invoice;
-    $creditapprovedin->interest_rate = $request->interest_rate_invoice;
-    $creditapprovedin->type_document = "2";
-    $creditapprovedin->user_id = $request->user_id;
-    $creditapprovedin->approved_by = @Auth::user()->id;
-    $rs2 = $creditapprovedin->save(); 
+    $values_iv = new CreditApproved;
+    $values_iv->credit_line = $request->input("credit_line_invoice");
+    $values_iv->advance = $request->input("advance_invoice");
+    $values_iv->maximum_amount = $request->input("maximum_amount_invoice");
+    $values_iv->deadline = $request->input("deadline_invoice");
+    $values_iv->interest_rate = $request->input("interest_rate_invoice");
+
+    /*$values_iv = array("credit_line" => $request->input("credit_line_invoice"),
+                       "advance" => $request->input("advance_invoice"),     
+                       "maximum_amount" => $request->input("maximum_amount_invoice"),     
+                       "deadline" => $request->input("deadline_invoice"),
+                       "interest_rate" => $request->input("interest_rate_invoice"),     
+                      );*/
+    $rs1 = CreditApproved::update_amount($values_po,$request->input("id_po"));
+    $rs2 = CreditApproved::update_amount($values_iv,$request->input("id_invoice"));
 
     if ($rs1 && $rs2){
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditEdited($creditapprovedpo,$creditapprovedin));
+      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditEdited($values_po,$values_iv));
       return redirect('/users')->with('status', 'The credit was modified succesfully!');
     }
     else{
