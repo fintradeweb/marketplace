@@ -2368,12 +2368,19 @@ DELIMITER ;
 
 /*
  SET @role = 3;
- call Get_users_roles (@role);
+ call Get_users_roles (@role,'','','','','');
  */
 
 DROP PROCEDURE IF EXISTS Get_users_roles;
 DELIMITER //
-create  PROCEDURE Get_users_roles(IN _roleid bigint)
+create  PROCEDURE Get_users_roles(
+                              IN _roleid bigint, 
+                              IN _estado varchar(255),
+                              IN _fecha_inicio varchar(255),
+                              IN _fecha_fin varchar(255),
+                              IN _ruc varchar(255),
+                              IN _orden varchar(255)
+                              )
 BEGIN
 
 	   if(_roleid>0) then
@@ -3080,6 +3087,30 @@ sp:BEGIN
 		   select _error,_msg;
 		end;
 
+END;
+//
+DELIMITER ;
+
+
+/*
+ call Get_request_credit_states ();
+ */
+
+DROP PROCEDURE IF EXISTS Get_request_credit_states;
+DELIMITER //
+create  PROCEDURE Get_request_credit_states()
+BEGIN
+
+
+ select 'All' as status
+ union
+ select 'Credit Approved' as status
+ union
+ select 'Credit Denied' as status
+ union
+ select 'Request received' as status
+ union
+ select 'Request incomplete' as status;
 END;
 //
 DELIMITER ;
