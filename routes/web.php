@@ -53,9 +53,10 @@ Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {
   Route::get('/credit/{user}/approve', [App\Http\Controllers\CreditController::class, 'approve'])->name('credit.approve');
   Route::get('/credit/{user}/deny', [App\Http\Controllers\CreditController::class, 'deny'])->name('credit.deny');
   Route::get('/credit/{user}/askmore', [App\Http\Controllers\CreditController::class, 'askmore'])->name('credit.askmore');
+  Route::get('/credit/{user}/edit', [App\Http\Controllers\CreditController::class, 'edit'])->name('credit.edit');
   Route::post('/credit/approve', [App\Http\Controllers\CreditController::class, 'storeapprove'])->name('credit.storeapprove');
   Route::post('/credit/deny', [App\Http\Controllers\CreditController::class, 'storedeny'])->name('credit.storedeny');
-  Route::post('/credit/askmore', [App\Http\Controllers\CreditController::class, 'storeaskmore'])->name('credit.storeaskmore');  
+  Route::post('/credit/update', [App\Http\Controllers\CreditController::class, 'update'])->name('credit.update');  
 });
 
 Route::group(['middleware' => ['role:Client']], function () {  
@@ -63,4 +64,4 @@ Route::group(['middleware' => ['role:Client']], function () {
 });
 
 Route::get('/notification/{type}', [App\Http\Controllers\NotificationController::class, 'index'])->name('notification.index');
-Route::get('/notification/view/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('notification.show');
+Route::get('/notification/view/{type}/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('notification.show');
