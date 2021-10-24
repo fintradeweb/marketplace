@@ -10,7 +10,8 @@ class FinancingController extends Controller{
   }
 
   public function index(){
-    $documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com");     
+    $documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com");   
+    //var_dump($documents);  
     return view("financing.index",["documents"=>$documents->documents]);
   }
 

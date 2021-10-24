@@ -16,9 +16,9 @@
             <li class="list-group-item">
               <h5 class="card-title">
               @if ($type == "sent")
-                From
+                To
               @else 
-                To 
+                From 
               @endif
               :</h5>
               <p class="card-text">{{$notification->name}} - {{$notification->email}}</p>  
@@ -50,6 +50,12 @@
           </ul>                
         </div>               
       </div>
+    </div> 
+    @if ($type == "received")
+      <div class="col-md-10 p-4 text-center">
+        <a href="/notification/{{$type}}"class="btn btn-primary">Reply</a>
+      </div> 
+    @endif
   </div>
 </div>  
 @endsection

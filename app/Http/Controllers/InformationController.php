@@ -40,8 +40,7 @@ class InformationController extends Controller{
       else{
         $is_buyer = ($request->input('txt_typeuser') == "Buyer") ? 1 : 0;
         $is_seller = ($request->input('txt_typeuser') == "Seller") ? 1 : 0;
-        $resp_apiNsa = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com");
-        var_dump($resp_apiNsa);
+        
         return view('information.create')->with('name',$request->input('nombre'))
                                          ->with('token',$request->input('token'))
                                          ->with('email',$request->input('txt_email'))
