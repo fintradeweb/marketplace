@@ -10,8 +10,7 @@ class FinancingController extends Controller{
   }
 
   public function index(){
-    $documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com");   
-    //var_dump($documents);  
+    $documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com");  
     return view("financing.index",["documents"=>$documents->documents]);
   }
 
@@ -20,7 +19,11 @@ class FinancingController extends Controller{
   }
 
   public function store(Request $request){
-        //
+    $validatedData = $request->validate([
+      'chk_select' => 'required'
+    ]);    
+    
+    return redirect('/home')->with('status', 'The financing was saved succesfully!');                  
   }
 
   public function show($id){

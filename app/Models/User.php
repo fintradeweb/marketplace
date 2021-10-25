@@ -92,8 +92,8 @@ class User extends Authenticatable
     }
 
 
-  public static function getUsersByRol($rolid, $estado="", $fecha_inicio = "", $fecha_fin = "", $ruc="", $orden="") {
-    $arr_users = DB::select("call Get_users_roles (?,?,?,?,?,?);",[ $rolid, $estado, $fecha_inicio, $fecha_fin, $ruc , $orden]);
+  public static function getUsersByRol($rolid) {    
+    $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]);    
     return $arr_users;
   }
 
@@ -147,11 +147,6 @@ class User extends Authenticatable
   public static function notif_info($user_id) {
     $params = [$user_id];
     return User::CallRaw('Get_info_notifications',$params );
-  }
-
-  public static function getStatesCredits() {
-    $result = DB::select("call Get_request_credit_states ()");
-    return $result;
   }
 
 }

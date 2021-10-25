@@ -51,10 +51,18 @@
         </div>               
       </div>
     </div> 
-    @if ($type == "received")
-      <div class="col-md-10 p-4 text-center">
-        <a href="/notification/{{$type}}"class="btn btn-primary">Reply</a>
-      </div> 
+    @if ($type == "received")      
+      <div class="col-md-10 text-center m-4">
+        <form action="{{ route('notification.store') }}" method="POST">
+          @csrf
+          <input type="hidden" name="user_id" id="user_id" value="{{$notification->send_by_userid}}">  
+          <h5 class="text-justify">Reply:</h5>
+          <textarea class="form-control" id="observation" name="observation" rows="3"></textarea>            
+          <br>
+          <button type="reset" class="btn btn-secondary" id="btnreset">Reset</button>
+          <button type="submit" class="btn btn-primary" id="btn_save">Send</button>
+        </form>
+      </div>               
     @endif
   </div>
 </div>  

@@ -162,13 +162,7 @@ class CreditController extends Controller{
       'deadline_invoice' => 'required|numeric',
       'interest_rate_invoice' => 'required|numeric',
     ]);
-    
-    /*$values_po = array("credit_line" => $request->input("credit_line_po"),
-                       "advance" => $request->input("advance_po"),     
-                       "maximum_amount" => $request->input("maximum_amount_po"),     
-                       "deadline" => $request->input("deadline_po"),
-                       "interest_rate" => $request->input("interest_rate_po"),     
-                      );*/
+        
     $values_po = new CreditApproved;
     $values_po->credit_line = $request->input("credit_line_po");
     $values_po->advance = $request->input("advance_po");
@@ -182,13 +176,7 @@ class CreditController extends Controller{
     $values_iv->maximum_amount = $request->input("maximum_amount_invoice");
     $values_iv->deadline = $request->input("deadline_invoice");
     $values_iv->interest_rate = $request->input("interest_rate_invoice");
-
-    /*$values_iv = array("credit_line" => $request->input("credit_line_invoice"),
-                       "advance" => $request->input("advance_invoice"),     
-                       "maximum_amount" => $request->input("maximum_amount_invoice"),     
-                       "deadline" => $request->input("deadline_invoice"),
-                       "interest_rate" => $request->input("interest_rate_invoice"),     
-                      );*/
+    
     $rs1 = CreditApproved::update_amount($values_po,$request->input("id_po"));
     $rs2 = CreditApproved::update_amount($values_iv,$request->input("id_invoice"));
 
