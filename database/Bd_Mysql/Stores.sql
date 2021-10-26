@@ -3072,8 +3072,7 @@ BEGIN
  union
  select 'Credit Approved' as status
  union
- select 'Credit Denied' as sta
-tus
+ select 'Credit Denied' as status
  union
  select 'Request received' as status
  union

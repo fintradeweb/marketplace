@@ -92,8 +92,8 @@ class User extends Authenticatable
     }
 
 
-  public static function getUsersByRol($rolid) {    
-    $arr_users = DB::select("call Get_users_roles (?);",[ $rolid ]);    
+  public static function getUsersByRol($rolid,$estado, $fecha_inicio, $fecha_fin, $ruc, $orden) {
+    $arr_users = DB::select("call Get_users_roles (?,?,?,?,?,?)",[ $rolid ,$estado, $fecha_inicio, $fecha_fin, $ruc, $orden]);
     return $arr_users;
   }
 

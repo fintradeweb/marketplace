@@ -38,6 +38,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Mail\\CreditApproved' => $baseDir . '/app/Mail/CreditApproved.php',
     'App\\Mail\\CreditDenied' => $baseDir . '/app/Mail/CreditDenied.php',
+    'App\\Mail\\CreditEdited' => $baseDir . '/app/Mail/CreditEdited.php',
     'App\\Mail\\MarketUp' => $baseDir . '/app/Mail/MarketUp.php',
     'App\\Mail\\MarketUser' => $baseDir . '/app/Mail/MarketUser.php',
     'App\\Mail\\NotificationSend' => $baseDir . '/app/Mail/NotificationSend.php',
