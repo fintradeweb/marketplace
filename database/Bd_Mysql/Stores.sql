@@ -181,7 +181,7 @@ sp: BEGIN
        end if;
 
 
-
+      /*
       select 1 into existe;
       select valorint  into size_token
         from catalogodet d
@@ -191,25 +191,25 @@ sp: BEGIN
       if(size_token=0) then
          select 10 into size_token;
       end if;
-    while(existe=1) do
-       select  SUBSTRING(MD5(RAND()) FROM 1 FOR size_token) into substring3;
-       select concat(email2,substring3,email2) into substring3;
-       select count(*) into existe
-         from clients where  token collate utf8mb4_unicode_ci = substring3;
-    end while;
+	  while(existe=1) do
+	     select  SUBSTRING(MD5(RAND()) FROM 1 FOR size_token) into substring3;
+	     select concat(email2,substring3,email2) into substring3;
+	     select count(*) into existe
+	       from clients where  token collate utf8mb4_unicode_ci = substring3;
+	  end while;
+     */
+	  select trim(_email) into _email;
 
-    select trim(_email) into _email;
 
-
-    select  substring3 into token2 ;
+	  /*select  substring3 into token2 ;*/
 
 
       update clients
          set email= _email,
              name = _name,
              updated_at = now(),
-             active  = _active,
-             token = token2
+             active  = _active/*,
+             token = token2*/
          where id = _id;
 
     select '0','ok' into  _error,_msg;
@@ -2348,7 +2348,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS Get_users_roles;
 DELIMITER //
 create  PROCEDURE Get_users_roles(
-                              IN _roleid bigint, 
+                              IN _roleid bigint,
                               IN _estado varchar(255),
                               IN _fecha_inicio varchar(255),
                               IN _fecha_fin varchar(255),
@@ -2824,13 +2824,13 @@ BEGIN
    u.email ,
    u.name,
    m.send_by send_by_userid,
-   u.email send_by_email,
-   u.name send_by_name,
+   u2.email send_by_email,
+   u2.name send_by_name,
    m.is_read ,
    DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
  inner join users u on u.id = m.user_id
- inner join users u2 on u2.id = m.send_by 
+ inner join users u2 on u2.id = m.send_by
  where m.send_by = _userid;
 
 select
@@ -2843,13 +2843,13 @@ select
    u.email ,
    u.name,
    m.send_by send_by_userid,
-   u.email send_by_email,
-   u.name send_by_name,
+   u2.email send_by_email,
+   u2.name send_by_name,
    m.is_read ,
    DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
  inner join users u on u.id = m.user_id
- inner join users u2 on u2.id = m.send_by 
+ inner join users u2 on u2.id = m.send_by
  where m.user_id  = _userid;
 
 END;
@@ -2878,13 +2878,13 @@ BEGIN
    u.email ,
    u.name,
    m.send_by send_by_userid,
-   u.email send_by_email,
-   u.name send_by_name,
+   u2.email send_by_email,
+   u2.name send_by_name,
    m.is_read ,
    DATE_FORMAT(m.date_read , '%Y-%m-%d %T.%f') as date_read
  from notification_send m
  inner join users u on u.id = m.user_id
- inner join users u2 on u2.id = m.send_by 
+ inner join users u2 on u2.id = m.send_by
  where m.id = _notificacionid;
 
 END;
@@ -2961,7 +2961,7 @@ sp:BEGIN
             select _error,_msg;
             LEAVE sp2;
         end if;
-       
+
         if exists(select 1 from notification_send u where u.id=_id and u.is_read=1) then
             select 1 into _error;
             select 'Error, la notification_send esta leida.' into _msg;
@@ -2969,9 +2969,9 @@ sp:BEGIN
             LEAVE sp2;
         end if;
 
-       
+
           update notification_send  set date_read=now(),is_read =1 where id = _id;
-          
+
       select 0 into  _error;
        select 'ok' into _msg;
        select _error,_msg;
@@ -3037,17 +3037,17 @@ sp:BEGIN
             select _error,_msg;
             LEAVE sp2;
         end if;
-       
-        update credit_approved  
+
+        update credit_approved
            set
              credit_line = _credit_line,
              advance  = _advance,
              maximum_amount  = _maximum_amount,
              deadline = _deadline,
              interest_rate  = _interest_rate,
-             updated_at = NOW() 
+             updated_at = NOW()
           where id = _id;
-          
+
       select 0 into  _error;
        select 'ok' into _msg;
        select _error,_msg;
