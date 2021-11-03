@@ -12,8 +12,8 @@ class FinancingController extends Controller{
   }
 
   public function index(){
-    //$documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com"); 
-    $documents = new \stdClass();
+    $documents = \App\Models\Apinsa::get_documents("supermercado@nsa-exchange.com"); 
+    /*$documents = new \stdClass();
     $documents->success = 1;
     $documents->documents = array(0 => (object)array("documento" => "PO",
                                                        "url" => "b2b.nsa-exchange.com/downloadpdf/INV-1633881935-123",
@@ -49,7 +49,7 @@ class FinancingController extends Controller{
                                                                         "city" => "Caracas"
                                                                         )
                                                       )
-                                           ); 
+                                           ); */
     return view("financing.index",["documents"=>$documents->documents]);
   }
 
