@@ -27,7 +27,12 @@
             <a href="/notification/view/{{$type}}/{{$notification->id}}" class="list-group-item list-group-item-action" @if ($type == "received" && $notification->is_read == "0") style="background-color:#f9d9f1;" @endif>
               
               <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{$notification->send_by_name}} - {{$notification->send_by_email}}</h5>
+                @if ($type == "received")
+                  <h5 class="mb-1">{{$notification->send_by_name}} - {{$notification->send_by_email}}</h5>
+                @else
+                  <h5 class="mb-1">{{$notification->name}} - {{$notification->email}}</h5>
+                @endif
+                
                 @php
                 $timestamp = strtotime($notification->created_at);  
                 $date = date('H:i (d M, Y)', $timestamp);

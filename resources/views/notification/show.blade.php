@@ -21,7 +21,11 @@
                 From 
               @endif
               :</h5>
-              <p class="card-text">{{$notification->name}} - {{$notification->email}}</p>  
+              @if ($type == "received")
+                <p class="card-text">{{$notification->send_by_name}} - {{$notification->send_by_email}}</p>
+              @else
+                <p class="card-text">{{$notification->name}} - {{$notification->email}}</p>
+              @endif                
             </li>
             <li class="list-group-item">
               <h5 class="card-title">Date:</h5>
