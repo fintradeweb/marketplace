@@ -579,6 +579,7 @@ class ComposerStaticInit26b2bab06aa88c678faa5efc0c43a0a4
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Mail\\CreditApproved' => __DIR__ . '/../..' . '/app/Mail/CreditApproved.php',
         'App\\Mail\\CreditDenied' => __DIR__ . '/../..' . '/app/Mail/CreditDenied.php',
+        'App\\Mail\\CreditEdited' => __DIR__ . '/../..' . '/app/Mail/CreditEdited.php',
         'App\\Mail\\MarketUp' => __DIR__ . '/../..' . '/app/Mail/MarketUp.php',
         'App\\Mail\\MarketUser' => __DIR__ . '/../..' . '/app/Mail/MarketUser.php',
         'App\\Mail\\NotificationSend' => __DIR__ . '/../..' . '/app/Mail/NotificationSend.php',
