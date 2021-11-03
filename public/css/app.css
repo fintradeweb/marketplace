@@ -10003,4 +10003,4 @@ h3 {
   }
 }
 
-.chk_lg{width:3vw;height:3vh;}
+.chk_lg{width:3vw !important;height:3vh !important;}

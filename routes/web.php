@@ -49,6 +49,7 @@ Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {
   
   Route::resource('users', App\Http\Controllers\UsersController::class);
   Route::get('/users/{rol}/type', [App\Http\Controllers\UsersController::class, 'getRol'])->name('users.rol');
+  Route::post('/users/search', [App\Http\Controllers\UsersController::class, 'search'])->name('users.search');
 
   Route::get('/credit/{user}/approve', [App\Http\Controllers\CreditController::class, 'approve'])->name('credit.approve');
   Route::get('/credit/{user}/deny', [App\Http\Controllers\CreditController::class, 'deny'])->name('credit.deny');

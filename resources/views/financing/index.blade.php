@@ -60,7 +60,7 @@
                     @foreach ($documents as $key=>$document)                                  
                       <tr>
                         <td>{{$document->documento}}</td>
-                        <td>{{$document->url}}</td>
+                        <td><a href="https://{{$document->url}}" target="_blank">{{$document->url}}</a></td>
                         <td>{{$document->created_at}}</td>
                         <td>{{substr($document->validity,0,10)}}</td>
                         <td>{{$document->amount}}</td>

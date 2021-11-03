@@ -13,17 +13,13 @@ class UsersController extends Controller{
   }
 
   public function index(){
-    if(@Auth::user()->hasRole('SuperAdmin')){
-      $users = \App\Models\User::getUsersByRol(3);
-      $rol = "1";
-    }
-    else{
-      $users = \App\Models\User::getUsersByRol(3);     
-      $rol = "3";
-    }    
+    $rol = (@Auth::user()->hasRole('SuperAdmin')) ? "1" : "2";
+    $users = \App\Models\User::getUsersByRol(3);  
+    $status = \App\Models\User::getStatus();
     return view('users.index', [
       'users' => $users,
       'rol' => $rol,
+      'status' => $status,
       'css_borrow' => 'primary',
       'css_admin' => 'success',
       'css_sadmin' => 'success'
@@ -42,6 +38,24 @@ class UsersController extends Controller{
       'css_borrow' => $css_borrow,
       'css_admin' => $css_admin,
       'css_sadmin' => $css_sadmin
+    ]);
+  }
+
+  public function search(Request $request){
+    $filterstatus = ($request->input("status") == "All") ? "" : $request->input("status");
+    $date_start = (empty($request->input("date_start"))) ? "" : $request->input("date_start");
+    $date_end = (empty($request->input("date_end"))) ? "" : $request->input("date_end");
+    $ruc = (empty($request->input("ruc"))) ? "" : $request->input("ruc");
+    $rol = (@Auth::user()->hasRole('SuperAdmin')) ? "1" : "2";
+    $users = \App\Models\User::getUsersByRol(3,$filterstatus,$date_start,$date_end,$ruc);  
+    $status = \App\Models\User::getStatus();
+    return view('users.index', [
+      'users' => $users,
+      'rol' => $rol,
+      'status' => $status,
+      'css_borrow' => 'primary',
+      'css_admin' => 'success',
+      'css_sadmin' => 'success'
     ]);
   }
   

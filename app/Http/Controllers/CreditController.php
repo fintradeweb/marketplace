@@ -154,13 +154,13 @@ class CreditController extends Controller{
       'advance_po' => 'required|numeric',
       'maximum_amount_po' => 'required|numeric',
       'deadline_po' => 'required|numeric',
-      'interest_rate_po' => 'required|numeric',
+      'interest_rate_po' => 'nullable|numeric',
       'id_invoice' => 'required|numeric',
       'credit_line_invoice' => 'required|numeric',
       'advance_invoice' => 'required|numeric',
       'maximum_amount_invoice' => 'required|numeric',
       'deadline_invoice' => 'required|numeric',
-      'interest_rate_invoice' => 'required|numeric',
+      'interest_rate_invoice' => 'nullable|numeric',
     ]);
         
     $values_po = new CreditApproved;

@@ -16,8 +16,34 @@
 
   <div class="container">
     <div class="row justify-content-center">
+      @if ($rol == 2)
+        <form action="{{ route('users.search') }}" method="post" class="col-md-12 col-lg-12 col-sm-12"> 
+          @csrf
+          <div class="row col-md-12 mb-4">
+            <div class="col-md-3"><label>Status:</label>
+              <select name="status" id="status" class="form-control">
+                @foreach ($status as $value)
+                  <option value="{{$value->status}}">{{$value->status}}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-2"><label>Date start:</label>
+              <input type="text" name="date_start" id="date_start" size="10" maxlength="10" class="form-control input-sm" value="" placeholder="YYYY-MM-DD">
+            </div>
+            <div class="col-md-2"><label>Date end:</label>
+              <input type="text" name="date_end" id="date_end" size="10" maxlength="10" class="form-control" value="" placeholder="YYYY-MM-DD">
+            </div>
+            <div class="col-md-3"><label>Ruc:</label>
+              <input type="text" name="ruc" id="ruc" class="form-control" value="" placeholder="09999999999001">
+            </div>
+            <div class="col-md-2"><label>&nbsp;</label>
+              <button type="submit" class="form-control btn btn-primary">Search</button>
+            </div>  
+          </div>
+        </form> 
+      @endif
 
-      <div class="row col-md-12 p-4">
+      <div class="row col-md-12 mb-4">
         <table width="25%">
           <tr>
             <td><strong>Legend:</strong></td>
