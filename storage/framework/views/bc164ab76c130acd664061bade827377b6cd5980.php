@@ -38,6 +38,13 @@
             
           </ul>
 
+          <?php
+          if (isset(Auth::user()->name)){
+            $notnoread = \App\Models\NotificationSend::where("send_by",Auth::user()->id)->count(); 
+            $notread = \App\Models\NotificationSend::where("user_id",Auth::user()->id)->count(); 
+          } 
+          ?>     
+
           <?php if(isset(Auth::user()->name)): ?>
             <ul class="navbar-nav ml-auto">
               <li class="nav-item dropdown">
@@ -45,8 +52,11 @@
                   <i class="fa fa-bell" aria-hidden="true" style="font-size:20px;"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
-                  <a class="dropdown-item">
-                    Not1                
+                  <a class="dropdown-item" href="/notification/sent">
+                    Sent <span class="badge badge-secondary"><?php echo e($notnoread); ?></span>             
+                  </a>
+                  <a class="dropdown-item" href="/notification/received">
+                    Received <span class="badge badge-secondary"><?php echo e($notread); ?></span>      
                   </a>
                 </div>  
               </li> 
@@ -74,14 +84,12 @@
                   <?php echo e(Auth::user()->name); ?>
 
                 </a>
-
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
                     <?php echo e(__('Logout')); ?>
 
                   </a>
-
                   <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" class="d-none">
                     <?php echo csrf_field(); ?>
                   </form>
@@ -89,10 +97,7 @@
               </li>
             <?php endif; ?>
           </ul>          
-          &nbsp;
-          
-          
-          
+          &nbsp;                              
         </div>
       </div>
     </nav>

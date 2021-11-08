@@ -2342,7 +2342,7 @@ DELIMITER ;
 
 /*
  SET @role = 3;
- call Get_users_roles (@role,'','','','','');
+ call Get_users_roles (@role,'All','','','','');
  */
 
 DROP PROCEDURE IF EXISTS Get_users_roles;
@@ -2355,35 +2355,108 @@ create  PROCEDURE Get_users_roles(
                               IN _ruc varchar(255),
                               IN _orden varchar(255)
                               )
+
+
 BEGIN
+	declare d_start timestamp;
+    declare d_end timestamp;
 
      if(_roleid>0) then
      begin
-       select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
-           u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
-           CASE
-             when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
-             when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
-             when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
-             when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
-             else 'He is not client.'
-           END credit_status,
-
-           CASE
-             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
-             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
-             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
-             else 'He is not client.'
-           END type_user,
-           ifnull(x.is_buyer,0) is_buyer,
-           ifnull(x.is_seller,0) is_seller
-
-       FROM model_has_roles mhr
-       INNER JOIN users u ON u.id = mhr.model_id
-       inner join roles r on r.id = mhr.role_id
-       left outer join businessinformations x on x.user_id = u.id
-       where r.id = _roleid
-       order by 2;
+	   if(ifnull(_fecha_inicio,'') ='') then
+	   begin
+	       select STR_TO_DATE('2000-01-01 00:00:00', '%Y-%m-%d %H:%i:%s') into d_start;
+	   end;
+	   else
+	   begin
+	 	   select concat(_fecha_inicio,' 00:00:00') into _fecha_inicio;
+	 	   select STR_TO_DATE(_fecha_inicio, '%Y-%m-%d %H:%i:%s') into d_start;
+	   end;
+	   end if;
+	  
+	   if(ifnull(_fecha_fin,'') ='' ) then
+	   begin
+	       select NOW() into d_end;
+	   end;
+	   else
+	   begin
+	       select concat(_fecha_fin,' 23:59:59') into _fecha_fin;
+     	   select STR_TO_DATE(_fecha_fin, '%Y-%m-%d %H:%i:%s') into d_end;
+	   end;
+	   end if;
+	   
+	   
+	   if(_estado in('All','')) then
+	   begin
+	       select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+	           u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+	           CASE
+	             when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+	             when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
+	             when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+	             when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+	             else 'He is not client.'
+	           END credit_status,
+	
+	           CASE
+	             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+	             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+	             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+	             else 'He is not client.'
+	           END type_user,
+	           ifnull(x.is_buyer,0) is_buyer,
+	           ifnull(x.is_seller,0) is_seller,
+	           ifnull(x.ruc_tax,'') ruc_tax
+	
+	       FROM model_has_roles mhr
+	       INNER JOIN users u ON u.id = mhr.model_id
+	       inner join roles r on r.id = mhr.role_id
+	       left outer join businessinformations x on x.user_id = u.id
+	       where r.id = _roleid AND  
+	             u.created_at between d_start and d_end AND 
+	             ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%') 
+	       order by 2;
+	   end;
+	   else
+	   begin
+	   		select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+	           u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+	           CASE
+	             when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+	             when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
+	             when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+	             when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+	             else 'He is not client.'
+	           END credit_status,
+	
+	           CASE
+	             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+	             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+	             when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+	             else 'He is not client.'
+	           END type_user,
+	           ifnull(x.is_buyer,0) is_buyer,
+	           ifnull(x.is_seller,0) is_seller,
+	           ifnull(x.ruc_tax,'') ruc_tax
+	
+	       FROM model_has_roles mhr
+	       INNER JOIN users u ON u.id = mhr.model_id
+	       inner join roles r on r.id = mhr.role_id
+	       left outer join businessinformations x on x.user_id = u.id
+	       where r.id = _roleid AND 
+	             u.created_at between d_start and d_end and
+	             ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%') and
+	             (CASE
+		             when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+		             when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
+		             when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+		             when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+		             else 'He is not client.'
+		          END)
+		          = _estado 
+	       order by 2;
+	   end;
+	   end if;
      end;
      else
      begin
@@ -2403,7 +2476,8 @@ BEGIN
            else 'He is not client.'
          END type_user,
          ifnull(x.is_buyer,0) is_buyer,
-       ifnull(x.is_seller,0) is_seller
+       ifnull(x.is_seller,0) is_seller,
+       ifnull(x.ruc_tax,'') ruc_tax
        FROM model_has_roles mhr
        INNER JOIN users u ON u.id = mhr.model_id
        inner join roles r on r.id = mhr.role_id
