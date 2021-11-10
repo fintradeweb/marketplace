@@ -20,6 +20,18 @@
             <li class="list-group-item">
               <h5 class="card-title">Email:</h5>
               <p class="card-text">{{$client->email}}</p>  
+            </li>   
+            <li class="list-group-item">
+              <h5 class="card-title">Token:</h5>
+              <p class="card-text">{{$client->token}}</p>  
+            </li>  
+            <li class="list-group-item">
+              <h5 class="card-title">Status:</h5>
+              <p class="card-text">@if ($client->active == "checked") Active @else Inactive @endif</p>  
+            </li>
+            <li class="list-group-item">
+              <h5 class="card-title">Date Created:</h5>
+              <p class="card-text">{{$client->created_at}}</p>  
             </li>          
           </ul>                
         </div>               

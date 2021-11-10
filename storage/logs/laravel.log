@@ -5969,3 +5969,24 @@ otification\\show.blade.php) at C:\\wamp64\\www\\marketplace\esources\\views/no
 #56 C:\\Miguel\\Ac\\laravel\\marketplace\\server.php(21): require_once('C:\\\\Miguel\\\\Ac\\\\la...')
 #57 {main}
 "} 
+[2021-11-08 22:37:53] local.ERROR: Maximum execution time of 60 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 60 seconds exceeded at C:\\wamp64\\www\\marketplace\\vendor\\laravel\\framework\\src\\Illuminate\\Contracts\\Validation\\Factory.php:47)
+[stacktrace]
+#0 {main}
+"} 
+[2021-11-08 22:39:43] local.ERROR: Command "optimie" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"optimie\" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear at C:\\wamp64\\www\\marketplace\\vendor\\symfony\\console\\Application.php:682)
+[stacktrace]
+#0 C:\\wamp64\\www\\marketplace\\vendor\\symfony\\console\\Application.php(255): Symfony\\Component\\Console\\Application->find('optimie')
+#1 C:\\wamp64\\www\\marketplace\\vendor\\symfony\\console\\Application.php(167): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#2 C:\\wamp64\\www\\marketplace\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(92): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#3 C:\\wamp64\\www\\marketplace\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(129): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#4 C:\\wamp64\\www\\marketplace\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 

@@ -23,7 +23,7 @@ DROP PROCEDURE IF EXISTS Get_client_item;
 DELIMITER //
 create  PROCEDURE Get_client_item(IN item bigint)
 BEGIN
-  select id,name, token, email,
+  select id,name, token, email, created_at,
      case active
         when '0' then ''
         else 'checked'
