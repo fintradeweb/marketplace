@@ -2341,8 +2341,8 @@ END;
 DELIMITER ;
 
 /*
- SET @role = 3;
- call Get_users_roles (@role,'All','','','3434','');
+ SET @role = 1;
+ call Get_users_roles (@role,'All','','','','');
  */
 
 DROP PROCEDURE IF EXISTS Get_users_roles;
@@ -2406,12 +2406,16 @@ BEGIN
 	           END type_user,
 	           ifnull(x.is_buyer,0) is_buyer,
 	           ifnull(x.is_seller,0) is_seller,
-	           ifnull(x.ruc_tax,'') ruc_tax
+	           ifnull(x.ruc_tax,'') ruc_tax,
+	           ifnull(co.name,'Sin empresa') company_name,
+	           ifnull(co.id,0) company_id
 	
 	       FROM model_has_roles mhr
 	       INNER JOIN users u ON u.id = mhr.model_id
 	       inner join roles r on r.id = mhr.role_id
 	       left outer join businessinformations x on x.user_id = u.id
+	       left outer join usercompany uc on uc.user_id = u.id 
+	       left outer join company co on co.id = uc.company_id
 	       where r.id = _roleid AND  
 	             u.created_at between d_start and d_end AND 
 	             ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%') 
@@ -2437,11 +2441,15 @@ BEGIN
 	           END type_user,
 	           ifnull(x.is_buyer,0) is_buyer,
 	           ifnull(x.is_seller,0) is_seller,
-	           ifnull(x.ruc_tax,'') ruc_tax
+	           ifnull(x.ruc_tax,'') ruc_tax,
+	           ifnull(co.name,'Sin empresa') company_name,
+	           ifnull(co.id,0) company_id
 	
 	       FROM model_has_roles mhr
 	       INNER JOIN users u ON u.id = mhr.model_id
 	       inner join roles r on r.id = mhr.role_id
+	       left outer join usercompany uc on uc.user_id = u.id 
+	       left outer join company co on co.id = uc.company_id
 	       left outer join businessinformations x on x.user_id = u.id
 	       where r.id = _roleid AND 
 	             u.created_at between d_start and d_end and
@@ -2477,10 +2485,14 @@ BEGIN
          END type_user,
          ifnull(x.is_buyer,0) is_buyer,
        ifnull(x.is_seller,0) is_seller,
-       ifnull(x.ruc_tax,'') ruc_tax
+       ifnull(x.ruc_tax,'') ruc_tax,
+       ifnull(co.name,'Sin empresa') company_name,
+       ifnull(co.id,0) company_id
        FROM model_has_roles mhr
        INNER JOIN users u ON u.id = mhr.model_id
        inner join roles r on r.id = mhr.role_id
+       left outer join usercompany uc on uc.user_id = u.id 
+       left outer join company co on co.id = uc.company_id
        left outer join businessinformations x on x.user_id = u.id
        order by 2;
      end;
@@ -2509,6 +2521,7 @@ create  PROCEDURE Create_users_admin_super(
                 IN _clave varchar(255),
                 IN _email varchar(255),
                                 IN _name varchar(255),
+                                IN _companyid bigint,
                                 OUT _msg varchar(255),
                                 OUT _error tinyint
                                 )
@@ -2547,6 +2560,18 @@ sp:BEGIN
             select _error,_msg;
             LEAVE sp2;
        end if;
+       if  _companyid = 0  or _companyid is NULL then
+            select 1 into _error;
+            select 'Error, el campo de la empresa es obligatorio.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+       end if;
+       if not exists(select 1 from company r  where r.id = _companyid )  then
+            select 1 into _error;
+            select 'Error, no existe la empresa.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+        end if;
        if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
             select 1 into _error;
             select 'Error, no existe el rol.' into _msg;
@@ -2571,6 +2596,8 @@ sp:BEGIN
 
       insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
       select  LAST_INSERT_ID() into b_usuario_id;
+     
+      insert into usercompany(usuario_id,company_id,created_at) values(b_usuario_id, _companyid,now());
 
       select valorstring2 into s_modelo
             from catalogodet c2
@@ -2612,6 +2639,7 @@ create  PROCEDURE Update_users_admin_super(
                 IN _email varchar(255),
                                 IN _name varchar(255),
                                 IN _active tinyint,
+                                in _companyid bigint,
                                 OUT _msg varchar(255),
                                 OUT _error tinyint
                                 )
@@ -2644,6 +2672,18 @@ sp:BEGIN
         if not exists(select 1 from users u where u.id=_userid) then
             select 1 into _error;
             select 'Error, no existe user con ese id.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+        end if;
+        if  _companyid = 0  or _companyid is NULL then
+            select 1 into _error;
+            select 'Error, el campo de la empresa es obligatorio.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+       end if;
+       if not exists(select 1 from company r  where r.id = _companyid )  then
+            select 1 into _error;
+            select 'Error, no existe la empresa.' into _msg;
             select _error,_msg;
             LEAVE sp2;
         end if;
@@ -2684,6 +2724,12 @@ sp:BEGIN
 
           update model_has_roles set role_id = _rolid where model_id = _userid;
           update users set email = _email, name= _name, updated_at = now(), status = _active where id = _userid;
+          if not exists(select 1 from usercompany r  where r.user_id = _userid )  then
+              insert into usercompany(user_id,company_id,updated_at) values(_userid, _companyid,now());
+          ELSE 
+          	  update usercompany set company_id = _companyid, updated_at = now() where user_id = _userid;
+          end if;
+          
       select 0 into  _error;
 
 
