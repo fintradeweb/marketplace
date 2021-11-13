@@ -590,6 +590,7 @@ class ComposerStaticInit26b2bab06aa88c678faa5efc0c43a0a4
         'App\\Models\\Client' => __DIR__ . '/../..' . '/app/Models/Client.php',
         'App\\Models\\CreditApproved' => __DIR__ . '/../..' . '/app/Models/CreditApproved.php',
         'App\\Models\\CreditDenied' => __DIR__ . '/../..' . '/app/Models/CreditDenied.php',
+        'App\\Models\\DocumentFinancing' => __DIR__ . '/../..' . '/app/Models/DocumentFinancing.php',
         'App\\Models\\Financial' => __DIR__ . '/../..' . '/app/Models/Financial.php',
         'App\\Models\\Location' => __DIR__ . '/../..' . '/app/Models/Location.php',
         'App\\Models\\Managment' => __DIR__ . '/../..' . '/app/Models/Managment.php',

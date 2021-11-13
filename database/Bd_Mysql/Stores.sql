@@ -3155,3 +3155,186 @@ END;
 //
 DELIMITER ;
 
+
+
+/*
+ call Get_companies()
+ *
+ */
+DROP PROCEDURE IF EXISTS Get_companies;
+DELIMITER //
+create  PROCEDURE Get_companies()
+BEGIN
+  select id,name, description, name,address,
+     case active
+        when '0' then ''
+        else 'checked'
+      end as active,
+      DATE_FORMAT(c.created_at , '%Y-%m-%d %T') as created_at,
+      DATE_FORMAT(c.updated_at , '%Y-%m-%d %T') as updated_at
+    from company c;
+
+END;
+//
+DELIMITER ;
+
+/*
+ call Get_company_item(1)
+ *
+ */
+DROP PROCEDURE IF EXISTS Get_company_item;
+DELIMITER //
+create  PROCEDURE Get_company_item(IN item bigint)
+BEGIN
+   select id,name, description, name,address,
+     case active
+        when '0' then ''
+        else 'checked'
+      end as active,
+      DATE_FORMAT(c.created_at , '%Y-%m-%d %T') as created_at,
+      DATE_FORMAT(c.updated_at , '%Y-%m-%d %T') as updated_at
+    from company c
+    WHERE c.id = item;
+
+END;
+//
+DELIMITER ;
+
+/*
+ SET @msg5 = '';
+ SET @error5 = '';
+ set @id5 = 0;
+ CALL Insert_company('acf company 33','description acf_company','address 1 test',@msg5,@error5,@id5);
+ select @msg5, @error5,@id5;
+ */
+DROP PROCEDURE IF EXISTS Insert_company;
+DELIMITER //
+create  PROCEDURE Insert_company(
+                                IN _name varchar(255),
+                                IN _description varchar(255),
+                                IN _address varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error char(1),
+                                OUT _id bigint
+                                )
+sp: BEGIN
+     Declare code varchar(10);
+     Declare MSG text;
+     declare existe int;
+     DECLARE exit HANDLER FOR SQLEXCEPTION
+     begin
+       select '1' into _error;
+       select 0 into _id;
+
+       Get diagnostics condition 1 code=MYSQL_ERRNO, MSG=MESSAGE_TEXT;
+       select CONCAT('Inserts failed Company, error = ',code,', message = ',MSG) into _msg;
+       select _error,_msg,_id;
+
+       end;
+      
+     select 0 into existe;
+     select 0 into _id;
+     
+     select count(*) into existe
+         from company where  trim(upper(name)) collate utf8mb4_unicode_ci = trim(_name);
+
+
+       if existe > 0 THEN
+            select '1' into _error;
+            select '' into _msg;
+            select description into _msg
+              from messages ges
+              where ges.key_control='company_exist';
+            if (_msg='') then
+              select 'Company name already exists.' into _msg;
+            end if;
+            select _error, _msg,_id;
+            leave sp;
+       end if;
+
+
+
+    insert into company(name,description,address,created_at,active) values(_name,_description,_address,now(),1);
+    select  LAST_INSERT_ID() into _id;
+
+    select '0' into  _error;
+
+    select 'ok' into _msg;
+    select _error,_msg, _id;
+
+
+
+
+END;
+//
+DELIMITER ;
+
+/*
+ set @_msg5 = ' ';
+ set @_error5 = '';
+ call Update_company(2,'company MIguel Flores','test cambio','address cambio','1',@_msg5,@_error5);
+ select @_msg5,@_error5;
+ */
+DROP PROCEDURE IF EXISTS Update_company;
+DELIMITER //
+create  PROCEDURE Update_company(
+                IN _id bigint,
+                IN _name varchar(255),
+                IN _description varchar(255),
+                IN _address varchar(255),
+                IN _active tinyint(1),
+                OUT _msg varchar(255),
+                OUT _error char(1)
+                )
+sp: BEGIN
+     Declare code varchar(5);
+     Declare MSG text;
+     declare existe int;
+     DECLARE exit HANDLER FOR SQLEXCEPTION
+     begin
+       select '1' into _error;
+
+       Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+       select CONCAT('Update failed Company, error = ',code,', message = ',MSG) into _msg;
+       select _error,_msg;
+
+       end;
+   
+
+     select count(*) into existe
+         from company
+       where  upper(name) collate utf8mb4_unicode_ci = _name AND
+              id <> _id;
+
+
+       if existe > 0 THEN
+            select '1' into _error;
+            select '' into _msg;
+            select description into _msg
+              from messages ges
+              where ges.key_control='company_exist';
+            if (_msg='') then
+              select 'Company name already exists.' into _msg;
+            end if;
+            select _error, _msg;
+            leave sp;
+       end if;
+
+
+
+      update company
+         set description = _description,
+             name = _name,
+             address = _address,
+             updated_at = now(),
+             active  = _active
+            
+         where id = _id;
+
+    select '0','ok' into  _error,_msg;
+   select _error,_msg;
+
+
+END;
+//
+DELIMITER ;
