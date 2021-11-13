@@ -3384,3 +3384,131 @@ sp: BEGIN
 END;
 //
 DELIMITER ;
+
+
+/*
+ call Get_document_financing ('All','','','');
+ */
+
+DROP PROCEDURE IF EXISTS Get_document_financing;
+DELIMITER //
+create  PROCEDURE Get_document_financing(
+                              IN _estado varchar(255),
+                              IN _fecha_inicio varchar(255),
+                              IN _fecha_fin varchar(255),
+                              IN _ruc varchar(255)
+                              )
+
+
+BEGIN
+	declare d_start timestamp;
+    declare d_end timestamp;
+   if(ifnull(_fecha_inicio,'') ='') then
+   begin
+       select STR_TO_DATE('2000-01-01 00:00:00', '%Y-%m-%d %H:%i:%s') into d_start;
+   end;
+   else
+   begin
+ 	   select concat(_fecha_inicio,' 00:00:00') into _fecha_inicio;
+ 	   select STR_TO_DATE(_fecha_inicio, '%Y-%m-%d %H:%i:%s') into d_start;
+   end;
+   end if;
+  
+   if(ifnull(_fecha_fin,'') ='' ) then
+   begin
+       select NOW() into d_end;
+   end;
+  end if;
+  
+  
+  if(_estado in('All','')) then
+   begin
+	   select 
+	       df.id,
+	       ifnull(df.type_doc,'') type_doc,
+	       DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
+	       DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
+	       DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
+	       DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
+	       df.amount,
+	       IFNULL(df.aditional,'') aditional,
+	       df.user_id ,
+	       u.email ,
+	       u.name user_name,
+	       CASE
+	             when  datediff(now(),df.created_at ) = 0 then 'En Revisión [ Hoy ]' 
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisión [ 0 - 3 dias ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisión [ 4 - 7 dias ]'
+	             when  datediff(now(),df.created_at ) >7 then 'En Revisión mayor a 7 dias'
+	             else 'Estado inválido.'
+	       END status
+	   from document_financing df 
+	   inner join users u on u.id  = df.user_id 
+	   left outer join businessinformations x on x.user_id = u.id
+	   where df.created_at between d_start and d_end AND 
+		     ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%');
+   end;
+  else
+   begin
+	   select 
+	       df.id,
+	       ifnull(df.type_doc,'') type_doc,
+	       DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
+	       DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
+	       DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
+	       DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
+	       df.amount,
+	       IFNULL(df.aditional,'') aditional,
+	       df.user_id ,
+	       u.email ,
+	       u.name user_name,
+	       CASE
+	             when  datediff(now(),df.created_at ) = 0 then 'En Revisión [ Hoy ]' 
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisión [ 0 - 3 dias ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisión [ 4 - 7 dias ]'
+	             when  datediff(now(),df.created_at ) >7 then 'En Revisión mayor a 7 dias'
+	             else 'Estado inválido.'
+	       END status
+	   from document_financing df 
+	   inner join users u on u.id  = df.user_id 
+	   left outer join businessinformations x on x.user_id = u.id
+	   where df.created_at between d_start and d_end AND 
+		     ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%') and 
+		    (
+		      CASE
+	             when  datediff(now(),df.created_at ) = 0 then 'En Revisión [ Hoy ]' 
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisión [ 0 - 3 dias ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisión [ 4 - 7 dias ]'
+	             when  datediff(now(),df.created_at ) >7 then 'En Revisión mayor a 7 dias'
+	          END 
+		    ) = _estado;
+   end;
+   end if;
+			
+
+end;
+//
+DELIMITER ;
+
+/*
+ call Get_document_financing_states()
+ */
+
+DROP PROCEDURE IF EXISTS Get_document_financing_states;
+DELIMITER //
+create  PROCEDURE Get_document_financing_states()
+BEGIN
+
+
+ select 'All' as status
+ union
+ select 'En Revisión [ Hoy ]' as status
+ union
+ select 'En Revisión [ 0 - 3 dias ]' as status
+ union
+ select 'En Revisión [ 4 - 7 dias ]' as status
+ union
+ select 'En Revisión mayor a 7 dias' as status;
+END;
+//
+DELIMITER ;
