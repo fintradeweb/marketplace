@@ -49,6 +49,7 @@ return array(
     'App\\Models\\Client' => $baseDir . '/app/Models/Client.php',
     'App\\Models\\CreditApproved' => $baseDir . '/app/Models/CreditApproved.php',
     'App\\Models\\CreditDenied' => $baseDir . '/app/Models/CreditDenied.php',
+    'App\\Models\\DocumentFinancing' => $baseDir . '/app/Models/DocumentFinancing.php',
     'App\\Models\\Financial' => $baseDir . '/app/Models/Financial.php',
     'App\\Models\\Location' => $baseDir . '/app/Models/Location.php',
     'App\\Models\\Managment' => $baseDir . '/app/Models/Managment.php',

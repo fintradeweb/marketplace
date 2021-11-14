@@ -106,16 +106,19 @@ class User extends Authenticatable
     }
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);
-    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,@msg,@error)',
+    $company_id = 0;
+    if(!empty($request->input('company_id'))){
+      $company_id = 0;
+    }
+    $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,?,@msg,@error)',
                 [
                     $id,
                     $request->input('rol_id'),
                     $clave ,
                     $request->input('email'),
                     $request->input('name'),
-                    $status/*,
-                    $msg,
-                    $error*/
+                    $status,
+                    $company_id
                 ]);
     $result[1] =  $clave2;
     return $result[0];
@@ -124,16 +127,19 @@ class User extends Authenticatable
   public static function create_user_admin_super($request) {
     $error=0;
     $msg= "";
+    $company_id = 0;
+    if(!empty($request->input('company_id'))){
+      $company_id = 0;
+    }
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);
-    $result = DB::select('call Create_users_admin_super(?,?,?,?,@msg,@error)',
+    $result = DB::select('call Create_users_admin_super(?,?,?,?,?,@msg,@error)',
                 [
                     $request->input('rol_id'),
                     $clave ,
                     $request->input('email'),
-                    $request->input('name')/*,
-                    $msg,
-                    $error*/
+                    $request->input('name'),
+                    $company_id
                 ]);
     $result[1] =  $clave2;
     return $result;

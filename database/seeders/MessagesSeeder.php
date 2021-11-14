@@ -15,7 +15,11 @@ class MessagesSeeder extends Seeder
     {
         DB::table('messages')->insert([
             'key_control' => 'email_client_exist',
-            'description' => 'Email account already exists.'            
+            'description' => 'Email account already exists.'
+        ]);
+        DB::table('messages')->insert([
+            'key_control' => 'company_exist',
+            'description' => 'Company name already exists.'
         ]);
     }
 }

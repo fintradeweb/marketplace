@@ -2341,8 +2341,8 @@ END;
 DELIMITER ;
 
 /*
- SET @role = 3;
- call Get_users_roles (@role,'All','','','3434','');
+ SET @role = 1;
+ call Get_users_roles (@role,'All','','','','');
  */
 
 DROP PROCEDURE IF EXISTS Get_users_roles;
@@ -2406,12 +2406,16 @@ BEGIN
 	           END type_user,
 	           ifnull(x.is_buyer,0) is_buyer,
 	           ifnull(x.is_seller,0) is_seller,
-	           ifnull(x.ruc_tax,'') ruc_tax
+	           ifnull(x.ruc_tax,'') ruc_tax,
+	           ifnull(co.name,'Sin empresa') company_name,
+	           ifnull(co.id,0) company_id
 	
 	       FROM model_has_roles mhr
 	       INNER JOIN users u ON u.id = mhr.model_id
 	       inner join roles r on r.id = mhr.role_id
 	       left outer join businessinformations x on x.user_id = u.id
+	       left outer join usercompany uc on uc.user_id = u.id 
+	       left outer join company co on co.id = uc.company_id
 	       where r.id = _roleid AND  
 	             u.created_at between d_start and d_end AND 
 	             ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%') 
@@ -2437,11 +2441,15 @@ BEGIN
 	           END type_user,
 	           ifnull(x.is_buyer,0) is_buyer,
 	           ifnull(x.is_seller,0) is_seller,
-	           ifnull(x.ruc_tax,'') ruc_tax
+	           ifnull(x.ruc_tax,'') ruc_tax,
+	           ifnull(co.name,'Sin empresa') company_name,
+	           ifnull(co.id,0) company_id
 	
 	       FROM model_has_roles mhr
 	       INNER JOIN users u ON u.id = mhr.model_id
 	       inner join roles r on r.id = mhr.role_id
+	       left outer join usercompany uc on uc.user_id = u.id 
+	       left outer join company co on co.id = uc.company_id
 	       left outer join businessinformations x on x.user_id = u.id
 	       where r.id = _roleid AND 
 	             u.created_at between d_start and d_end and
@@ -2477,10 +2485,14 @@ BEGIN
          END type_user,
          ifnull(x.is_buyer,0) is_buyer,
        ifnull(x.is_seller,0) is_seller,
-       ifnull(x.ruc_tax,'') ruc_tax
+       ifnull(x.ruc_tax,'') ruc_tax,
+       ifnull(co.name,'Sin empresa') company_name,
+       ifnull(co.id,0) company_id
        FROM model_has_roles mhr
        INNER JOIN users u ON u.id = mhr.model_id
        inner join roles r on r.id = mhr.role_id
+       left outer join usercompany uc on uc.user_id = u.id 
+       left outer join company co on co.id = uc.company_id
        left outer join businessinformations x on x.user_id = u.id
        order by 2;
      end;
@@ -2509,6 +2521,7 @@ create  PROCEDURE Create_users_admin_super(
                 IN _clave varchar(255),
                 IN _email varchar(255),
                                 IN _name varchar(255),
+                                IN _companyid bigint,
                                 OUT _msg varchar(255),
                                 OUT _error tinyint
                                 )
@@ -2547,6 +2560,18 @@ sp:BEGIN
             select _error,_msg;
             LEAVE sp2;
        end if;
+       if  _companyid = 0  or _companyid is NULL then
+            select 1 into _error;
+            select 'Error, el campo de la empresa es obligatorio.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+       end if;
+       if not exists(select 1 from company r  where r.id = _companyid )  then
+            select 1 into _error;
+            select 'Error, no existe la empresa.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+        end if;
        if not exists(select 1 from roles r  where r.id = _rolid ) or _rolid is NULL  then
             select 1 into _error;
             select 'Error, no existe el rol.' into _msg;
@@ -2571,6 +2596,8 @@ sp:BEGIN
 
       insert into users(name,email,password,created_at,status) values(_name,_email,_clave,now(),1);
       select  LAST_INSERT_ID() into b_usuario_id;
+     
+      insert into usercompany(usuario_id,company_id,created_at) values(b_usuario_id, _companyid,now());
 
       select valorstring2 into s_modelo
             from catalogodet c2
@@ -2612,6 +2639,7 @@ create  PROCEDURE Update_users_admin_super(
                 IN _email varchar(255),
                                 IN _name varchar(255),
                                 IN _active tinyint,
+                                in _companyid bigint,
                                 OUT _msg varchar(255),
                                 OUT _error tinyint
                                 )
@@ -2644,6 +2672,18 @@ sp:BEGIN
         if not exists(select 1 from users u where u.id=_userid) then
             select 1 into _error;
             select 'Error, no existe user con ese id.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+        end if;
+        if  _companyid = 0  or _companyid is NULL then
+            select 1 into _error;
+            select 'Error, el campo de la empresa es obligatorio.' into _msg;
+            select _error,_msg;
+            LEAVE sp2;
+       end if;
+       if not exists(select 1 from company r  where r.id = _companyid )  then
+            select 1 into _error;
+            select 'Error, no existe la empresa.' into _msg;
             select _error,_msg;
             LEAVE sp2;
         end if;
@@ -2684,6 +2724,12 @@ sp:BEGIN
 
           update model_has_roles set role_id = _rolid where model_id = _userid;
           update users set email = _email, name= _name, updated_at = now(), status = _active where id = _userid;
+          if not exists(select 1 from usercompany r  where r.user_id = _userid )  then
+              insert into usercompany(user_id,company_id,updated_at) values(_userid, _companyid,now());
+          ELSE 
+          	  update usercompany set company_id = _companyid, updated_at = now() where user_id = _userid;
+          end if;
+          
       select 0 into  _error;
 
 
@@ -3155,3 +3201,314 @@ END;
 //
 DELIMITER ;
 
+
+
+/*
+ call Get_companies()
+ *
+ */
+DROP PROCEDURE IF EXISTS Get_companies;
+DELIMITER //
+create  PROCEDURE Get_companies()
+BEGIN
+  select id,name, description, name,address,
+     case active
+        when '0' then ''
+        else 'checked'
+      end as active,
+      DATE_FORMAT(c.created_at , '%Y-%m-%d %T') as created_at,
+      DATE_FORMAT(c.updated_at , '%Y-%m-%d %T') as updated_at
+    from company c;
+
+END;
+//
+DELIMITER ;
+
+/*
+ call Get_company_item(1)
+ *
+ */
+DROP PROCEDURE IF EXISTS Get_company_item;
+DELIMITER //
+create  PROCEDURE Get_company_item(IN item bigint)
+BEGIN
+   select id,name, description, name,address,
+     case active
+        when '0' then ''
+        else 'checked'
+      end as active,
+      DATE_FORMAT(c.created_at , '%Y-%m-%d %T') as created_at,
+      DATE_FORMAT(c.updated_at , '%Y-%m-%d %T') as updated_at
+    from company c
+    WHERE c.id = item;
+
+END;
+//
+DELIMITER ;
+
+/*
+ SET @msg5 = '';
+ SET @error5 = '';
+ set @id5 = 0;
+ CALL Insert_company('acf company 33','description acf_company','address 1 test',@msg5,@error5,@id5);
+ select @msg5, @error5,@id5;
+ */
+DROP PROCEDURE IF EXISTS Insert_company;
+DELIMITER //
+create  PROCEDURE Insert_company(
+                                IN _name varchar(255),
+                                IN _description varchar(255),
+                                IN _address varchar(255),
+                                OUT _msg varchar(255),
+                                OUT _error char(1),
+                                OUT _id bigint
+                                )
+sp: BEGIN
+     Declare code varchar(10);
+     Declare MSG text;
+     declare existe int;
+     DECLARE exit HANDLER FOR SQLEXCEPTION
+     begin
+       select '1' into _error;
+       select 0 into _id;
+
+       Get diagnostics condition 1 code=MYSQL_ERRNO, MSG=MESSAGE_TEXT;
+       select CONCAT('Inserts failed Company, error = ',code,', message = ',MSG) into _msg;
+       select _error,_msg,_id;
+
+       end;
+      
+     select 0 into existe;
+     select 0 into _id;
+     
+     select count(*) into existe
+         from company where  trim(upper(name)) collate utf8mb4_unicode_ci = trim(_name);
+
+
+       if existe > 0 THEN
+            select '1' into _error;
+            select '' into _msg;
+            select description into _msg
+              from messages ges
+              where ges.key_control='company_exist';
+            if (_msg='') then
+              select 'Company name already exists.' into _msg;
+            end if;
+            select _error, _msg,_id;
+            leave sp;
+       end if;
+
+
+
+    insert into company(name,description,address,created_at,active) values(_name,_description,_address,now(),1);
+    select  LAST_INSERT_ID() into _id;
+
+    select '0' into  _error;
+
+    select 'ok' into _msg;
+    select _error,_msg, _id;
+
+
+
+
+END;
+//
+DELIMITER ;
+
+/*
+ set @_msg5 = ' ';
+ set @_error5 = '';
+ call Update_company(2,'company MIguel Flores','test cambio','address cambio','1',@_msg5,@_error5);
+ select @_msg5,@_error5;
+ */
+DROP PROCEDURE IF EXISTS Update_company;
+DELIMITER //
+create  PROCEDURE Update_company(
+                IN _id bigint,
+                IN _name varchar(255),
+                IN _description varchar(255),
+                IN _address varchar(255),
+                IN _active tinyint(1),
+                OUT _msg varchar(255),
+                OUT _error char(1)
+                )
+sp: BEGIN
+     Declare code varchar(5);
+     Declare MSG text;
+     declare existe int;
+     DECLARE exit HANDLER FOR SQLEXCEPTION
+     begin
+       select '1' into _error;
+
+       Get   diagnostics condition 1 code=RETURNED_SQLSTATE, MSG=MESSAGE_TEXT;
+       select CONCAT('Update failed Company, error = ',code,', message = ',MSG) into _msg;
+       select _error,_msg;
+
+       end;
+   
+
+     select count(*) into existe
+         from company
+       where  upper(name) collate utf8mb4_unicode_ci = _name AND
+              id <> _id;
+
+
+       if existe > 0 THEN
+            select '1' into _error;
+            select '' into _msg;
+            select description into _msg
+              from messages ges
+              where ges.key_control='company_exist';
+            if (_msg='') then
+              select 'Company name already exists.' into _msg;
+            end if;
+            select _error, _msg;
+            leave sp;
+       end if;
+
+
+
+      update company
+         set description = _description,
+             name = _name,
+             address = _address,
+             updated_at = now(),
+             active  = _active
+            
+         where id = _id;
+
+    select '0','ok' into  _error,_msg;
+   select _error,_msg;
+
+
+END;
+//
+DELIMITER ;
+
+
+/*
+ call Get_document_financing ('All','','','');
+ */
+
+DROP PROCEDURE IF EXISTS Get_document_financing;
+DELIMITER //
+create  PROCEDURE Get_document_financing(
+                              IN _estado varchar(255),
+                              IN _fecha_inicio varchar(255),
+                              IN _fecha_fin varchar(255),
+                              IN _ruc varchar(255)
+                              )
+
+
+BEGIN
+	declare d_start timestamp;
+    declare d_end timestamp;
+   if(ifnull(_fecha_inicio,'') ='') then
+   begin
+       select STR_TO_DATE('2000-01-01 00:00:00', '%Y-%m-%d %H:%i:%s') into d_start;
+   end;
+   else
+   begin
+ 	   select concat(_fecha_inicio,' 00:00:00') into _fecha_inicio;
+ 	   select STR_TO_DATE(_fecha_inicio, '%Y-%m-%d %H:%i:%s') into d_start;
+   end;
+   end if;
+  
+   if(ifnull(_fecha_fin,'') ='' ) then
+   begin
+       select NOW() into d_end;
+   end;
+  end if;
+  
+  
+  if(_estado in('All','')) then
+   begin
+	   select 
+	       df.id,
+	       ifnull(df.type_doc,'') type_doc,
+	       DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
+	       DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
+	       DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
+	       DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
+	       df.amount,
+	       IFNULL(df.aditional,'') aditional,
+	       df.user_id ,
+	       u.email ,
+	       u.name user_name,
+	       CASE
+	             when  datediff(now(),df.created_at ) = 0 then 'En Revisión [ Hoy ]' 
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisión [ 0 - 3 dias ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisión [ 4 - 7 dias ]'
+	             when  datediff(now(),df.created_at ) >7 then 'En Revisión mayor a 7 dias'
+	             else 'Estado inválido.'
+	       END status
+	   from document_financing df 
+	   inner join users u on u.id  = df.user_id 
+	   left outer join businessinformations x on x.user_id = u.id
+	   where df.created_at between d_start and d_end AND 
+		     ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%');
+   end;
+  else
+   begin
+	   select 
+	       df.id,
+	       ifnull(df.type_doc,'') type_doc,
+	       DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
+	       DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
+	       DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
+	       DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
+	       df.amount,
+	       IFNULL(df.aditional,'') aditional,
+	       df.user_id ,
+	       u.email ,
+	       u.name user_name,
+	       CASE
+	             when  datediff(now(),df.created_at ) = 0 then 'En Revisión [ Hoy ]' 
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisión [ 0 - 3 dias ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisión [ 4 - 7 dias ]'
+	             when  datediff(now(),df.created_at ) >7 then 'En Revisión mayor a 7 dias'
+	             else 'Estado inválido.'
+	       END status
+	   from document_financing df 
+	   inner join users u on u.id  = df.user_id 
+	   left outer join businessinformations x on x.user_id = u.id
+	   where df.created_at between d_start and d_end AND 
+		     ifnull(x.ruc_tax,'') like CONCAT('%',_ruc,'%') and 
+		    (
+		      CASE
+	             when  datediff(now(),df.created_at ) = 0 then 'En Revisión [ Hoy ]' 
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisión [ 0 - 3 dias ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisión [ 4 - 7 dias ]'
+	             when  datediff(now(),df.created_at ) >7 then 'En Revisión mayor a 7 dias'
+	          END 
+		    ) = _estado;
+   end;
+   end if;
+			
+
+end;
+//
+DELIMITER ;
+
+/*
+ call Get_document_financing_states()
+ */
+
+DROP PROCEDURE IF EXISTS Get_document_financing_states;
+DELIMITER //
+create  PROCEDURE Get_document_financing_states()
+BEGIN
+
+
+ select 'All' as status
+ union
+ select 'En Revisión [ Hoy ]' as status
+ union
+ select 'En Revisión [ 0 - 3 dias ]' as status
+ union
+ select 'En Revisión [ 4 - 7 dias ]' as status
+ union
+ select 'En Revisión mayor a 7 dias' as status;
+END;
+//
+DELIMITER ;
