@@ -5,13 +5,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use DB;
 
-class Managment extends Model {
+class Company extends Model {
 
   protected $table = 'company';
 
   public static function consulta($id) {
     $managments = DB::select("call Get_company_item(?)",[$id]);
-    return $managments;
+    return $managments[0];
   }
   public static function consulta_todos() {
     $result = DB::select("call Get_companies()");
