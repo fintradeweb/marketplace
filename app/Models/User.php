@@ -108,7 +108,7 @@ class User extends Authenticatable
     $clave = Hash::make($clave2);
     $company_id = 0;
     if(!empty($request->input('company_id'))){
-      $company_id = 0;
+      $company_id = $request->input('company_id');
     }
     $result = DB::select('call Update_users_admin_super(?,?,?,?,?,?,?,@msg,@error)',
                 [
@@ -128,8 +128,8 @@ class User extends Authenticatable
     $error=0;
     $msg= "";
     $company_id = 0;
-    if(!empty($request->input('company_id'))){
-      $company_id = 0;
+    if($request->input('rol_id') == 2/*!empty($request->input('company_id'))*/){
+      $company_id = $request->input('company_id');
     }
     $clave2 = "MARKET" .  Str::random(5) . "PLACE" . date('His');
     $clave = Hash::make($clave2);

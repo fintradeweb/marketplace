@@ -65,11 +65,26 @@
               <label class="form-check-label" for="flexCheckDefault"><strong>Active</strong></label>              
             </div>
           </div>
-        </div>        
+        </div> 
+
+        @if ($user->role->role_id == 2) 
+        <div class="row">  
+          <div class="col-md-12 col-sm-12 col-lg-12">
+            <div class="form-group">
+              <strong>Company:</strong>
+              <select id="company_id" name="company_id" class="form-control">
+                @foreach ($companies as $company)
+                  <option value="{{$company->id}}" @if(isset($user->company->company_id) && $user->company->company_id == $company->id) selected @endif>{{$company->name}}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
+        </div>
+        @endif       
         <div class="row">   
           <div class="col-xs-12 col-sm-12 col-md-12 text-center">
             <button type="reset" class="btn btn-secondary" id="btnreset">Reset</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Save</button>
           </div>
         </div>        
       </form>

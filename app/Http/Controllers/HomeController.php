@@ -16,7 +16,7 @@ class HomeController extends Controller{
         "name" => @Auth::user()->name
       ]);
     }
-    elseif(@Auth::user()->hasRole('Admin')){      
+    elseif(@Auth::user()->hasRole('Admin')){  
       return view("homeadmin",[
         "name" => @Auth::user()->name
       ]);

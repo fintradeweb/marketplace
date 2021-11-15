@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class DocumentFinancing extends Model{
 
@@ -15,7 +16,7 @@ class DocumentFinancing extends Model{
   }
 
   public static function get_documents_financing($status='',$date_start='',$date_end='',$ruc=''){
-    $result = DB::select('call Get_document_financing_states(?,?,?,?)',
+    $result = DB::select('call Get_document_financing(?,?,?,?)',
                     [
                         $status,
                         $date_start,

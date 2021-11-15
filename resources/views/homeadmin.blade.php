@@ -21,6 +21,7 @@
       <div class="list-group">
         <a href="/home" class="list-group-item list-group-item-action active">Home</a>
         <a href="/users" class="list-group-item list-group-item-action">Borrower Users</a>
+        <a href="/documents" class="list-group-item list-group-item-action">Documents</a>
       </div> 
     </div>
   </div>

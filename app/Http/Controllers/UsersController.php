@@ -60,7 +60,8 @@ class UsersController extends Controller{
   }
   
   public function create(){
-    return view('users.create');
+    $companies = \App\Models\Company::consulta_todos();
+    return view('users.create',['companies' => $companies]);
   }
 
   public function store(Request $request){
@@ -70,6 +71,9 @@ class UsersController extends Controller{
       'password' => 'required|min:6|max:20',
       'rol_id' => 'required'
     ]);
+    if ($request->input('rol_id') == 2 && empty($request->input('company_id'))){
+      return redirect('/users/create')->withErrors('The company is required');
+    }
     $result = \App\Models\User::create_user_admin_super($request);
     if ($result[0]->_error == 0 && $result[0]->_msg == "ok"){
       $user = \App\Models\User::where('email',$request->input('email'))->first();
@@ -77,7 +81,7 @@ class UsersController extends Controller{
       Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
       return redirect('/users')->with('status', 'The user was created succesfully!');
     }else{
-      return redirect('/users/create')->withErrors($result->_msg);
+      return redirect('/users/create')->withErrors($result[0]->_msg);
     }
   }
 
@@ -103,7 +107,11 @@ class UsersController extends Controller{
   public function edit($id){
     $user = \App\Models\User::where("id",$id)->first();
     $user->role = DB::table('model_has_roles')->where('model_id',$id)->first();
-    return view('users.edit')->with('user', $user);
+    $companies = \App\Models\Company::consulta_todos();
+    if ($user->role->role_id == 2){
+      $user->company = DB::table('usercompany')->where('user_id',$id)->first();
+    }
+    return view('users.edit', ['user'=> $user, 'companies' => $companies]);
   }
 
   public function update(Request $request, $id){
@@ -112,6 +120,10 @@ class UsersController extends Controller{
       'email' => 'required|unique:users,email,'.$id.'|email',
       'password' => 'nullable|min:6|max:20'
     ]);
+    $role = DB::table('model_has_roles')->where('model_id',$id)->first();
+    if ($role->role_id == 2 && empty($request->input('company_id'))){
+      return redirect('/users/'.$id.'/edit')->withErrors('The company is required');
+    }
     $result = \App\Models\User::update_user_admin_super($request, $id);
     if ($result->_error == 0 && $result->_msg == "ok"){
       return redirect('/users')->with('status', 'The user was edited succesfully!');

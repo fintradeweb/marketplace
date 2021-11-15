@@ -6,5 +6,14 @@ window.addEventListener('load', function() {
     else{
       $(this).attr("value",0);      
     }
+  }); 
+
+  $("#rol_id").change(function(){    
+  	if($(this).val() == 2){
+  		$("#divcompany").attr("style","display:block");
+  	}
+  	else{
+  	  $("#divcompany").attr("style","display:none");	
+  	}
   });    
 }) 
