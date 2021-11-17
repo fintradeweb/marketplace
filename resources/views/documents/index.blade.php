@@ -19,10 +19,35 @@
       <div class="row col-md-12 p-2">
         <div class="col-md-6"><h5>List of Documents Financing</h5></div>
         <div class="col-md-6 ml-auto text-right">
-          <a type="button" class="btn btn-primary" href="/documents">Return</a>
+          <a type="button" class="btn btn-primary" href="/home">Return</a>
         </div>
       </div>
       
+      <form action="{{ route('documents.search') }}" method="post" class="col-md-12 col-lg-12 col-sm-12"> 
+        @csrf
+        <div class="row col-md-12 mb-4">
+          <div class="col-md-3"><label>Status:</label>
+            <select name="status" id="status" class="form-control">
+              @foreach ($status as $value)
+                <option value="{{$value->status}}">{{$value->status}}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="col-md-2"><label>Date start:</label>
+            <input type="text" name="date_start" id="date_start" size="10" maxlength="10" class="form-control input-sm" value="" placeholder="YYYY-MM-DD">
+          </div>
+          <div class="col-md-2"><label>Date end:</label>
+            <input type="text" name="date_end" id="date_end" size="10" maxlength="10" class="form-control" value="" placeholder="YYYY-MM-DD">
+          </div>
+          <div class="col-md-3"><label>Ruc:</label>
+            <input type="text" name="ruc" id="ruc" class="form-control" value="" placeholder="09999999999001">
+          </div>
+          <div class="col-md-2"><label>&nbsp;</label>
+            <button type="submit" class="form-control btn btn-primary">Search</button>
+          </div>  
+        </div>
+      </form> 
+
       <div class="col-md-12">
         <table class="table table-hover table-bordered">
           <thead>
@@ -44,7 +69,7 @@
                 <td>{{ $document->due_date }}</td>
                 <td>{{ $document->amount }}</td> 
                 <td align="center">           
-                  <a href="/document/{{$document->id}}" data-toggle="tooltip" data-placement="top" title="View More Info">
+                  <a href="/documents/{{$document->id}}" data-toggle="tooltip" data-placement="top" title="View More Info">
                     <i class="fa fa-search" aria-hidden="true" style="font-size:25px;"></i>
                   </a>
                 </td>

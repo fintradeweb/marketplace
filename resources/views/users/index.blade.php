@@ -16,6 +16,16 @@
 
   <div class="container">
     <div class="row justify-content-center">
+
+      <div class="row col-md-12 p-2">
+        <div class="col-md-6"><h5>List of Borrower Users</h5></div>
+        <div class="col-md-6 ml-auto text-right">
+          @if ($rol == 1)
+            <a type="button" class="btn btn-primary" href="/users/create">New User</a>
+          @endif
+        </div>
+      </div>
+
       @if ($rol == 2)
         <form action="{{ route('users.search') }}" method="post" class="col-md-12 col-lg-12 col-sm-12"> 
           @csrf
@@ -51,16 +61,7 @@
             <td style="background-color:#f9d9f1;">Sellers</td>
           </tr>
         </table>
-      </div>
-
-      <div class="row col-md-12 p-2">
-        <div class="col-md-6"><h5>List of Borrower Users</h5></div>
-        <div class="col-md-6 ml-auto text-right">
-          @if ($rol == 1)
-            <a type="button" class="btn btn-primary" href="/users/create">New User</a>
-          @endif
-        </div>
-      </div>
+      </div>      
       
       @if ($rol == 1)
         <div class="row col-md-12 p-4">

@@ -62,6 +62,7 @@ Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {
   Route::post('/credit/update', [App\Http\Controllers\CreditController::class, 'update'])->name('credit.update');
 
   Route::resource('documents', App\Http\Controllers\DocumentsController::class);  
+  Route::post('/documents/search', [App\Http\Controllers\DocumentsController::class, 'search'])->name('documents.search');
 });
 
 Route::group(['middleware' => ['role:Client']], function () {  

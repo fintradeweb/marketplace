@@ -13,7 +13,7 @@ class CreateCreditApprovedTable extends Migration{
       $table->double('advance');
       $table->double('maximum_amount');
       $table->integer('deadline');
-      $table->double('interest_rate');
+      $table->double('interest_rate')->nullable();
       $table->integer('type_document')->comment('1-PO 2-Invoice');
       $table->unsignedBigInteger('user_id')->comment('user borrower');
       $table->unsignedBigInteger('approved_by')->comment('user lender');
