@@ -3473,7 +3473,10 @@ BEGIN
 	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
 	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
 	             else 'Estado inv�lido.'
-	       END status
+	       END status,
+	       df.url_doc,
+	       x.ruc_tax
+	       
 	   from document_financing df
 	   inner join users u on u.id  = df.user_id
 	   inner join businessinformations x on x.user_id = u.id
@@ -3501,7 +3504,9 @@ BEGIN
 	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
 	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
 	             else 'Estado inv�lido.'
-	       END status
+	       END status,
+	       df.url_doc,
+	       x.ruc_tax
 	   from document_financing df
 	   inner join users u on u.id  = df.user_id
 	   inner join businessinformations x on x.user_id = u.id
