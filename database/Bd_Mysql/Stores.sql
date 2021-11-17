@@ -23,7 +23,7 @@ DROP PROCEDURE IF EXISTS Get_client_item;
 DELIMITER //
 create  PROCEDURE Get_client_item(IN item bigint)
 BEGIN
-  select id,name, token, email, created_at,
+  select id,name, token, email,
      case active
         when '0' then ''
         else 'checked'
@@ -2365,7 +2365,32 @@ BEGIN
      begin
 	   if(ifnull(_fecha_inicio,'') ='') then
 	   begin
-	       select STR_TO_DATE('2000-01-01 00:00:00', '%Y-%m-%d %H:%i:%s') into d_start;
+		   select u.email ,u.name ,r.name  as role_desc,r.id as role_id,
+		       u.id user_id, DATE_FORMAT(u.created_at , '%Y-%m-%d') as created_at,
+		       CASE
+		         when  r.id = 3 and exists(select 1 from credit_approved c where c.user_id = u.id) then 'Credit Approved'
+		         when  r.id = 3 and exists(select 1 from credit_denied c where c.user_id = u.id) then 'Credit Denied'
+		         when  r.id = 3 and  exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request received'
+		         when  r.id = 3 and not exists(select 1 from certificationauthorizations c where c.user_id = u.id) then 'Request incomplete'
+		         else 'He is not client.'
+		       END credit_status,
+
+		       CASE
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_buyer=1) then 'Buyer'
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1) then 'Seller'
+		         when  r.id = 3 and exists(select 1 from businessinformations c where c.user_id = u.id and c.is_seller =1 and c.is_buyer=1) then 'Buyer/Seller'
+		         else 'He is not client.'
+		       END type_user,
+		       ifnull(x.is_buyer,0) is_buyer,
+		       ifnull(x.is_seller,0) is_seller
+
+
+		   FROM model_has_roles mhr
+		   INNER JOIN users u ON u.id = mhr.model_id
+		   inner join roles r on r.id = mhr.role_id
+		   left outer join businessinformations x on x.user_id = u.id
+		   where r.id = _roleid
+		   order by 2;
 	   end;
 	   else
 	   begin
@@ -2376,7 +2401,7 @@ BEGIN
 
 	   if(ifnull(_fecha_fin,'') ='' ) then
 	   begin
-	       select NOW() into d_end;
+	       select DATE_ADD(now(), INTERVAL 10 DAY) into d_end;
 	   end;
 	   else
 	   begin
@@ -3068,34 +3093,34 @@ sp:BEGIN
        end;
 
       sp2:begin
-        if _id is null  then
-            select 1 into _error;
-            select 'Error, notification id es obligatorio.' into _msg;
-            select _error,_msg;
-            LEAVE sp2;
-        end if;
+	      if _id is null  then
+	      		select 1 into _error;
+		        select 'Error, notification id es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
 
-        if not exists(select 1 from notification_send u where u.id=_id) then
-            select 1 into _error;
-            select 'Error, no existe notification_send con ese id.' into _msg;
-            select _error,_msg;
-            LEAVE sp2;
-        end if;
+	      if not exists(select 1 from notification_send u where u.id=_id) then
+	      		select 1 into _error;
+		        select 'Error, no existe notification_send con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
 
-        if exists(select 1 from notification_send u where u.id=_id and u.is_read=1) then
-            select 1 into _error;
-            select 'Error, la notification_send esta leida.' into _msg;
-            select _error,_msg;
-            LEAVE sp2;
-        end if;
+	      if exists(select 1 from notification_send u where u.id=_id and u.is_read=1) then
+	      		select 1 into _error;
+		        select 'Error, la notification_send esta leida.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
 
 
-          update notification_send  set date_read=now(),is_read =1 where id = _id;
+   	      update notification_send  set date_read=now(),is_read =1 where id = _id;
 
-      select 0 into  _error;
-       select 'ok' into _msg;
-       select _error,_msg;
-    end;
+		  select 0 into  _error;
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
 
 END;
 //
@@ -3144,34 +3169,34 @@ sp:BEGIN
        end;
 
       sp2:begin
-        if _id is null  then
-            select 1 into _error;
-            select 'Error, approved_values id es obligatorio.' into _msg;
-            select _error,_msg;
-            LEAVE sp2;
-        end if;
+	      if _id is null  then
+	      		select 1 into _error;
+		        select 'Error, approved_values id es obligatorio.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
 
-        if not exists(select 1 from credit_approved u where u.id=_id) then
-            select 1 into _error;
-            select 'Error, no existe credit_approved con ese id.' into _msg;
-            select _error,_msg;
-            LEAVE sp2;
-        end if;
+	      if not exists(select 1 from credit_approved u where u.id=_id) then
+	      		select 1 into _error;
+		        select 'Error, no existe credit_approved con ese id.' into _msg;
+		        select _error,_msg;
+		        LEAVE sp2;
+	      end if;
 
-        update credit_approved
-           set
-             credit_line = _credit_line,
-             advance  = _advance,
-             maximum_amount  = _maximum_amount,
-             deadline = _deadline,
-             interest_rate  = _interest_rate,
-             updated_at = NOW()
-          where id = _id;
+	      update credit_approved
+	         set
+	           credit_line = _credit_line,
+	           advance  = _advance,
+	           maximum_amount  = _maximum_amount,
+	           deadline = _deadline,
+	           interest_rate  = _interest_rate,
+	           updated_at = NOW()
+	        where id = _id;
 
-      select 0 into  _error;
-       select 'ok' into _msg;
-       select _error,_msg;
-    end;
+		  select 0 into  _error;
+		   select 'ok' into _msg;
+		   select _error,_msg;
+		end;
 
 END;
 //
@@ -3403,7 +3428,7 @@ create  PROCEDURE Get_document_financing(
 BEGIN
 	declare d_start timestamp;
     declare d_end timestamp;
-   set _ruc =  CONCAT('%',_ruc,'%');
+ 
    if(ifnull(_fecha_inicio,'') ='') then
    begin
        select STR_TO_DATE('2000-01-01 00:00:00', '%Y-%m-%d %H:%i:%s') into d_start;
@@ -3417,7 +3442,7 @@ BEGIN
 
    if(ifnull(_fecha_fin,'') ='' ) then
    begin
-       select NOW() into d_end;
+       select DATE_ADD(now(), INTERVAL 10 DAY) into d_end;
    end;
    else
    begin
@@ -3429,6 +3454,7 @@ BEGIN
 
   if(_estado in('All','')) then
    begin
+	   
 	   select
 	       df.id,
 	       ifnull(df.type_doc,'') type_doc,
@@ -3452,7 +3478,8 @@ BEGIN
 	   inner join users u on u.id  = df.user_id
 	   inner join businessinformations x on x.user_id = u.id
 	   where df.created_at between d_start and d_end AND
-		      x.ruc_tax like ('%',_ruc,'%') ;
+		     x.ruc_tax like  CONCAT('%',_ruc,'%');
+		  
    end;
   else
    begin
@@ -3479,7 +3506,7 @@ BEGIN
 	   inner join users u on u.id  = df.user_id
 	   inner join businessinformations x on x.user_id = u.id
 	   where df.created_at between d_start and d_end AND
-		     x.ruc_tax like ('%',_ruc,'%') and
+		     x.ruc_tax like CONCAT('%',_ruc,'%') and
 		    (
 		      CASE
 	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
