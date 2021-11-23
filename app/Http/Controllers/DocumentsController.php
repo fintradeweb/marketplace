@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class DocumentsController extends Controller{
 
@@ -10,11 +11,19 @@ class DocumentsController extends Controller{
   }
 
   public function index(){
+    if(@Auth::user()->hasRole('Admin')){
+      $role = "Admin";
+      $documents = \App\Models\DocumentFinancing::get_documents_financing();    
+    }
+    if(@Auth::user()->hasRole('Client')){
+      $role = "Client";
+      $documents = \App\Models\DocumentFinancing::where("user_id",@Auth::user()->id)->get();
+    }
     $status = \App\Models\DocumentFinancing::getStatus();     
-    $documents = \App\Models\DocumentFinancing::get_documents_financing();
     return view('documents.index', [
       'documents' => $documents,
       'status' => $status,
+      'role' => $role
     ]);
   }
 
@@ -22,12 +31,20 @@ class DocumentsController extends Controller{
     $filterstatus = ($request->input("status") == "All") ? "" : $request->input("status");
     $date_start = (empty($request->input("date_start"))) ? "" : $request->input("date_start");
     $date_end = (empty($request->input("date_end"))) ? "" : $request->input("date_end");
-    $ruc = (empty($request->input("ruc"))) ? "" : $request->input("ruc");    
-    $documents = \App\Models\DocumentFinancing::get_documents_financing($filterstatus,$date_start,$date_end,$ruc);
+    $ruc = (empty($request->input("ruc"))) ? "" : $request->input("ruc"); 
+    if(@Auth::user()->hasRole('Admin')){
+      $role = "Admin";   
+      $documents = \App\Models\DocumentFinancing::get_documents_financing($filterstatus,$date_start,$date_end,$ruc);
+    }
+    if(@Auth::user()->hasRole('Client')){
+      $role = "Client";
+      $documents = \App\Models\DocumentFinancing::where("user_id",@Auth::user()->id)->get();
+    }
     $status = \App\Models\DocumentFinancing::getStatus();
     return view('documents.index', [
       'documents' => $documents,      
-      'status' => $status
+      'status' => $status,
+      'role' => $role
     ]);
   }
 

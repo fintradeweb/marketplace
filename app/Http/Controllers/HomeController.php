@@ -23,7 +23,9 @@ class HomeController extends Controller{
     }
     else{      
       $creditapproved = \App\Models\CreditApproved::where("user_id",@Auth::user()->id)->get();
+      $documents = \App\Models\DocumentFinancing::where("user_id",@Auth::user()->id)->get();
       return view("home",[
+        "documents" => $documents,
         "creditapproved" => $creditapproved, 
         "name" => @Auth::user()->name
       ]);

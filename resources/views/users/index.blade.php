@@ -69,7 +69,7 @@
             <a type="button" class="btn btn-{{$css_borrow}}" href="/users/3/type">Borrowers</a>
           </div>
           <div class="col-md-4 col-sm-12 col-lg-4 text-center">
-            <a type="button" class="btn btn-{{$css_admin}}" href="/users/2/type">Admin</a>
+            <a type="button" class="btn btn-{{$css_admin}}" href="/users/2/type">Lenders</a>
           </div>
           <div class="col-md-4 col-sm-12 col-lg-4 text-center">
             <a type="button" class="btn btn-{{$css_sadmin}}" href="/users/1/type">SuperAdmin</a>

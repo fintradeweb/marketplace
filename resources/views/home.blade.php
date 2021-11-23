@@ -36,6 +36,9 @@
         @if (isset($creditapproved) && count($creditapproved)>0)  
           <a href="/financing" class="list-group-item list-group-item-action">Request Financing</a>
         @endif
+        @if (isset($documents) && count($documents)>0)  
+          <a href="/documents" class="list-group-item list-group-item-action">Documents to Finance</a>
+        @endif
       </div> 
     </div>
   </div>

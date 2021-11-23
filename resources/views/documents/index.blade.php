@@ -39,9 +39,11 @@
           <div class="col-md-2"><label>Date end:</label>
             <input type="text" name="date_end" id="date_end" size="10" maxlength="10" class="form-control" value="" placeholder="YYYY-MM-DD">
           </div>
-          <div class="col-md-3"><label>Ruc:</label>
-            <input type="text" name="ruc" id="ruc" class="form-control" value="" placeholder="09999999999001">
-          </div>
+          @if ($role == "Admin")
+            <div class="col-md-3"><label>Ruc:</label>
+              <input type="text" name="ruc" id="ruc" class="form-control" value="" placeholder="09999999999001">
+            </div>
+          @endif
           <div class="col-md-2"><label>&nbsp;</label>
             <button type="submit" class="form-control btn btn-primary">Search</button>
           </div>  
@@ -61,20 +63,24 @@
             </tr>        
           </thead>
           <tbody>
-            @foreach ($documents as $document)                   
-              <tr>
-                <td>{{ $document->id }}</td>
-                <td>{{ $document->type_doc }}</td>
-                <td>{{ $document->created_at }}</td>
-                <td>{{ $document->due_date }}</td>
-                <td>{{ $document->amount }}</td> 
-                <td align="center">           
-                  <a href="/documents/{{$document->id}}" data-toggle="tooltip" data-placement="top" title="View More Info">
-                    <i class="fa fa-search" aria-hidden="true" style="font-size:25px;"></i>
-                  </a>
-                </td>
-              </tr>
-            @endforeach
+            @if (!empty($documents))
+              @foreach ($documents as $document)                   
+                <tr>
+                  <td>{{ $document->id }}</td>
+                  <td>{{ $document->type_doc }}</td>
+                  <td>{{ $document->created_at }}</td>
+                  <td>{{ $document->due_date }}</td>
+                  <td>{{ $document->amount }}</td> 
+                  <td align="center">           
+                    <a href="/documents/{{$document->id}}" data-toggle="tooltip" data-placement="top" title="View More Info">
+                      <i class="fa fa-search" aria-hidden="true" style="font-size:25px;"></i>
+                    </a>
+                  </td>
+                </tr>
+              @endforeach
+            @else
+              No data found
+            @endif
           </tbody>
         </table>        
       </div>

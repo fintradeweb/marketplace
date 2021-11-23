@@ -60,7 +60,7 @@
               <strong>Rol:</strong>
               <select id="rol_id" name="rol_id" class="form-control">
                 <option value="1">Super Admin</option>
-                <option value="2">Admin</option>
+                <option value="2">Lender</option>
               </select>
             </div>
           </div>
