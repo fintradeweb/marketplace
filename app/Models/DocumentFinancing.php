@@ -15,13 +15,14 @@ class DocumentFinancing extends Model{
     return $result;
   }
 
-  public static function get_documents_financing($status='',$date_start='',$date_end='',$ruc=''){
-    $result = DB::select('call Get_document_financing(?,?,?,?)',
+  public static function get_documents_financing($status='',$date_start='',$date_end='',$ruc='', $userid=0){
+    $result = DB::select('call Get_document_financing(?,?,?,?,?)',
                     [
                         $status,
                         $date_start,
                         $date_end,
-                        $ruc
+                        $ruc,
+                        $userid
                     ]);
     return $result;
   }

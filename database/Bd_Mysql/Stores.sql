@@ -3412,7 +3412,7 @@ DELIMITER ;
 
 
 /*
- call Get_document_financing ('All','','','');
+ call Get_document_financing ('All','','','',0);
  */
 
 DROP PROCEDURE IF EXISTS Get_document_financing;
@@ -3421,14 +3421,30 @@ create  PROCEDURE Get_document_financing(
                               IN _estado varchar(255),
                               IN _fecha_inicio varchar(255),
                               IN _fecha_fin varchar(255),
-                              IN _ruc varchar(255)
+                              IN _ruc varchar(255),
+                              IN _userid bigint
                               )
 
 
 BEGIN
 	declare d_start timestamp;
     declare d_end timestamp;
- 
+    declare b_user_inicio bigint;
+    declare b_user_fin bigint;
+  
+   SET b_user_inicio = 0;
+   SET b_user_fin = 0;
+   if(ifnull(_userid,0) =0) THEN
+   BEGIN
+       SELECT min(u.id) ,max(u.id) INTO b_user_inicio, b_user_fin
+       FROM users u;
+   END;
+   ELSE
+   BEGIN
+   	  SET b_user_inicio =_userid;
+      SET b_user_fin = _userid;
+   END;
+   END IF;
    if(ifnull(_fecha_inicio,'') ='') then
    begin
        select STR_TO_DATE('2000-01-01 00:00:00', '%Y-%m-%d %H:%i:%s') into d_start;
@@ -3450,6 +3466,8 @@ BEGIN
  	   select STR_TO_DATE(_fecha_fin, '%Y-%m-%d %H:%i:%s') into d_end;
    end;
   end if;
+ 
+  
 
 
   if(_estado in('All','')) then
@@ -3481,7 +3499,8 @@ BEGIN
 	   inner join users u on u.id  = df.user_id
 	   inner join businessinformations x on x.user_id = u.id
 	   where df.created_at between d_start and d_end AND
-		     x.ruc_tax like  CONCAT('%',_ruc,'%');
+		     x.ruc_tax like  CONCAT('%',_ruc,'%') AND
+		     u.id BETWEEN b_user_inicio AND b_user_fin ;
 		  
    end;
   else
@@ -3511,6 +3530,7 @@ BEGIN
 	   inner join users u on u.id  = df.user_id
 	   inner join businessinformations x on x.user_id = u.id
 	   where df.created_at between d_start and d_end AND
+	         u.id BETWEEN b_user_inicio AND b_user_fin and
 		     x.ruc_tax like CONCAT('%',_ruc,'%') and
 		    (
 		      CASE
