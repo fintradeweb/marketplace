@@ -59,7 +59,8 @@ Route::group(['middleware' => ['role:SuperAdmin|Admin']], function () {
   Route::post('/credit/approve', [App\Http\Controllers\CreditController::class, 'storeapprove'])->name('credit.storeapprove');
   Route::post('/credit/deny', [App\Http\Controllers\CreditController::class, 'storedeny'])->name('credit.storedeny');
   Route::post('/credit/askmore', [App\Http\Controllers\CreditController::class, 'storeaskmore'])->name('credit.storeaskmore'); 
-  Route::post('/credit/update', [App\Http\Controllers\CreditController::class, 'update'])->name('credit.update'); 
+  Route::post('/credit/update', [App\Http\Controllers\CreditController::class, 'update'])->name('credit.update');
+  Route::get('/documents/{document}/approve', [App\Http\Controllers\DocumentsController::class, 'approve'])->name('documents.approve'); 
 });
 
 Route::group(['middleware' => ['role:Client']], function () {  

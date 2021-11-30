@@ -13,11 +13,11 @@ class DocumentsController extends Controller{
   public function index(){
     if(@Auth::user()->hasRole('Admin')){
       $role = "Admin";
-      $documents = \App\Models\DocumentFinancing::get_documents_financing();    
+      $documents = \App\Models\DocumentFinancing::get_documents_financing(); 
     }
     if(@Auth::user()->hasRole('Client')){
       $role = "Client";
-      $documents = \App\Models\DocumentFinancing::where("user_id",@Auth::user()->id)->get();
+      $documents = \App\Models\DocumentFinancing::get_documents_financing('','','','',@Auth::user()->id); 
     }
     $status = \App\Models\DocumentFinancing::getStatus();     
     return view('documents.index', [
@@ -38,7 +38,7 @@ class DocumentsController extends Controller{
     }
     if(@Auth::user()->hasRole('Client')){
       $role = "Client";
-      $documents = \App\Models\DocumentFinancing::where("user_id",@Auth::user()->id)->get();
+      $documents = \App\Models\DocumentFinancing::get_documents_financing($filterstatus,$date_start,$date_end,'',@Auth::user()->id);
     }
     $status = \App\Models\DocumentFinancing::getStatus();
     return view('documents.index', [
@@ -47,6 +47,12 @@ class DocumentsController extends Controller{
       'role' => $role
     ]);
   }
+
+  public function approve($id){
+    return view('documents.approve', [
+      
+    ]);
+  } 
 
   public function create(){
         //

@@ -59,6 +59,11 @@
               <th>Date Created</th>
               <th>Due Date</th>
               <th>Amount</th>
+              @if ($role == "Admin")
+                 <th>Name User</th>
+                 <th>Email User</th>
+              @endif
+              <th>Status</th>
               <th>Actions</th>
             </tr>        
           </thead>
@@ -70,11 +75,21 @@
                   <td>{{ $document->type_doc }}</td>
                   <td>{{ $document->created_at }}</td>
                   <td>{{ $document->due_date }}</td>
-                  <td>{{ $document->amount }}</td> 
+                  <td>{{ $document->amount }}</td>
+                  @if ($role == "Admin")
+                    <td>{{ $document->user_name }}</td>
+                    <td>{{ $document->email }}</td>
+                  @endif 
+                  <td>{{ $document->status }}</td>
                   <td align="center">           
                     <a href="/documents/{{$document->id}}" data-toggle="tooltip" data-placement="top" title="View More Info">
                       <i class="fa fa-search" aria-hidden="true" style="font-size:25px;"></i>
                     </a>
+                    @if ($role == "Admin")
+                      <a href="/documents/{{ $document->id }}/approve" data-toggle="tooltip" data-placement="top" title="Approve document">
+                          <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i> 
+                      </a>
+                    @endif 
                   </td>
                 </tr>
               @endforeach

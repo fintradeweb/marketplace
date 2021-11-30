@@ -3486,11 +3486,11 @@ BEGIN
 	       u.email ,
 	       u.name user_name,
 	       CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisi�n [ 0 - 3 dias ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
-	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
-	             else 'Estado inv�lido.'
+	             when  datediff(now(),df.created_at ) = 0 then 'In review [ Today ]'
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'In review [ 0 - 3 days ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'In review [ 4 - 7 days ]'
+	             when  datediff(now(),df.created_at ) >7 then 'In review more to 7 days'
+	             else 'Invalid status'
 	       END status,
 	       df.url_doc,
 	       x.ruc_tax
@@ -3518,11 +3518,11 @@ BEGIN
 	       u.email ,
 	       u.name user_name,
 	       CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisi�n [ 0 - 3 dias ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
-	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
-	             else 'Estado inv�lido.'
+	             when  datediff(now(),df.created_at ) = 0 then 'In review [ Today ]'
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'In review [ 0 - 3 days ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'In review [ 4 - 7 days ]'
+	             when  datediff(now(),df.created_at ) >7 then 'In review more to 7 days'
+	             else 'Invalid status'
 	       END status,
 	       df.url_doc,
 	       x.ruc_tax
@@ -3534,10 +3534,10 @@ BEGIN
 		     x.ruc_tax like CONCAT('%',_ruc,'%') and
 		    (
 		      CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisi�n [ 0 - 3 dias ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
-	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
+	             when  datediff(now(),df.created_at ) = 0 then 'In review [ Today ]'
+	             when  datediff(now(),df.created_at ) between 0 and 3 then 'In review [ 0 - 3 days ]'
+	             when  datediff(now(),df.created_at ) between 4 and 7 then 'In review [ 4 - 7 days ]'
+	             when  datediff(now(),df.created_at ) >7 then 'In review more to 7 days'
 	          END
 		    ) = _estado;
    end;
@@ -3560,13 +3560,13 @@ BEGIN
 
  select 'All' as status
  union
- select 'En Revisi�n [ Hoy ]' as status
+ select 'In review [ Today ]' as status
  union
- select 'En Revisi�n [ 0 - 3 dias ]' as status
+ select 'In review [ 0 - 3 days ]' as status
  union
- select 'En Revisi�n [ 4 - 7 dias ]' as status
+ select 'In review [ 4 - 7 days ]' as status
  union
- select 'En Revisi�n mayor a 7 dias' as status;
+ select 'In review more to 7 days' as status;
 END;
 //
 DELIMITER ;
