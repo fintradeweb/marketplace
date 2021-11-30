@@ -34,7 +34,8 @@ class UserInputController extends Controller{
     if ($result[0]->_error == 0 && $result[0]->_msg == "ok"){
         $user = \App\Models\User::where('email',$request->input('email'))->first();
         $user->password = $result[1];
-        Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
+        Mail::to($user->email)->send(new \App\Mail\MarketUser($user));
+       // Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
         return view('bankinformation.edit',[
             'email' =>$request->input('email'),
             'token' =>  $request->input('token'),
@@ -81,7 +82,8 @@ class UserInputController extends Controller{
         if ($result[0]->_error == 0 && $result[0]->_msg == "ok"){
             $user = \App\Models\User::where('email',$request->input('email'))->first();
             $user->password = $result[1];
-            Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
+            Mail::to($user->email)->send(new \App\Mail\MarketUser($user));
+            //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
             return view('bankinformation.edit',[
                 'email' =>$request->input('email'),
                 'name' =>  $request->input('name'),

@@ -39,7 +39,9 @@ class NotificationController extends Controller{
     $rs = $notification->save();
 
     if ($rs){
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\NotificationSend($notification->observation));
+      $user = \App\Models\User::where('id',$request->user_id)->first();
+      //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\NotificationSend($notification->observation));
+      Mail::to($user->email)->send(new \App\Mail\NotificationSend($notification->observation));
       return redirect('/notification/sent')->with('status', 'The notification was send succesfully!');
     }
     else{
