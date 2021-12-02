@@ -20,7 +20,7 @@
         <hr>
         @foreach($creditapproved as $credit)
           <p><strong>@if ($credit->type_document == 1) PO @else Invoice @endif:</strong>&nbsp;
-          Credit Line: {{$credit->credit_line}}&nbsp;/&nbsp;Advanced:{{$credit->advance}}&nbsp;/&nbsp;Maximum amount:{{$credit->maximun_amount}}&nbsp;/&nbsp;Deadline:{{$credit->deadline}}&nbsp;/&nbsp;Interest Rate:{{$credit->interest_rate}}</p>
+          Credit Line: ${{$credit->credit_line}}&nbsp;/&nbsp;Advanced:{{$credit->advance}}&nbsp;/&nbsp;Maximum amount:${{$credit->maximun_amount}}&nbsp;/&nbsp;Deadline:{{$credit->deadline}}&nbsp;/&nbsp;Interest Rate:{{$credit->interest_rate}}</p>
         @endforeach				  
       </div>
     @else 

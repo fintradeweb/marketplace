@@ -49,8 +49,13 @@ class DocumentsController extends Controller{
   }
 
   public function approve($id){
+    $document = \App\Models\DocumentFinancing::where("id",$id)->first();
+    $user = \App\Models\User::where("id",$document->user_id)->first();
+    $credit = \App\Models\CreditApproved::where("user_id",$user->id)->get();
     return view('documents.approve', [
-      
+      'document' => $document,
+      'user' => $user,
+      'credit' => $credit
     ]);
   } 
 
