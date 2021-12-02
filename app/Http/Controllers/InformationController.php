@@ -135,7 +135,8 @@ class InformationController extends Controller{
           $user = \App\Models\User::where('email',$request->input('email'))->first();
           //$user->email = $request->input('email');
           $user->password = $result[1];
-          Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
+          //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
+          Mail::to($user->email)->send(new \App\Mail\MarketUser($user));
           //return redirect('/management/create/'.$request->input('email').'/'.$request->input('token'));
 
         return view('managment.index',[

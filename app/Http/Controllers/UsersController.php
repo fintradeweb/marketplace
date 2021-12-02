@@ -14,7 +14,7 @@ class UsersController extends Controller{
 
   public function index(){
     $rol = (@Auth::user()->hasRole('SuperAdmin')) ? "1" : "2";
-    $users = \App\Models\User::getUsersByRol(3);  
+    $users = \App\Models\User::getUsersByRol(3);
     $status = \App\Models\User::getStatus();
     return view('users.index', [
       'users' => $users,
@@ -47,7 +47,7 @@ class UsersController extends Controller{
     $date_end = (empty($request->input("date_end"))) ? "" : $request->input("date_end");
     $ruc = (empty($request->input("ruc"))) ? "" : $request->input("ruc");
     $rol = (@Auth::user()->hasRole('SuperAdmin')) ? "1" : "2";
-    $users = \App\Models\User::getUsersByRol(3,$filterstatus,$date_start,$date_end,$ruc);  
+    $users = \App\Models\User::getUsersByRol(3,$filterstatus,$date_start,$date_end,$ruc);
     $status = \App\Models\User::getStatus();
     return view('users.index', [
       'users' => $users,
@@ -58,7 +58,7 @@ class UsersController extends Controller{
       'css_sadmin' => 'success'
     ]);
   }
-  
+
   public function create(){
     $companies = \App\Models\Company::consulta_todos();
     return view('users.create',['companies' => $companies]);
@@ -78,7 +78,8 @@ class UsersController extends Controller{
     if ($result[0]->_error == 0 && $result[0]->_msg == "ok"){
       $user = \App\Models\User::where('email',$request->input('email'))->first();
       $user->password = $result[1];
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
+      Mail::to($user->email)->send(new \App\Mail\MarketUser($user));
+      //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\MarketUser($user));
       return redirect('/users')->with('status', 'The user was created succesfully!');
     }else{
       return redirect('/users/create')->withErrors($result[0]->_msg);

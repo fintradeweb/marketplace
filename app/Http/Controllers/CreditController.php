@@ -9,30 +9,30 @@ use App\Models\NotificationSend;
 use Auth;
 
 class CreditController extends Controller{
-    
+
   public function __construct(){
     $this->middleware('auth');
   }
 
   public function approve($userid){
-    $userinfo = \App\Models\User::where("id",$userid)->first();   
+    $userinfo = \App\Models\User::where("id",$userid)->first();
     return view('credit.approve',[
-      'user' => $userinfo,      
-    ]);  
+      'user' => $userinfo,
+    ]);
   }
 
   public function deny($userid){
-    $userinfo = \App\Models\User::where("id",$userid)->first();   
+    $userinfo = \App\Models\User::where("id",$userid)->first();
     return view('credit.deny',[
-      'user' => $userinfo,     
-    ]);    
+      'user' => $userinfo,
+    ]);
   }
 
   public function askmore($userid){
     $userinfo = \App\Models\User::where("id",$userid)->first();
     return view('credit.askmore',[
       'user' => $userinfo
-    ]);    
+    ]);
   }
 
   public function storeapprove(Request $request){
@@ -57,7 +57,7 @@ class CreditController extends Controller{
     $creditapprovedpo->type_document = "1";
     $creditapprovedpo->user_id = $request->user_id;
     $creditapprovedpo->approved_by = @Auth::user()->id;
-    $rs1 = $creditapprovedpo->save();  
+    $rs1 = $creditapprovedpo->save();
 
     $creditapprovedin = new CreditApproved;
     $creditapprovedin->credit_line = $request->credit_line_invoice;
@@ -68,43 +68,48 @@ class CreditController extends Controller{
     $creditapprovedin->type_document = "2";
     $creditapprovedin->user_id = $request->user_id;
     $creditapprovedin->approved_by = @Auth::user()->id;
-    $rs2 = $creditapprovedin->save(); 
+    $rs2 = $creditapprovedin->save();
 
     if ($rs1 && $rs2){
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditApproved($creditapprovedpo,$creditapprovedin));
+      $user = \App\Models\User::where('id',$request->user_id)->first();
+      //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditApproved($creditapprovedpo,$creditapprovedin));
+      Mail::to($user->email)->send(new \App\Mail\CreditApproved($creditapprovedpo,$creditapprovedin));
       return redirect('/users/'.$request->user_id)->with('status', 'The credit was approved succesfully!');
     }
     else{
-      return redirect('/credit/'.$request->user_id.'/approve')->withErrors('There was an error!');  
+      return redirect('/credit/'.$request->user_id.'/approve')->withErrors('There was an error!');
     }
   }
 
   public function storedeny(Request $request){
     $validatedData = $request->validate([
-      'observation' => 'required',      
+      'observation' => 'required',
     ]);
 
-    $creditdenied = new CreditDenied; 
+    $creditdenied = new CreditDenied;
     $creditdenied->observation = $request->observation;
     $creditdenied->denied_by = @Auth::user()->id;
     $creditdenied->user_id = $request->user_id;
     $rs = $creditdenied->save();
 
     if ($rs){
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditDenied($creditdenied->observation));
+      $user = \App\Models\User::where('id',$request->user_id)->first();
+      //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditDenied($creditdenied->observation));
+      Mail::to($user->email)->send(new \App\Mail\CreditDenied($creditdenied->observation));
+
       return redirect('/users/'.$request->user_id)->with('status', 'The credit was denied succesfully!');
     }
     else{
-      return redirect('/credit/'.$request->user_id.'/approve')->withErrors('There was an error!');  
+      return redirect('/credit/'.$request->user_id.'/approve')->withErrors('There was an error!');
     }
   }
 
   public function storeaskmore(Request $request){
     $validatedData = $request->validate([
-      'observation' => 'required',      
+      'observation' => 'required',
     ]);
 
-    $notification = new NotificationSend; 
+    $notification = new NotificationSend;
     $notification->description = $request->observation;
     $notification->send_by = @Auth::user()->id;
     $notification->user_id = $request->user_id;
@@ -112,11 +117,13 @@ class CreditController extends Controller{
     $rs = $notification->save();
 
     if ($rs){
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\NotificationSend($notification->observation));
+      $user = \App\Models\User::where('id',$request->user_id)->first();
+      //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\NotificationSend($notification->observation));
+      Mail::to($user->email)->send(new \App\Mail\NotificationSend($notification->observation));
       return redirect('/users/'.$request->user_id)->with('status', 'The notification was send succesfully!');
     }
     else{
-      return redirect('/credit/'.$request->user_id.'/approve')->withErrors('There was an error!');  
+      return redirect('/credit/'.$request->user_id.'/approve')->withErrors('There was an error!');
     }
   }
 
@@ -138,7 +145,7 @@ class CreditController extends Controller{
 
   public function edit($id){
     $credit_po = CreditApproved::where("user_id",$id)->where("type_document",1)->first();
-    $credit_iv = CreditApproved::where("user_id",$id)->where("type_document",2)->first();    
+    $credit_iv = CreditApproved::where("user_id",$id)->where("type_document",2)->first();
     $user = \App\Models\User::where("id",$id)->first();
     return view('credit.edit',[
       'credit_po' => $credit_po,
@@ -162,7 +169,7 @@ class CreditController extends Controller{
       'deadline_invoice' => 'required|numeric',
       'interest_rate_invoice' => 'nullable|numeric',
     ]);
-        
+
     $values_po = new CreditApproved;
     $values_po->credit_line = $request->input("credit_line_po");
     $values_po->advance = $request->input("advance_po");
@@ -176,16 +183,18 @@ class CreditController extends Controller{
     $values_iv->maximum_amount = $request->input("maximum_amount_invoice");
     $values_iv->deadline = $request->input("deadline_invoice");
     $values_iv->interest_rate = $request->input("interest_rate_invoice");
-    
+
     $rs1 = CreditApproved::update_amount($values_po,$request->input("id_po"));
     $rs2 = CreditApproved::update_amount($values_iv,$request->input("id_invoice"));
 
     if ($rs1 && $rs2){
-      Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditEdited($values_po,$values_iv));
+      $user = \App\Models\User::where('id',$request->user_id)->first();
+      //Mail::to("ffueltala@gmail.com")->send(new \App\Mail\CreditEdited($values_po,$values_iv));
+      Mail::to($user->email)->send(new \App\Mail\CreditEdited($values_po,$values_iv));
       return redirect('/users')->with('status', 'The credit was modified succesfully!');
     }
     else{
-      return redirect('/users')->withErrors('There was an error!');  
+      return redirect('/users')->withErrors('There was an error!');
     }
   }
 

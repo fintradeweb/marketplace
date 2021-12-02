@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('content'); ?>
 
 <?php if($errors->any()): ?>
@@ -26,7 +27,7 @@
       <div class="row">
 
         <div class="col-xs-12 col-sm-12 col-md-12">
-          <form action="<?php echo e(route('financial.store')); ?>" method="POST" id="frm_updateifinancial">
+          <form action="<?php echo e(route('financial.store')); ?>" method="POST" id="frm_createfinancial">
             <input type="hidden" name="token" id="token" value="<?php echo e($token); ?>">
             <input type="hidden" name="email" id="email" value="<?php echo e($email); ?>">
             <?php echo csrf_field(); ?>
