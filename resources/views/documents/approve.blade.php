@@ -1,6 +1,23 @@
 @extends('layouts.app')
 @section('content')
 
+@if ($errors->any())
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-8 col-sm-12">
+      <div class="alert alert-danger" role="alert">        
+        <ul>
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>  
+@endif
+
 <div class="container">
   <div class="row justify-content-center">  
     <div class="row col-md-12 p-4">
@@ -15,8 +32,9 @@
 
         <div class="col-xs-12 col-sm-12 col-md-12">
 
-          <form action="" method="POST" id="frm_documentapproved">
-            <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">                                 
+          <form action="{{ route('documents.storeapprove') }}" method="POST">
+            <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
+            <input type="hidden" name="document_id" id="document_id" value="{{ $document->id }}">                                 
             @csrf
             <div class="card">
               <div class="card-body">
@@ -77,7 +95,7 @@
             </div>  
             <br>          
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-              <button type="button" class="btn btn-secondary" id="btnreset">Reject</button>
+              <a href="/documents/{{$document->id}}/reject" class="btn btn-secondary">Reject</a>
               <button type="submit" class="btn btn-primary" id="btn_save">Approve</button>
             </div>
           </form>
@@ -89,3 +107,5 @@
   </div>
 </div>
 @endsection
+
+<script src="{{ asset('js/document.js') }}" defer=""></script>
