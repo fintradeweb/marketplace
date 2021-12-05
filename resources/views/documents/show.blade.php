@@ -14,9 +14,12 @@
         <div class="card-body">
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
+              <h5 class="card-title">Status:</h5>
+              <p class="card-text">{{$document->status}}</p>
+            </li>
+            <li class="list-group-item">
               <h5 class="card-title">Type Document:</h5>
               <p class="card-text">{{$document->type_doc}}</p>
-
             </li>
             <li class="list-group-item">
               <h5 class="card-title">Url Document:</h5>

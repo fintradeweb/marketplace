@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class DocumentsController extends Controller{
@@ -98,28 +99,77 @@ class DocumentsController extends Controller{
   }
 
   public function storeapprove(Request $request){
-    $validatedData = $request->validate([
-      'amount' => 'required|numeric',
-    ]);
-    $historic = new \App\Models\DocumentFinancingHistoric;
-    $historic->lender_id = @Auth::user()->id;
-    $historic->document_id = $request->document_id;
-    $historic->status = 'funded';
-    $historic->amount = $request->amount;
-    $rs = $historic->save();
+    try{
+      DB::beginTransaction();
+      $validatedData = $request->validate([
+        'amount' => 'required|numeric',
+      ]);
 
-    if ($rs){
+      $document = \App\Models\DocumentFinancing::where("id",$request->document_id)->first();
+      if ($document->type_doc == "PO"){
+        $type_document = 1;
+        $credit = \App\Models\CreditApproved::where("user_id",$request->user_id)
+                                            ->where("type_document",1)->first();
+        $acum_amount = \App\Models\DocumentFinancingHistoric::where("user_id",$request->user_id)                                    ->where("type_document",1)
+                                              ->where("status","funded")
+                                              ->get()->sum("amount");
+      } 
+      if ($document->type_doc == "Invoice"){
+        $type_document = 2;
+        $credit = \App\Models\CreditApproved::where("user_id",$request->user_id)
+                                            ->where("type_document",2)->first();
+        $acum_amount = \App\Models\DocumentFinancingHistoric::where("user_id",$request->user_id)                                    ->where("type_document",2)
+                                              ->where("status","funded")
+                                              ->get()->sum("amount");  
+      } 
+
+      $credit_line = $credit["credit_line"]; 
+      if ($request->amount > $credit["maximum_amount"]){
+        throw new \Exception("The maximun amount per transaction is greater than amount"); 
+      }  
+
+      $total = $acum_amount + $request->amount;
+      if ($total > $credit_line){
+        throw new \Exception("The amount is greater than credit line"); 
+      }
+
+      $historic = new \App\Models\DocumentFinancingHistoric;
+      $historic->lender_id = @Auth::user()->id;
+      $historic->document_id = $request->document_id;
+      $historic->status = 'funded';
+      $historic->amount = $request->amount;
+      $historic->type_document = $type_document;
+      $historic->user_id = $request->user_id;
+      $rs = $historic->save();
+
+      if (!$rs){
+        throw new \Exception("There was an error!");  
+      }
+
       $document = \App\Models\DocumentFinancing::find($request->document_id);
       $document->status = 'funded';
-      $document->save();
+      $rs = $document->save();
+      if (!$rs){
+        throw new \Exception("There was an error!");  
+      }
 
+      $act_total = $credit_line - $request->amount;
+      $rs = \App\Models\CreditApproved::where("user_id",$request->user_id)
+                                      ->where("type_document",$type_document)
+                                      ->update(["credit_line"=>$act_total]);
+
+      DB::commit();
       $user = \App\Models\User::where('id',$request->user_id)->first();
       Mail::to($user->email)->send(new \App\Mail\DocumentApproved($historic->amount));
       return redirect('/documents/')->with('status', 'The document was approved succesfully!');
+
     }
-    else{
-      return redirect('/documents/'.$request->document_id.'/approve')->withErrors('There was an error!');
+    catch(\Exception $e){
+      DB::rollBack();
+      $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();
+      return redirect('/documents/'.$request->document_id.'/approve')->withErrors($errors);
     }
+
   }
 
   public function create(){
