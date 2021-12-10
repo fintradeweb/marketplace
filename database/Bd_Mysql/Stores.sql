@@ -3485,13 +3485,7 @@ BEGIN
 	       df.user_id ,
 	       u.email ,
 	       u.name user_name,
-	       CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisi�n [ 0 - 3 dias ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
-	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
-	             else 'Estado inv�lido.'
-	       END status,
+	       df.status,
 	       df.url_doc,
 	       x.ruc_tax
 	       
@@ -3517,13 +3511,7 @@ BEGIN
 	       df.user_id ,
 	       u.email ,
 	       u.name user_name,
-	       CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisi�n [ 0 - 3 dias ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
-	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
-	             else 'Estado inv�lido.'
-	       END status,
+	       df.status,
 	       df.url_doc,
 	       x.ruc_tax
 	   from document_financing df
@@ -3532,14 +3520,7 @@ BEGIN
 	   where df.created_at between d_start and d_end AND
 	         u.id BETWEEN b_user_inicio AND b_user_fin and
 		     x.ruc_tax like CONCAT('%',_ruc,'%') and
-		    (
-		      CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'En Revisi�n [ Hoy ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'En Revisi�n [ 0 - 3 dias ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'En Revisi�n [ 4 - 7 dias ]'
-	             when  datediff(now(),df.created_at ) >7 then 'En Revisi�n mayor a 7 dias'
-	          END
-		    ) = _estado;
+		    df.status = _estado;
    end;
    end if;
 
@@ -3560,13 +3541,11 @@ BEGIN
 
  select 'All' as status
  union
- select 'En Revisi�n [ Hoy ]' as status
+ select 'In Review' as status
  union
- select 'En Revisi�n [ 0 - 3 dias ]' as status
+ select 'Denied' as status
  union
- select 'En Revisi�n [ 4 - 7 dias ]' as status
- union
- select 'En Revisi�n mayor a 7 dias' as status;
+ select 'Approved' as status ;
 END;
 //
 DELIMITER ;
