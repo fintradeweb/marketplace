@@ -3427,7 +3427,7 @@ create  PROCEDURE Get_document_financing(
 
 
 BEGIN
-	declare d_start timestamp;
+  declare d_start timestamp;
     declare d_end timestamp;
     declare b_user_inicio bigint;
     declare b_user_fin bigint;
@@ -3441,7 +3441,7 @@ BEGIN
    END;
    ELSE
    BEGIN
-   	  SET b_user_inicio =_userid;
+      SET b_user_inicio =_userid;
       SET b_user_fin = _userid;
    END;
    END IF;
@@ -3451,8 +3451,8 @@ BEGIN
    end;
    else
    begin
- 	   select concat(_fecha_inicio,' 00:00:00') into _fecha_inicio;
- 	   select STR_TO_DATE(_fecha_inicio, '%Y-%m-%d %H:%i:%s') into d_start;
+     select concat(_fecha_inicio,' 00:00:00') into _fecha_inicio;
+     select STR_TO_DATE(_fecha_inicio, '%Y-%m-%d %H:%i:%s') into d_start;
    end;
    end if;
 
@@ -3462,8 +3462,8 @@ BEGIN
    end;
    else
    begin
- 	   select concat(_fecha_fin,' 23:59:59') into _fecha_fin;
- 	   select STR_TO_DATE(_fecha_fin, '%Y-%m-%d %H:%i:%s') into d_end;
+     select concat(_fecha_fin,' 23:59:59') into _fecha_fin;
+     select STR_TO_DATE(_fecha_fin, '%Y-%m-%d %H:%i:%s') into d_end;
    end;
   end if;
  
@@ -3472,74 +3472,55 @@ BEGIN
 
   if(_estado in('All','')) then
    begin
-	   
-	   select
-	       df.id,
-	       ifnull(df.type_doc,'') type_doc,
-	       DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
-	       DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
-	       DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
-	       DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
-	       df.amount,
-	       IFNULL(df.aditional,'') aditional,
-	       df.user_id ,
-	       u.email ,
-	       u.name user_name,
-	       CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'In review [ Today ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'In review [ 0 - 3 days ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'In review [ 4 - 7 days ]'
-	             when  datediff(now(),df.created_at ) >7 then 'In review more to 7 days'
-	             else 'Invalid status'
-	       END status,
-	       df.url_doc,
-	       x.ruc_tax
-	       
-	   from document_financing df
-	   inner join users u on u.id  = df.user_id
-	   inner join businessinformations x on x.user_id = u.id
-	   where df.created_at between d_start and d_end AND
-		     x.ruc_tax like  CONCAT('%',_ruc,'%') AND
-		     u.id BETWEEN b_user_inicio AND b_user_fin ;
-		  
+     
+     select
+         df.id,
+         ifnull(df.type_doc,'') type_doc,
+         DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
+         DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
+         DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
+         DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
+         df.amount,
+         IFNULL(df.aditional,'') aditional,
+         df.user_id ,
+         u.email ,
+         u.name user_name,
+         df.status,
+         df.url_doc,
+         x.ruc_tax
+         
+     from document_financing df
+     inner join users u on u.id  = df.user_id
+     inner join businessinformations x on x.user_id = u.id
+     where df.created_at between d_start and d_end AND
+         x.ruc_tax like  CONCAT('%',_ruc,'%') AND
+         u.id BETWEEN b_user_inicio AND b_user_fin ;
+      
    end;
   else
    begin
-	   select
-	       df.id,
-	       ifnull(df.type_doc,'') type_doc,
-	       DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
-	       DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
-	       DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
-	       DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
-	       df.amount,
-	       IFNULL(df.aditional,'') aditional,
-	       df.user_id ,
-	       u.email ,
-	       u.name user_name,
-	       CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'In review [ Today ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'In review [ 0 - 3 days ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'In review [ 4 - 7 days ]'
-	             when  datediff(now(),df.created_at ) >7 then 'In review more to 7 days'
-	             else 'Invalid status'
-	       END status,
-	       df.url_doc,
-	       x.ruc_tax
-	   from document_financing df
-	   inner join users u on u.id  = df.user_id
-	   inner join businessinformations x on x.user_id = u.id
-	   where df.created_at between d_start and d_end AND
-	         u.id BETWEEN b_user_inicio AND b_user_fin and
-		     x.ruc_tax like CONCAT('%',_ruc,'%') and
-		    (
-		      CASE
-	             when  datediff(now(),df.created_at ) = 0 then 'In review [ Today ]'
-	             when  datediff(now(),df.created_at ) between 0 and 3 then 'In review [ 0 - 3 days ]'
-	             when  datediff(now(),df.created_at ) between 4 and 7 then 'In review [ 4 - 7 days ]'
-	             when  datediff(now(),df.created_at ) >7 then 'In review more to 7 days'
-	          END
-		    ) = _estado;
+     select
+         df.id,
+         ifnull(df.type_doc,'') type_doc,
+         DATE_FORMAT(df.created_at , '%Y-%m-%d %T') as created_at,
+         DATE_FORMAT(df.updated_at , '%Y-%m-%d %T') as updated_at,
+         DATE_FORMAT(df.creation_date , '%Y-%m-%d') as creation_date,
+         DATE_FORMAT(df.due_date , '%Y-%m-%d') as due_date,
+         df.amount,
+         IFNULL(df.aditional,'') aditional,
+         df.user_id ,
+         u.email ,
+         u.name user_name,
+         df.status,
+         df.url_doc,
+         x.ruc_tax
+     from document_financing df
+     inner join users u on u.id  = df.user_id
+     inner join businessinformations x on x.user_id = u.id
+     where df.created_at between d_start and d_end AND
+           u.id BETWEEN b_user_inicio AND b_user_fin and
+         x.ruc_tax like CONCAT('%',_ruc,'%') and
+        df.status = _estado;
    end;
    end if;
 
@@ -3560,13 +3541,11 @@ BEGIN
 
  select 'All' as status
  union
- select 'In review [ Today ]' as status
+ select 'In Review' as status
  union
- select 'In review [ 0 - 3 days ]' as status
+ select 'Denied' as status
  union
- select 'In review [ 4 - 7 days ]' as status
- union
- select 'In review more to 7 days' as status;
+ select 'Approved' as status ;
 END;
 //
 DELIMITER ;
