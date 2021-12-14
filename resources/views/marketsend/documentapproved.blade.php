@@ -9,7 +9,7 @@
   <p>Congratulations! Your document has been approved.</p>
   <p>The approved values are:</p>
   <ul>
-    <li>Amount: {{ $amount }}</li>
+    <li>Amount: ${{ $amount }}</li>
   </ul>
   <ul>
     <li>

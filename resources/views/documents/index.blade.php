@@ -85,7 +85,7 @@
                     <a href="/documents/{{$document->id}}" data-toggle="tooltip" data-placement="top" title="View More Info">
                       <i class="fa fa-search" aria-hidden="true" style="font-size:25px;"></i>
                     </a>
-                    @if ($role == "Admin" && $document->status != "funded")
+                    @if ($role == "Admin" && $document->status != "funded" && $document->status != "denied")
                       <a href="/documents/{{ $document->id }}/approve" data-toggle="tooltip" data-placement="top" title="Approve document">
                           <i class="fa fa-pencil-square-o" aria-hidden="true" style="font-size:25px;"></i> 
                       </a>

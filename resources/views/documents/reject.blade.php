@@ -15,7 +15,8 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
           <form action="{{ route('documents.storereject') }}" method="POST">
             <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
-            <input type="hidden" name="document_id" id="document_id" value="{{ $document->id }}">             
+            <input type="hidden" name="document_id" id="document_id" value="{{ $document->id }}">   
+            <input type="hidden" name="type_doc" id="type_doc" value="{{ $document->type_doc }}">            
             @csrf
             <div class="card">
               <div class="card-body">

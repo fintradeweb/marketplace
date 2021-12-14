@@ -73,28 +73,46 @@ class DocumentsController extends Controller{
   } 
 
   public function storereject(Request $request){
-    $validatedData = $request->validate([
-      'observation' => 'required',
-    ]);
+    try{
+      DB::beginTransaction();
+      $validatedData = $request->validate([
+        'observation' => 'required',
+      ]);
 
-    $historic = new \App\Models\DocumentFinancingHistoric;
-    $historic->observation = $request->observation;
-    $historic->lender_id = @Auth::user()->id;
-    $historic->document_id = $request->document_id;
-    $historic->status = 'denied';
-    $rs = $historic->save();
+      $historic = new \App\Models\DocumentFinancingHistoric;
+      $historic->observation = $request->observation;
+      $historic->lender_id = @Auth::user()->id;
+      $historic->document_id = $request->document_id;
+      $historic->type_document = ($request->type_doc == "PO") ? 1 : 2; 
+      $historic->user_id = $request->user_id; 
+      $historic->status = 'denied';
+      $rs = $historic->save();
 
-    if ($rs){
+      if (!$rs){
+        throw new \Exception("There was an error!"); 
+      }   
+
+      //if ($rs){
       $document = \App\Models\DocumentFinancing::find($request->document_id);
       $document->status = 'denied';
-      $document->save();
+      $rs = $document->save();
+      if (!$rs){
+        throw new \Exception("There was an error!"); 
+      }
 
+      DB::commit();
       $user = \App\Models\User::where('id',$request->user_id)->first();
       Mail::to($user->email)->send(new \App\Mail\DocumentDenied($historic->observation));
       return redirect('/documents')->with('status', 'The document was denied succesfully!');
+      //}
+      //else{
+      //  return redirect('/documents/'.$request->document_id.'/approve')->withErrors('There was an error!');
+      //}
     }
-    else{
-      return redirect('/documents/'.$request->document_id.'/approve')->withErrors('There was an error!');
+    catch(\Exception $e){
+      DB::rollBack();
+      $errors = ($e->getMessage() == "validator") ? $validator : $e->getMessage();
+      return redirect('/documents/'.$request->document_id.'/reject')->withErrors($errors);
     }
   }
 

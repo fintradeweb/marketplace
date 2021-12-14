@@ -25,7 +25,8 @@ class DocumentFinancing extends Model{
                         $ruc,
                         $userid
                     ]);
-    $records = $result;
+    return $result;
+    /*$records = $result;
     if (count($records)>0){
       foreach($records as $rs){
         $registro = DocumentFinancing::where("id",$rs->id)->first();
@@ -33,7 +34,7 @@ class DocumentFinancing extends Model{
         $data[] = $rs;
       }
     }
-    return $data;
+    return $data;*/
   }
 
 }
