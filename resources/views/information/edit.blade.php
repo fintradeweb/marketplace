@@ -243,3 +243,5 @@
 @endsection
 
 <script src="{{ asset('js/information.js') }}" defer=""></script>
+
+</script>

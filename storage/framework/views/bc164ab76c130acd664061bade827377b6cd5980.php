@@ -19,6 +19,9 @@
   <!-- Styles -->
   <link href="<?php echo e(asset('css/app.css')); ?>" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo e(asset('css/font-awesome/css/font-awesome.min.css')); ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
+
 </head>
 <body>
   <div id="app">
@@ -35,15 +38,15 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <!-- Left Side Of Navbar -->
           <ul class="navbar-nav mr-auto">
-            
+
           </ul>
 
           <?php
           if (isset(Auth::user()->name)){
-            $notnoread = \App\Models\NotificationSend::where("send_by",Auth::user()->id)->count(); 
-            $notread = \App\Models\NotificationSend::where("user_id",Auth::user()->id)->count(); 
-          } 
-          ?>     
+            $notnoread = \App\Models\NotificationSend::where("send_by",Auth::user()->id)->count();
+            $notread = \App\Models\NotificationSend::where("user_id",Auth::user()->id)->count();
+          }
+          ?>
 
           <?php if(isset(Auth::user()->name)): ?>
             <ul class="navbar-nav ml-auto">
@@ -53,15 +56,15 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
                   <a class="dropdown-item" href="/notification/sent">
-                    Sent <span class="badge badge-secondary"><?php echo e($notnoread); ?></span>             
+                    Sent <span class="badge badge-secondary"><?php echo e($notnoread); ?></span>
                   </a>
                   <a class="dropdown-item" href="/notification/received">
-                    Received <span class="badge badge-secondary"><?php echo e($notread); ?></span>      
+                    Received <span class="badge badge-secondary"><?php echo e($notread); ?></span>
                   </a>
-                </div>  
-              </li> 
+                </div>
+              </li>
             </ul>
-          <?php endif; ?>     
+          <?php endif; ?>
 
           <!-- Right Side Of Navbar -->
           <ul class="navbar-nav">
@@ -96,8 +99,8 @@
                 </div>
               </li>
             <?php endif; ?>
-          </ul>          
-          &nbsp;                              
+          </ul>
+          &nbsp;
         </div>
       </div>
     </nav>

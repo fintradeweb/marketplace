@@ -7,7 +7,7 @@ class AddStatusToDocumentFinancingTable extends Migration{
 
   public function up(){
     Schema::table('document_financing', function (Blueprint $table) {
-      $table->enum('status',['in review', 'denied', 'funded'])->default('in review');
+      $table->enum('status',['in review', 'denied','approved','funded'])->default('in review');
     });
   }
 

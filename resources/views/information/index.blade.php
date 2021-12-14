@@ -24,5 +24,8 @@
       <!--<example-component></example-component>--><!--Añadimos nuestro componente vuejs-->
     </div>
     <script src="{{asset('js/app.js')}}"></script> <!--Añadimos el js generado con webpack, donde se encuentra nuestro componente vuejs-->
+    <script src="{{ asset('js/information.js') }}" defer=""></script>
+
+</script>
   </body>
 </html>

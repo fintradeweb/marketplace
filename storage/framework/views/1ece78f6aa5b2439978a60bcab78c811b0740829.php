@@ -1,10 +1,9 @@
-
 <?php $__env->startSection('content'); ?>
 
 <?php if($errors->any()): ?>
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-8 col-sm-12">
-      <div class="alert alert-danger" role="alert">        
+      <div class="alert alert-danger" role="alert">
         <ul>
           <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <li><?php echo e($error); ?></li>
@@ -15,18 +14,18 @@
         </button>
       </div>
     </div>
-  </div>  
+  </div>
 <?php endif; ?>
-   
-<div class="container"> 
-  <div class="row justify-content-center">  
+
+<div class="container">
+  <div class="row justify-content-center">
     <div class="row col-md-12 p-4 text-center">
       <div class="col-md-12"><h5>Business Information</h5></div>
-      <div class="col-md-12">Please confirm your information, then click in Save button to continue</div>        
+      <div class="col-md-12">Please confirm your information, then click in Save button to continue</div>
     </div>
     <div class="col-md-12 p-4 text-justify">
       <form action="<?php echo e(route('information.create')); ?>" method="POST" id="frm_createinformation">
-        <?php echo csrf_field(); ?>  
+        <?php echo csrf_field(); ?>
         <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
@@ -88,9 +87,9 @@ unset($__errorArgs, $__bag); ?>
             </div>
           </div>
         </div>
-        <div class="row">          
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
-            <div class="form-group">
+            <div class="form-group" id="datetimepicker_date_company">
               <strong>Date Company Was Established: <span class="text-danger">(*)</span></strong>
               <input type="text" name="date_company" id="date_company" class="form-control <?php $__errorArgs = ['ruc_tax'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -100,6 +99,9 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" value="<?php echo e($date_company); ?>" placeholder="">
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+              </span>
               <span class="font-italic text-info">Ex: 2021-08-17</span>
               <?php $__errorArgs = ['date_company'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -139,7 +141,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
-          </div>            
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>President Name: <span class="text-danger">(*)</span></strong>
@@ -165,8 +167,8 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
           </div>
-        </div>        
-        <div class="row">    
+        </div>
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Type Of Bussiness: <span class="text-danger">(*)</span></strong>
@@ -216,7 +218,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
-          </div>  
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Country: <span class="text-danger">(*)</span></strong>
@@ -241,9 +243,9 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
-          </div>        
-        </div>        
-        <div class="row">                        
+          </div>
+        </div>
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>State: <span class="text-danger">(*)</span></strong>
@@ -269,7 +271,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
           </div>
-          <div class="col-xs-12 col-sm-4 col-md-4">            
+          <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>City: <span class="text-danger">(*)</span></strong>
               <input type="text" name="city_id" id="city_id" class="form-control <?php $__errorArgs = ['city_id'];
@@ -293,7 +295,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
-          </div> 
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Zip Code: <span class="text-danger">(*)</span></strong>
@@ -320,7 +322,7 @@ unset($__errorArgs, $__bag); ?>
             </div>
           </div>
         </div>
-        <div class="row">                        
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Address: <span class="text-danger">(*)</span></strong>
@@ -397,8 +399,8 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
           </div>
-        </div>                        
-        <div class="row">                                  
+        </div>
+        <div class="row">
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Dba:</strong>
@@ -423,7 +425,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
-          </div>         
+          </div>
           <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="form-group">
               <strong>Secretary Name:</strong>
@@ -448,9 +450,9 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
-          </div> 
+          </div>
         </div>
-        <div class="row">                                      
+        <div class="row">
           <input type="hidden" id="token" name="token" value="<?php echo e($token); ?>">
           <div class="col-xs-12 col-sm-12 col-md-12 text-center">
             <button type="submit" class="btn btn-primary" id="btn_save">Save & Next</button>
@@ -463,4 +465,15 @@ unset($__errorArgs, $__bag); ?>
 <?php $__env->stopSection(); ?>
 
 <script src="<?php echo e(asset('js/information.js')); ?>" defer=""></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+        $(function() {
+           $('#datetimepicker_date_company').datetimepicker();
+        });
+    </script>
+</script>
+
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Miguel\Ac\laravel\marketplace\resources\views/information/create.blade.php ENDPATH**/ ?>
